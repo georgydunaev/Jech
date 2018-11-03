@@ -184,8 +184,6 @@ exists (Paire S1 S2).
 exists (Paire S1 S2).
 unshelve eapply ex_intro.
 apply EQ_refl.
-unshelve eapply ex_intro.
-intro e.
 Abort.
 (*
 exists S1.
