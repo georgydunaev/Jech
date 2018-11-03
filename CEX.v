@@ -1,3 +1,4 @@
+Require Import Setoid.
 From ZFC Require Import Sets Axioms Cartesian Omega.
 (*
 Inductive Ens : Type :=
@@ -106,9 +107,74 @@ Definition EQC (A B:Ens -> Prop) := forall z:Ens, A z <-> B z.
 (*Definition Comp : Ens -> (Ens -> Prop) -> Ens.*)
 Definition Comp_not_sound_right : exists x c1 c2 (H:EQC c1 c2),
 ~ (EQ (Comp x c1) (Comp x c2)).
+Proof.
+exists (Paire S1 S2).
+(* Надо некорректно определить класс *)
+Check fun x:Ens=> x = S1.
+
+exists (fun x=> EQ x S1).
+exists (fun x=> EQ x S2).
+(*unshelve eapply ex_intro. firstorder.
+intros H.
+rewrite -> axExt in H.*)
+
+(* almost
+exists (Sing S1).
+exists (fun x=>EQ x S1).
+exists (fun x=>EQ x S2).
+unshelve eapply ex_intro.
++ unfold EQC. intro z. split.
+  - intro u. apply (EQ_tran _ _ _ u ESS).
+  - intro u. refine (EQ_tran _ _ _ u _). apply EQ_sym. exact ESS.
++ intro H.*)
+Abort.
+
+Section sou.
+Context (c1 c2 : Ens->Prop).
+Context (c1_sou : forall x y, EQ x y -> (c1 x <-> c1 y)).
+Context (c2_sou : forall x y, EQ x y -> (c2 x <-> c2 y)).
+Definition Comp_sound_right : forall x (H:EQC c1 c2),
+ (EQ (Comp x c1) (Comp x c2)).
+Proof.
+intros.
+apply axExt.
+intro z. split.
++ intro q.
+  unshelve eapply IN_P_Comp.
+  { unfold EQC in H.
+    intros w1 w2 H0 H1.
+    eapply c2_sou.
+    apply EQ_sym. exact H1.
+    exact H0. }
+  { pose (m:= Comp_INC x c1).
+    unfold INC in m.
+    apply m. exact q. }
+  {
+    eapply IN_Comp_P in q.
+    eapply H. exact q.
+    intros w1 w2 H0 H1.
+    eapply c1_sou. apply EQ_sym. exact H1. exact H0.
+  }
++ intro q.
+  unshelve eapply IN_P_Comp.
+  { unfold EQC in H.
+    intros w1 w2 H0 H1.
+    eapply c1_sou.
+    apply EQ_sym. exact H1.
+    exact H0. }
+  { pose (m:= Comp_INC x c2).
+    unfold INC in m.
+    apply m. exact q. }
+  {
+    eapply IN_Comp_P in q.
+    eapply H. exact q.
+    intros w1 w2 H0 H1.
+    eapply c2_sou. apply EQ_sym. exact H1. exact H0.
+  }
+Defined.
+End sou.
 
 (*=====================END========================*)
-
 
 (* The following is a mistake... *)
 Definition Comp_not_sound_left : exists x1 x2 (H:EQ x1 x2) c,
