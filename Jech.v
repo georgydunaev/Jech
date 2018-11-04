@@ -322,7 +322,7 @@ apply IN_Sing_EQ, EQ_sym in i2.
 split; assumption.
 Defined.
 
-Theorem Fst_eq  a b : EQ (Fst (Couple a b)) a.
+Theorem Fst_eq_OLD  a b : EQ (Fst (Couple a b)) a.
 Proof.
 unfold Fst.
 apply axExt; intro z; split; intro y.
@@ -358,6 +358,47 @@ apply axExt; intro z; split; intro y.
   simpl (prty Q1). cbv beta. exists a. apply EQ_refl.
 Defined.
 
+Theorem Fst_eq_lem1  a b : EQ (Comp (Couple a b) Q1) (Sing (Sing a)).
+Proof.
+apply axExt; intro z; split; intro v2.
++ apply Comp_elim in v2 as [u1 u2].
+  apply Paire_IN in u1 as [H1|H2].
+  apply IN_sound_left with (1:=(EQ_sym _ _ H1)).
+  auto with zfc.
+  destruct u2 as [t1 t2].
+      apply EQ_sym in t2.
+      apply EQ_tran with (2:=H2) in t2.
+  apply SingEqPair in t2 as [u1 u2].
+      apply EQ_sym in u2.
+  pose (FF:=EQ_tran _ _ _ u2 u1).
+  pose (u:=IN_Sing b).
+      apply IN_sound_right with (1:=FF) in u.
+      destruct (Vide_est_vide _ u) as [].
++ apply IN_P_Comp.
+  { intros w1 w2 qw1 ew1w2.
+    rewrite (sound Q1). exact qw1. apply EQ_sym; assumption. }
+  apply IN_Sing_EQ in v2.
+  apply IN_sound_left with (E:=Sing a).
+  auto with zfc.
+  unfold Couple. auto with zfc.
+  simpl (prty Q1). cbv beta. exists (a).
+  apply IN_Sing_EQ; assumption.
+Defined.
+
+Theorem sing2union W M : EQ W (Sing M) -> EQ (Union W) M.
+Proof. intro H. pose (y:= unionsing M).
+apply EQ_tran with (E2:=Union (Sing M)).
+apply Union_sound. assumption.
+assumption.
+Defined.
+
+Theorem Fst_eq  a b : EQ (Fst (Couple a b)) a.
+Proof.
+unfold Fst.
+repeat apply sing2union.
+apply Fst_eq_lem1.
+Defined.
+
 Definition Q2 : class.
 Proof.
 unshelve eapply Build_class.
@@ -369,6 +410,7 @@ exists x.
 apply EQ_tran with (E2:=a); auto with zfc.
 Defined.
 
+Definition Snd0 (p:Ens) := Union (Union (Comp p Q2)).
 Definition Snd (p:Ens) := Union (Union (Comp p Q2)).
 
 Theorem Snd_eq  a b : EQ (Snd (Couple a b)) b.
