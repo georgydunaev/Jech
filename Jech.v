@@ -241,10 +241,50 @@ Definition cprty_unsound : exists (cprty : class->Prop)
 Proof. Abort.
 
 
-
 (* 
 Def.: Couple (E E' : Ens) := Paire (Sing E) (Paire Vide (Sing E')).
 *)
+(* Now I will define extraction of the first and the 
+second element of a couple. *)
+
+Theorem unionsing (M : Ens) : EQ (Union (Sing M)) M.
+Proof.
+apply axExt.
+intro z; split; intro y.
++ apply Union_IN in y.
+  destruct y as [w [K1 K2]].
+  apply IN_Sing_EQ in K1.
+  apply IN_sound_right with (E':=w); assumption.
++ unshelve eapply IN_Union.
+  exact M.
+  exact (IN_Sing M).
+  assumption.
+Defined.
+
+Lemma unionpairvide (M : Ens) : EQ (Union (Paire Vide M)) M.
+Proof.
+apply axExt.
+intro z; split; intro y.
++ apply Union_IN in y.
+   destruct y as [w [K1 K2]].
+  apply Paire_IN in K1.
+   destruct K1 as [H|H].
+  apply IN_sound_right with (1:=H) in K2.
+  destruct (Vide_est_vide _ K2).
+  apply IN_sound_right with (1:=H) in K2.
+  exact K2.
++ unshelve eapply IN_Union.
+  exact M.
+  auto with zfc.
+  assumption.
+Defined.
+
+
+(* I am adapting Jech's definitions to Couple of the library.*)
+Theorem  domias (R:class) (w : ias R) : (ias (cDom R)).
+Proof.
+unfold ias in *|-*.
+
 
 (* Functions *)
 
