@@ -279,18 +279,114 @@ intro z; split; intro y.
   assumption.
 Defined.
 
+(* First element *)
+Definition Q1 : class.
+Proof.
+unshelve eapply Build_class.
+intro z.
+exact (exists x, EQ z (Sing x)).
+apply sousym.
+intros a b aeqb [x h].
+(*split.
+eapply IN_sound_left. exact aeqb. exact g.*)
+exists x.
+apply EQ_tran with (E2:=a); auto with zfc.
+Defined.
+
+Definition Fst (p:Ens) := Union (Union (Comp p Q1)).
+
+(* Micro Sermon: Mindless proof-hacking is a terrible temptation...
+Try to resist! *)
+Theorem Comp_elim x y (K:class) : IN x (Comp y K) -> (IN x y /\ K x).
+Proof.
+intro e.
+split.
++ exact ((Comp_INC y K) _ e).
++ apply IN_Comp_P in e. exact e.
+  intros.
+  rewrite <- (sound K).
+  exact H.
+  exact H0.
+Defined.
+
+Lemma SingEqPair x y1 y2 (J: EQ (Sing x) (Paire y1 y2)) :
+EQ x y1 /\ EQ x y2.
+Proof.
+apply EQ_sym in J.
+pose (i1:=IN_Paire_left y1 y2).
+apply IN_sound_right with (1:=J) in i1.
+apply IN_Sing_EQ, EQ_sym in i1.
+pose (i2:=IN_Paire_right y1 y2).
+apply IN_sound_right with (1:=J) in i2.
+apply IN_Sing_EQ, EQ_sym in i2.
+split; assumption.
+Defined.
+
+Theorem Fst_eq  a b : EQ (Fst (Couple a b)) a.
+Proof.
+unfold Fst.
+apply axExt; intro z; split; intro y.
++ apply Union_IN in y as [w1 [w2 w3]].
+  apply Union_IN in w2 as [v1 [v2 v3]].
+  apply Comp_elim in v2 as [u1 u2].
+  apply Paire_IN in u1 as [H1|H2].
+  - apply IN_sound_right with (1:=H1) in v3.
+    apply IN_Sing_EQ in v3.
+    apply IN_sound_right with (1:=v3) in w3.
+    exact w3.
+  - apply IN_sound_right with (1:=H2) in v3.
+    apply Paire_IN in v3 as [L1|L2].
+    * apply IN_sound_right with (1:=L1) in w3.
+      destruct (Vide_est_vide z w3).
+    * destruct u2 as [t1 t2].
+      apply EQ_sym in t2.
+      apply EQ_tran with (2:=H2) in t2.
+      apply SingEqPair in t2 as [u1 u2].
+      apply IN_sound_right with (1:=L2) in w3.
+      apply EQ_sym in u2.
+      apply IN_sound_right with (1:=u2) in w3.
+      apply IN_sound_right with (1:=u1) in w3.
+      destruct (Vide_est_vide _ w3) as [].
++ apply IN_Union with (E':=a).
+  2 : assumption.
+  apply IN_Union with (E':=Sing a).
+  2 : auto with zfc.
+  apply IN_P_Comp.
+  { intros w1 w2 qw1 ew1w2.
+    rewrite (sound Q1). exact qw1. apply EQ_sym; assumption. }
+  unfold Couple. auto with zfc.
+  simpl (prty Q1). cbv beta. exists a. apply EQ_refl.
+Defined.
+
+Definition Q2 : class.
+Proof.
+unshelve eapply Build_class.
+intro z.
+exact (exists x, EQ z (Paire Vide (Sing x))).
+apply sousym.
+intros a b aeqb [x h].
+exists x.
+apply EQ_tran with (E2:=a); auto with zfc.
+Defined.
+
+Definition Snd (p:Ens) := Union (Union (Comp p Q2)).
+
+Theorem Snd_eq  a b : EQ (Snd (Couple a b)) b.
+Proof.
+unfold Fst.
+apply axExt; intro z; split; intro y.
++ apply Union_IN in y as [w1 [w2 w3]].
+  apply Union_IN in w2 as [v1 [v2 v3]].
+  (* to be continued *)
+Abort.
 
 (* I am adapting Jech's definitions to Couple of the library.*)
 Theorem  domias (R:class) (w : ias R) : (ias (cDom R)).
 Proof.
 unfold ias in *|-*.
-
+Abort.
 
 (* Functions *)
 
-
-
-
-
-
-
+(*pose (i:=IN_Sing x).
+enough (forall x z, (IN z (Sing x)) <-> (EQ z x)).*)
