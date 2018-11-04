@@ -140,7 +140,7 @@ intros.
 apply axExt.
 intro z. split.
 + intro q.
-  unshelve eapply IN_P_Comp.
+  unshelve eapply IN_P_Comp.  (* c2 := (fun w=>S1=w) *)
   { unfold EQC in H.
     intros w1 w2 H0 H1.
     eapply c2_sou.
@@ -180,11 +180,77 @@ End sou.
 Definition Comp_not_sound_left : exists x1 x2 (H:EQ x1 x2) c,
 ~ (EQ (Comp x1 c) (Comp x2 c)).
 Proof.
-exists (Paire S1 S2).
+exists (Sing S1).
+exists (Sing S2).
+unshelve eapply ex_intro.
+ apply Sing_sound; exact ESS.
+exists (fun w=>S1=w).
+intro Y.
+rewrite axExt in Y.
+pose (ys := Y S1).
+destruct ys.
+assert (Q:IN S1 (Comp (Sing S1) (fun w : Ens => S1 = w))).
+eapply IN_P_Comp.
+(* Nothing can be done *)
+(*exists (Paire S1 S2).
 exists (Paire S1 S2).
 unshelve eapply ex_intro.
-apply EQ_refl.
+apply EQ_refl.*)
 Abort.
+(*___________________________________________________*)
+
+(** INTERESTING 
+
+Module ClassicalEns.
+Import Classical_Prop.
+Import Classical_Pred_Type.
+(*
+Definition ce :  False.
+remember (classic False).
+clear Heqo.
+destruct o.
+pose (Q:=classic False).
+destruct Q.
+Theorem or_elim (A B C:Prop): (A->C) ->(B->C)->((A\/B)->C).
+intros.
+destruct H1.
+or
+*)
+
+(*N z x*)
+Check Comp Omega.
+Print Comp.
+(*
+Definition Comp : Ens -> (Ens -> Prop) -> Ens.
+simple induction 1; intros A f fr P.
+apply (sup (sig A (fun x => P (f x)))).
+simple induction 1; intros x p; exact (f x).
+Defined.
+*)
+(* Тут должен быть пример функции, дающей разные значения на
+   на двух неравных, экстенсионально равных множествах.
+   Определим два типа с нулём элементов.
+*)
+
+Inductive VI : bool -> Set :=
+| c1 : VI true
+.
+
+Theorem theyneq : VI true <> VI false.
+Proof.
+intros H.
+(*pose (x2:=c2 : VI true).*)
+pose (x1:=c1 : VI true).
+replace (VI true) with (VI false) in x1.
+inversion x1.
+Defined.
+
+Inductive Va:Set :=.
+Inductive Vb:Set :=.
+
+Definition ce : Ens->Prop.
+
+(*___________________________________________________*)
 (*
 exists S1.
 exists S2.
@@ -206,3 +272,4 @@ False
 I:True
   unit
   bool*)
+**)

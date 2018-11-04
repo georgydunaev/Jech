@@ -48,6 +48,15 @@ Record class := {
  sound : forall (a b : Ens), EQ a b -> (prty a <-> prty b);
 }.
 
+Lemma sousym (K:Ens->Prop)
+(H:forall (a b : Ens), EQ a b -> (K a -> K b))
+: forall (a b : Ens), EQ a b -> (K a <-> K b).
+Proof.
+intros a b aeqb. split.
+apply (H a b aeqb).
+apply H. apply EQ_sym. exact aeqb.
+Defined.
+
 Definition EQC (A B:class) := forall z:Ens, A z <-> B z.
 
 (* set to class *)
@@ -56,113 +65,192 @@ Proof.
 intro x.
 unshelve eapply Build_class.
 + intro y. exact (IN y x).
-+ intros a b aeqb. split.
-  - apply IN_sound_left. exact aeqb.
-  - apply IN_sound_left. apply EQ_sym. exact aeqb.
++ intros a b aeqb.
+  apply sousym.
+  intros a0 b0 H H0.
+  eapply IN_sound_left. exact H. exact H0. exact aeqb.
+  (*- apply IN_sound_left. apply EQ_sym. exact aeqb.*)
 Defined.
 
 Coercion stoc : Ens >-> class.
 
 Definition axExtC (x y:Ens) : EQ x y <-> EQC x y
- :=(axExt x y).
-
-Module ClassicalEns.
-Import Classical_Prop.
-Import Classical_Pred_Type.
-(*
-Definition ce :  False.
-remember (classic False).
-clear Heqo.
-destruct o.
-pose (Q:=classic False).
-destruct Q.
-Theorem or_elim (A B C:Prop): (A->C) ->(B->C)->((A\/B)->C).
-intros.
-destruct H1.
-or
-*)
-
-(*N z x*)
-Check Comp Omega.
-Print Comp.
-(*
-Definition Comp : Ens -> (Ens -> Prop) -> Ens.
-simple induction 1; intros A f fr P.
-apply (sup (sig A (fun x => P (f x)))).
-simple induction 1; intros x p; exact (f x).
-Defined.
-*)
-(* Тут должен быть пример функции, дающей разные значения на
-   на двух неравных, экстенсионально равных множествах.
-   Определим два типа с нулём элементов.
-*)
-
-Inductive VI : bool -> Set :=
-| c1 : VI true
-| c2 : VI false
-.
-
-Theorem theyneq : VI true <> VI false.
-intros H.
-pose (x1:=c1 : VI true).
-pose (x2:=c2 : VI false).
-replace (VI false) with (VI true) in x2.
-destruct x1.
-
-inversion x1.
-change V
-change 
-auto.
-
-Inductive Va:Set :=.
-Inductive Vb:Set :=.
-
-Definition ce : Ens->Prop.
+ := (axExt x y).
 
 (* New comprehension *)
 Definition Compr : Ens -> class -> Ens.
 Proof.
-simple induction 1. intros A f fr P.
-apply (sup (sig A (fun x => P (f x)))).
-simple induction 1; intros x p; exact (f x).
+intros e c.
+exact (Comp e c).
 Defined.
 
-Definition nComp_sound_left x y C (H:EQ x y)
+(*Definition nComp_sound_left x y C (H:EQ x y)
 : EQ (Compr x C) (Compr y C).
 Proof.
 apply axExtC.
 intro z. split.
 + intro a. simpl in * |- *.
   (*unfold Compr in * |- *. *)
- auto with zfc.
+ auto with zfc.*)
 
 
 
 (* Traditional Product *)
 
-(* We will not use these definitions.
- Soundness is not proved. They may require classical logic.
-*)
-Definition OrdPair (x y:Ens) := Paire (Sing x) (Paire x y).
+(* They may require classical logic. *)
+(* Kuratowski construction *)
+Definition OrdPair (x y : Ens) := Paire (Sing x) (Paire x y).
 
-Definition Product1 (X Y:class) (z:Ens) : Prop
-:= exists (x y:Ens), (EQ z (OrdPair x y)) /\ X x /\ Y y.
+Theorem OrdPair_sound_left (x1 x2 y : Ens) (H : EQ x1 x2)
+ : EQ (OrdPair x1 y) (OrdPair x2 y).
+Proof.
+unfold OrdPair.
+apply EQ_tran with (E2:=Paire (Sing x1) (Paire x2 y)).
++ eapply Paire_sound_right.
+  eapply Paire_sound_left.
+  assumption.
++ eapply Paire_sound_left.
+  eapply Sing_sound.
+  assumption.
+Defined.
 
-Definition Product0 (x y:Ens) :=
+Theorem OrdPair_sound_right (x y1 y2 : Ens) (H : EQ y1 y2)
+ : EQ (OrdPair x y1) (OrdPair x y2).
+Proof.
+unfold OrdPair.
+eapply Paire_sound_right.
+eapply Paire_sound_right.
+assumption.
+Defined.
+
+(* will not use this *)
+Definition cProduct_ord (X Y : class) : class.
+Proof.
+unshelve eapply Build_class.
+intro z.
+exact (exists (x y:Ens), (EQ z (OrdPair x y)) /\ X x /\ Y y).
+apply sousym.
+intros a b aeqb e.
+destruct e as [x [y [aeq [xx yy]]]].
+exists x, y.
+repeat split.
+{ apply EQ_tran with (E2:=a).
+  apply EQ_sym. exact aeqb.
+  exact aeq. }
+exact xx.
+exact yy.
+Defined.
+
+
+(* will not use this *)
+Definition eProduct_ord (x y:Ens) :=
 Comp
  (Power (Power (Union (OrdPair x y))))
- (Product1 x y)
+ (cProduct_ord x y)
 .
 
 (* Which set (Prod X Y) belong to? It doesn't matter 
 because it's already proven that (Prod X Y) is a set. *)
 
-Definition Prod1 (X Y : class) (z:Ens) : Prop
-:= exists (x y:Ens), (EQ z (Couple x y)) /\ X x /\ Y y.
+Definition cProd (X Y : class) : class.
+Proof.
+unshelve eapply Build_class.
+intro z.
+exact (exists (x y:Ens), (EQ z (Couple x y)) /\ X x /\ Y y).
+apply sousym.
+intros a b aeqb e.
+destruct e as [x [y [aeq [xx yy]]]].
+exists x, y.
+repeat split.
+{ apply EQ_tran with (E2:=a).
+  apply EQ_sym. exact aeqb.
+  exact aeq. }
+exact xx.
+exact yy.
+Defined.
 
-Theorem Prod1_sound (x y:Ens) : Prod (fun z=> )
+(* Class of all sets *)
+Definition cV : class.
+Proof.
+unshelve eapply Build_class.
++ intro z. exact True.
++ apply sousym. intros a b H1 H2. exact H2.
+Defined.
+
+(* Empty class *)
+Definition cE : class.
+Proof.
+unshelve eapply Build_class.
++ intro z. exact False.
++ apply sousym. intros a b H1 H2. exact H2.
+Defined.
+
+(*_________________________________*)
+
+(* (n+1)th power of A *)
+Fixpoint cP1Pow (A:class) (n:nat) :=
+match n with
+ | O => A
+ | S x => cProd (cP1Pow A x) A 
+end.
+
+(* Relations *)
+
+Definition cDom (R:class) : class.
+Proof.
+unshelve eapply Build_class.
+intro u.
+exact (exists v, R (Couple u v)).
+apply sousym.
+intros a b aeqb H.
+destruct H as [x w].
+exists x.
+rewrite (sound R).
+exact w.
+apply Couple_sound_left.
+auto with zfc. (*apply EQ_sym; exact aeqb.*)
+Defined.
+
+(* "is a set" predicate on classes *)
+Definition ias (s: class) : Prop.
+Proof.
+exact (exists (x:Ens), forall w, s w <-> IN w x).
+Defined.
+
+(* "is a set" is a sound property on classes. *)
+Definition ias_sound (A B: class)
+(w:EQC A B) (H:ias A): ias B.
+Proof.
+unfold ias in * |- *.
+destruct H as [x eqv].
+exists x.
+intro z.
+unfold EQC in w.
+rewrite <- w.
+apply eqv.
+Defined. 
+(* Proof. firstorder. (* Show Proof. *) . Defined. *)
+
+Definition cprty_sound (cprty:class->Prop) (A B: class)
+(w:EQC A B) (H:cprty A): cprty B.
+Proof. unfold EQC in w. firstorder. Abort.
+
+(* ToDo: Find unsound class property. *)
+Definition cprty_unsound : exists (cprty : class->Prop) 
+(A B : class) (w : EQC A B) (HA : cprty A) (HB : cprty B), False.
+Proof. Abort.
+
+
+
+(* 
+Def.: Couple (E E' : Ens) := Paire (Sing E) (Paire Vide (Sing E')).
+*)
+
+(* Functions *)
 
 
 
 
-Section 
+
+
+
