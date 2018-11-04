@@ -374,15 +374,15 @@ apply axExt; intro z; split; intro v2.
   pose (u:=IN_Sing b).
       apply IN_sound_right with (1:=FF) in u.
       destruct (Vide_est_vide _ u) as [].
-+ apply IN_P_Comp.
++ apply IN_Sing_EQ in v2.
+  apply IN_P_Comp.
   { intros w1 w2 qw1 ew1w2.
     rewrite (sound Q1). exact qw1. apply EQ_sym; assumption. }
-  apply IN_Sing_EQ in v2.
   apply IN_sound_left with (E:=Sing a).
   auto with zfc.
   unfold Couple. auto with zfc.
-  simpl (prty Q1). cbv beta. exists (a).
-  apply IN_Sing_EQ; assumption.
+  simpl (prty Q1). cbv beta. exists a.
+  assumption.
 Defined.
 
 Theorem sing2union W M : EQ W (Sing M) -> EQ (Union W) M.
@@ -409,18 +409,42 @@ intros a b aeqb [x h].
 exists x.
 apply EQ_tran with (E2:=a); auto with zfc.
 Defined.
+(*Definition Snd0 (p:Ens) := Union (Union (Comp p Q2)).*)
 
-Definition Snd0 (p:Ens) := Union (Union (Comp p Q2)).
 Definition Snd (p:Ens) := Union (Union (Comp p Q2)).
 
-Theorem Snd_eq  a b : EQ (Snd (Couple a b)) b.
+Lemma pairneqsin X Y (H: EQ (Paire Vide (Sing X)) (Sing Y) ): False.
 Proof.
-unfold Fst.
-apply axExt; intro z; split; intro y.
-+ apply Union_IN in y as [w1 [w2 w3]].
-  apply Union_IN in w2 as [v1 [v2 v3]].
-  (* to be continued *)
-Abort.
+apply EQ_sym in H.
+apply SingEqPair in H as [H1 H2].
+apply EQ_sym in H2.
+pose (g := EQ_tran _ _ _ H2 H1).
+apply not_EQ_Sing_Vide in g as [].
+Defined.
+
+Theorem Snd_eq_lem1  a b : 
+ EQ (Comp (Couple a b) Q2) (Sing (Paire Vide (Sing b))).
+Proof.
+apply axExt; intro z; split; intro v2.
++ apply Comp_elim in v2 as [u1 u2].
+  apply Paire_IN in u1 as [H1|H2].
+  destruct u2 as [t1 t2].
+  apply EQ_sym in t2.
+  pose (FF:=EQ_tran _ _ _ t2 H1).
+  apply pairneqsin in FF as [].
+  apply EQ_sym in H2.
+  apply IN_sound_left with (1:=H2).
+  apply IN_Sing.
++ apply IN_Sing_EQ in v2.
+  apply IN_P_Comp.
+  { intros w1 w2 qw1 ew1w2.
+    rewrite (sound Q2). exact qw1. apply EQ_sym; assumption. }
+  apply IN_sound_left with (E:=(Paire Vide (Sing b))).
+  auto with zfc.
+  unfold Couple. auto with zfc.
+  simpl (prty Q1). cbv beta. exists b.
+  assumption.
+Defined.
 
 (* I am adapting Jech's definitions to Couple of the library.*)
 Theorem  domias (R:class) (w : ias R) : (ias (cDom R)).
