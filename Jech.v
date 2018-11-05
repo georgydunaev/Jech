@@ -215,77 +215,16 @@ split.
   apply EQ_sym.
   apply (EQ_tran d a b X1 U2).
 Defined.
+(*Import Classical_Prop Classical_Pred_Type.*)
 
-Section OBSOLETE.
-Import Classical_Prop Classical_Pred_Type.
-Theorem OrdPair_inj_left :
- forall a b c d : Ens, EQ (OrdPair a b) (OrdPair c d)->(EQ a c/\EQ b d).
-Proof.
-unfold OrdPair in |- *.
-intros.
-  assert (e2 : EQ (Paire (Sing a) (Paire a a)) 
-                  (Sing  (Sing a)) ).
-   repeat apply Paire_sound_right. apply EQ_refl.
-destruct (classic (EQ a b)).
-+ assert (e1 : EQ (Paire (Sing a) (Paire a b)) 
-                  (Paire (Sing a) (Paire a a))).
-   repeat apply Paire_sound_right. apply EQ_sym; assumption.
-
-  assert (e3 := EQ_tran _ _ _ e1 e2).
-  assert (e4 := EQ_tran _ _ _ (EQ_sym _ _ e3 ) H).
-(*assert (j: EQ (Sing (Sing a)) (Paire (Sing c) (Paire c d))).
-apply Paire_sound.*)
-  apply SingEqPair in e4 as [H1 H2].
-  (*apply SingEqPair in H1 as [Ha1 Ha2].*)
-  apply SingEqPair in H2 as [P1 P2].
-  split. assumption. apply EQ_tran with (E2:=a). apply EQ_sym, H0.
-  apply P2.
-+ assert (e1: IN (Paire c d) (Paire (Sing c) (Paire c d))).
-   auto with zfc.
-  apply IN_sound_right with (1:=EQ_sym _ _ H) in e1.
-  apply Paire_IN in e1 as [A1|A2].
-  - apply EQ_sym , SingEqPair in A1 as [B1 B2].
-  split. exact B1.
-  assert (e23:EQ (Paire (Sing c) (Paire c d)) (Paire (Sing a) (Paire a a))).
-   apply Paire_sound.
-   apply Sing_sound, EQ_sym, B1.
-   apply Paire_sound; apply EQ_sym; assumption.
-  assert(K:=EQ_tran _ _ _ e23 e2).
-  assert(R:=EQ_tran _ _ _ H K). apply EQ_sym in R.
-  apply SingEqPair in R as [R1 R2].
-  apply SingEqPair in R2 as [R2 R3].
-  destruct (H0 R3).
- - apply Paire_EQ_cases in A2 as [[q1|q2] [q3|q4]].
-(* [v1 v2].
-   destruct (classic (EQ a c)).
-   split. assumption.
-   destruct (classic (EQ b d)).
-   
-  - 
-apply Paire_IN in A2 as [B1|B2].
-(*  assert (e2: EQ (Paire (Sing c) (Paire c d)) (Paire (Sing a) (Paire c d))).
-  apply Paire_sound_left.
-  apply Sing_sound, EQ_sym, B1.
-  assert (e3: EQ (Paire (Sing a) (Paire c d)) (Paire (Sing a) (Paire a a))).
-*)
-
-  apply Sing_sound. EQ_sym, B1.
-unshelve eapply EQ_tran (E2:=) in H.
-!!!
-apply EQ_tran
-apply axExt; intro z; split; intro q.
- simpl in |- *. *)
- Abort.
-End OBSOLETE.
-
-Theorem Couple_inj_right :
+Theorem OrdPair_inj_right :
  forall A A' B B' : Ens, EQ (OrdPair A A') (OrdPair B B') -> EQ A' B'.
 Proof.
-Abort.
+intros. apply OrdPair_inj in H as [a b]. exact b.
+Defined.
 
-
-(* will not use this *)
-Definition cProduct_ord (X Y : class) : class.
+(* Product of classes *)
+Definition cProduct (X Y : class) : class.
 Proof.
 unshelve eapply Build_class.
 intro z.
@@ -302,32 +241,67 @@ exact xx.
 exact yy.
 Defined.
 
-
-(* will not use this *)
-Definition eProduct_ord (x y:Ens) :=
+(* Product of sets *)
+Definition eProduct (x y:Ens) :=
 Comp
  (Power (Power (Union (OrdPair x y))))
- (cProduct_ord x y)
+ (cProduct x y)
 .
 
-(* Which set (Prod X Y) belong to? It doesn't matter 
-because it's already proven that (Prod X Y) is a set. *)
+Definition issubclass (a b:class):Prop := forall z, a z -> b z.
 
-Definition cProd (X Y : class) : class.
+Theorem pairisamemofpow (r1 r2 R:Ens) (H1 : IN r1 R) (H2 : IN r2 R)
+ : IN (Paire r1 r2) (Power R).
 Proof.
-unshelve eapply Build_class.
-intro z.
-exact (exists (x y:Ens), (EQ z (Couple x y)) /\ X x /\ Y y).
-apply sousym.
-intros a b aeqb e.
-destruct e as [x [y [aeq [xx yy]]]].
-exists x, y.
-repeat split.
-{ apply EQ_tran with (E2:=a).
-  apply EQ_sym. exact aeqb.
-  exact aeq. }
-exact xx.
-exact yy.
+apply INC_IN_Power.
+intros z H.
+apply Paire_IN in H as [H|H];
+ apply EQ_sym in H;
+ apply IN_sound_left with (1:=H);
+ assumption.
+Defined.
+
+(* Theorem thm (x a:Ens) : (prty (stoc x) a) = IN a x.
+Proof. firstorder. Defined. *)
+
+(* Product of sets as classes is a subclass of set. *)
+Theorem prodissc: forall (X1 X2:Ens),
+ issubclass
+ (cProduct X1 X2)
+ (Power (Power (Union (Paire X1 X2))))
+.
+Proof.
+intros X1 X2 a H.
+pose (H1 := H).
+destruct H1 as [x1 [x2 [A [B1 B2]]]].
+simpl in B1, B2.
+
+pose (Q:=Power (Power (Union (Paire X1 X2)))).
+fold Q.
+change _ with (IN a Q).
+apply INC_IN_Power.
+intros s1 U1.
+apply INC_IN_Power.
+intros s2 U2.
+apply IN_sound_right with (1:=A) in U1.
+apply Paire_IN in U1 as [V1|V2].
++ apply IN_Union with (E':=X1).
+  apply IN_Paire_left.
+  apply IN_sound_right with (1:=V1) in U2.
+  apply IN_Sing_EQ, EQ_sym in U2.
+  apply IN_sound_left with (1:=U2), B1.
++ apply IN_sound_right with (1:=V2) in U2.
+  apply Paire_IN in U2 as [c1|c2].
+  - apply IN_Union with (E':=X1).
+    apply IN_Paire_left.
+    apply EQ_sym in c1.
+    eapply IN_sound_left with (1:=c1).
+    exact B1.
+  - apply IN_Union with (E':=X2).
+    apply IN_Paire_right.
+    apply EQ_sym in c2.
+    eapply IN_sound_left with (1:=c2).
+    exact B2.
 Defined.
 
 (* Class of all sets *)
@@ -349,10 +323,10 @@ Defined.
 (*_________________________________*)
 
 (* (n+1)th power of A *)
-Fixpoint cP1Pow (A:class) (n:nat) :=
+Fixpoint cp1Pow (A:class) (n:nat) : class :=
 match n with
  | O => A
- | S x => cProd (cP1Pow A x) A 
+ | S x => cProduct (cp1Pow A x) A 
 end.
 
 (* Relations *)
@@ -389,7 +363,7 @@ intro z.
 unfold EQC in w.
 rewrite <- w.
 apply eqv.
-Defined. 
+Defined.
 (* Proof. firstorder. (* Show Proof. *) . Defined. *)
 
 Definition cprty_sound (cprty:class->Prop) (A B: class)
@@ -401,6 +375,51 @@ Definition cprty_unsound : exists (cprty : class->Prop)
 (A B : class) (w : EQC A B) (HA : cprty A) (HB : cprty B), False.
 Proof. Abort.
 
+Lemma sound2rewr (s:class) : forall w1 w2 : Ens, s w1 -> EQ w1 w2 -> s w2.
+Proof.
+intros w1 w2 H1 H2. rewrite <- (sound s). exact H1. exact H2.
+Defined.
+
+(* subclass of a set is a set *)
+Theorem scosias (s:class) (m:Ens) 
+(sc : forall x, s x -> (stoc m) x) 
+: ias s.
+Proof.
+unfold ias.
+(*unfold  stoc in * |- *. esiacf*)
+(* { x e. m | s x }*)
+exists (Comp m s).
+intro w.
+split.
++ intro u.
+  pose(y:=sc w u).
+  (*unfold esiacf in * |- *.*)
+  apply IN_P_Comp.
+  * intros w1 w2 K H.
+    rewrite <- (sound s). exact K. exact H. (*apply (rewr _ _  K H).*)
+  * exact y.
+  * exact u.
++ intro u.
+  apply (IN_Comp_P m).
+  apply sound2rewr.
+  exact u.
+Defined.
+
+(* Cartesian product of sets is a set. *)
+Theorem cpss (x y : Ens) : ias (cProduct x y).
+Proof.
+eapply scosias.
+intros z H.
+apply prodissc.
+exact H.
+Defined.
+
+(* Cartesian product as an operation on sets *)
+Definition Product (x y:Ens): Ens.
+Proof.
+pose (w:=(cpss x y)). unfold ias in w.
+(* fail destruct w. *)
+Abort.
 
 (* 
 Def.: Couple (E E' : Ens) := Paire (Sing E) (Paire Vide (Sing E')).
@@ -592,6 +611,25 @@ apply axExt; intro z; split; intro v2.
   unfold Couple. auto with zfc.
   simpl (prty Q1). cbv beta. exists b.
   assumption.
+Defined.
+(* Which set (Prod X Y) belong to? It doesn't matter 
+because it's already proven that (Prod X Y) is a set. *)
+
+Definition cProd (X Y : class) : class.
+Proof.
+unshelve eapply Build_class.
+intro z.
+exact (exists (x y:Ens), (EQ z (Couple x y)) /\ X x /\ Y y).
+apply sousym.
+intros a b aeqb e.
+destruct e as [x [y [aeq [xx yy]]]].
+exists x, y.
+repeat split.
+{ apply EQ_tran with (E2:=a).
+  apply EQ_sym. exact aeqb.
+  exact aeq. }
+exact xx.
+exact yy.
 Defined.
 
 (* I am adapting Jech's definitions to Couple of the library.*)
