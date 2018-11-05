@@ -123,6 +123,167 @@ eapply Paire_sound_right.
 assumption.
 Defined.
 
+Lemma SingEqPair x y1 y2 (J: EQ (Sing x) (Paire y1 y2)) :
+EQ x y1 /\ EQ x y2.
+Proof.
+apply EQ_sym in J.
+pose (i1:=IN_Paire_left y1 y2).
+apply IN_sound_right with (1:=J) in i1.
+apply IN_Sing_EQ, EQ_sym in i1.
+pose (i2:=IN_Paire_right y1 y2).
+apply IN_sound_right with (1:=J) in i2.
+apply IN_Sing_EQ, EQ_sym in i2.
+split; assumption.
+Defined.
+
+Lemma Paire_sound (a b c d:Ens) (L:EQ a c) (R:EQ b d) 
+ : EQ (Paire a b) (Paire c d).
+Proof.
+  apply EQ_tran with (E2:= Paire a d).
+  apply Paire_sound_right, R.
+  apply Paire_sound_left, L.
+Defined.
+
+Lemma Paire_EQ_cases a b c d (H:EQ (Paire a b) (Paire c d)) : 
+(EQ a c \/ EQ a d)/\(EQ b c \/ EQ b d).
+Proof.
+rewrite axExt in H.
+split.
++ destruct (H a) as [W1 _].
+  assert (E := W1 (IN_Paire_left a b)).
+  apply Paire_IN. assumption.
++ destruct (H b) as [W1 _].
+  assert (E := W1 (IN_Paire_right a b)).
+  apply Paire_IN. assumption.
+Defined.
+
+Theorem OrdPair_inj : forall a b c d : Ens, 
+  EQ (OrdPair a b) (OrdPair c d)->(EQ a c/\EQ b d).
+Proof. 
+unfold OrdPair in |- *. intros.
+pose (H1:=H).
+apply Paire_EQ_cases in H1 as [K1 K2].
+split.
+ destruct K1 as [A|B].
+  apply EQ_Sing_EQ. assumption.
+  apply SingEqPair in B as [n1 n2]. assumption.
+
+ destruct K1 as [A|B], K2 as [C|D].
+ (*as [[A|B] [C|D]].*)
++ (*split. apply EQ_Sing_EQ. assumption.*)
+  apply EQ_sym in C.
+  apply SingEqPair in C as [J1 J2].
+  assert(i: EQ (Paire (Sing a) (Paire a b))
+                (Sing (Sing a) )).
+   apply Paire_sound_right.
+   apply Paire_sound_right.
+   apply EQ_sym in J2.
+   eapply EQ_tran with (E2:=c); assumption.
+  apply EQ_sym, EQ_tran with (2:=H) in i.
+  apply SingEqPair in i as [F1 F2].
+  apply SingEqPair in F2 as [U1 U2].
+  eapply EQ_tran. apply EQ_sym. exact J2.
+  eapply EQ_tran. apply EQ_sym. exact U1.
+  exact U2.
++ pose (i:=IN_Paire_right c d).
+  eapply IN_sound_right in i.
+  2 : { apply EQ_sym, D. }
+  apply Paire_IN in i as [X1|X2].
+  2 : { apply EQ_sym, X2. }
+  pose (y:=IN_Paire_right a b).
+  eapply IN_sound_right in y.
+  2 : { apply D. }
+  apply Paire_IN in y as [Y1|Y2].
+   apply EQ_Sing_EQ in A.
+   apply EQ_tran with (E2:=c). assumption.
+   apply EQ_sym, EQ_tran with (E2:=a); assumption.
+  assumption.
++ apply EQ_sym, SingEqPair in C as [F1 F2].
+  apply SingEqPair in B as [P1 P2].
+  apply EQ_tran with (E2:=c). apply EQ_sym; exact F2.
+  apply EQ_tran with (E2:=a). apply EQ_sym; exact P1.
+  exact P2.
++ pose (i:=IN_Paire_right c d).
+  eapply IN_sound_right in i.
+  2 : { apply EQ_sym, D. }
+  apply Paire_IN in i as [X1|X2].
+  2 : { apply EQ_sym, X2. }
+  assert (v:EQ (Sing a) (Paire a b)).
+   apply EQ_sym in D.
+   apply EQ_tran with (1:=B). assumption.
+  apply SingEqPair in v as [U1 U2].
+  apply EQ_sym.
+  apply (EQ_tran d a b X1 U2).
+Defined.
+
+Section OBSOLETE.
+Import Classical_Prop Classical_Pred_Type.
+Theorem OrdPair_inj_left :
+ forall a b c d : Ens, EQ (OrdPair a b) (OrdPair c d)->(EQ a c/\EQ b d).
+Proof.
+unfold OrdPair in |- *.
+intros.
+  assert (e2 : EQ (Paire (Sing a) (Paire a a)) 
+                  (Sing  (Sing a)) ).
+   repeat apply Paire_sound_right. apply EQ_refl.
+destruct (classic (EQ a b)).
++ assert (e1 : EQ (Paire (Sing a) (Paire a b)) 
+                  (Paire (Sing a) (Paire a a))).
+   repeat apply Paire_sound_right. apply EQ_sym; assumption.
+
+  assert (e3 := EQ_tran _ _ _ e1 e2).
+  assert (e4 := EQ_tran _ _ _ (EQ_sym _ _ e3 ) H).
+(*assert (j: EQ (Sing (Sing a)) (Paire (Sing c) (Paire c d))).
+apply Paire_sound.*)
+  apply SingEqPair in e4 as [H1 H2].
+  (*apply SingEqPair in H1 as [Ha1 Ha2].*)
+  apply SingEqPair in H2 as [P1 P2].
+  split. assumption. apply EQ_tran with (E2:=a). apply EQ_sym, H0.
+  apply P2.
++ assert (e1: IN (Paire c d) (Paire (Sing c) (Paire c d))).
+   auto with zfc.
+  apply IN_sound_right with (1:=EQ_sym _ _ H) in e1.
+  apply Paire_IN in e1 as [A1|A2].
+  - apply EQ_sym , SingEqPair in A1 as [B1 B2].
+  split. exact B1.
+  assert (e23:EQ (Paire (Sing c) (Paire c d)) (Paire (Sing a) (Paire a a))).
+   apply Paire_sound.
+   apply Sing_sound, EQ_sym, B1.
+   apply Paire_sound; apply EQ_sym; assumption.
+  assert(K:=EQ_tran _ _ _ e23 e2).
+  assert(R:=EQ_tran _ _ _ H K). apply EQ_sym in R.
+  apply SingEqPair in R as [R1 R2].
+  apply SingEqPair in R2 as [R2 R3].
+  destruct (H0 R3).
+ - apply Paire_EQ_cases in A2 as [[q1|q2] [q3|q4]].
+(* [v1 v2].
+   destruct (classic (EQ a c)).
+   split. assumption.
+   destruct (classic (EQ b d)).
+   
+  - 
+apply Paire_IN in A2 as [B1|B2].
+(*  assert (e2: EQ (Paire (Sing c) (Paire c d)) (Paire (Sing a) (Paire c d))).
+  apply Paire_sound_left.
+  apply Sing_sound, EQ_sym, B1.
+  assert (e3: EQ (Paire (Sing a) (Paire c d)) (Paire (Sing a) (Paire a a))).
+*)
+
+  apply Sing_sound. EQ_sym, B1.
+unshelve eapply EQ_tran (E2:=) in H.
+!!!
+apply EQ_tran
+apply axExt; intro z; split; intro q.
+ simpl in |- *. *)
+ Abort.
+End OBSOLETE.
+
+Theorem Couple_inj_right :
+ forall A A' B B' : Ens, EQ (OrdPair A A') (OrdPair B B') -> EQ A' B'.
+Proof.
+Abort.
+
+
 (* will not use this *)
 Definition cProduct_ord (X Y : class) : class.
 Proof.
@@ -307,19 +468,6 @@ split.
   rewrite <- (sound K).
   exact H.
   exact H0.
-Defined.
-
-Lemma SingEqPair x y1 y2 (J: EQ (Sing x) (Paire y1 y2)) :
-EQ x y1 /\ EQ x y2.
-Proof.
-apply EQ_sym in J.
-pose (i1:=IN_Paire_left y1 y2).
-apply IN_sound_right with (1:=J) in i1.
-apply IN_Sing_EQ, EQ_sym in i1.
-pose (i2:=IN_Paire_right y1 y2).
-apply IN_sound_right with (1:=J) in i2.
-apply IN_Sing_EQ, EQ_sym in i2.
-split; assumption.
 Defined.
 
 Theorem Fst_eq_OLD  a b : EQ (Fst (Couple a b)) a.
