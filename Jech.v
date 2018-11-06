@@ -368,7 +368,7 @@ Defined.
 
 Definition cprty_sound (cprty:class->Prop) (A B: class)
 (w:EQC A B) (H:cprty A): cprty B.
-Proof. unfold EQC in w. firstorder. Abort.
+Proof. unfold EQC in w. firstorder. (*impossible*) Abort.
 
 (* ToDo: Find unsound class property. *)
 Definition cprty_unsound : exists (cprty : class->Prop) 
@@ -404,6 +404,7 @@ split.
   apply sound2rewr.
   exact u.
 Defined.
+(* try the same proof through the powerset *)
 
 (* Cartesian product of sets is a set. *)
 Theorem cpss (x y : Ens) : ias (cProduct x y).
@@ -417,9 +418,10 @@ Defined.
 (* Cartesian product as an operation on sets *)
 Definition Product (x y:Ens): Ens.
 Proof.
-pose (w:=(cpss x y)). unfold ias in w.
-(* fail destruct w. *)
-Abort.
+exact (Compr (Power (Power (Union (Paire x y)))) (cProduct x y)).
+(* pose (w:=(cpss x y)). unfold ias in w.
+   fails when destruct w. *)
+Defined.
 
 (* Now I will define extraction of the first and the 
 second element of a couple. *)
@@ -457,9 +459,63 @@ split.
   exact H0.
 Defined.
 
-Theorem  domias (R:class) (w : ias R) : (ias (cDom R)).
+(* definitions for classes *)
+Definition cPair (A B:class) : class.
+Proof.
+unshelve eapply Build_class.
++ intro x. exact (EQC x A \/ EQC x B).
++ apply sousym.
+  intros a b aeqb H.
+  destruct H as [H1|H2].
+  * left.
+    unfold EQC in *|-*.
+    rewrite axExt in aeqb.
+    intro z.
+    symmetry.
+    rewrite <- H1.
+    exact (aeqb z).
+  * right.
+    unfold EQC in *|-*.
+    rewrite axExt in aeqb.
+    intro z.
+    symmetry.
+    rewrite <- H2.
+    exact (aeqb z).
+Defined.
+
+Definition cPow (A:class) : class.
+Proof.
+unshelve eapply Build_class.
++ intro x. exact (issubclass x A).
++ apply sousym. intros a b aeqb H.
+  unfold issubclass in * |- *.
+  intros x bx.
+  apply axExtC in aeqb.
+  unfold EQC in aeqb.
+  rewrite <- (aeqb x) in bx.
+  apply (H x bx).
+Defined.
+
+(* (A:Ens->Prop) is also fine. *)
+Definition cUnion (A:class) : class.
+Proof.
+unshelve eapply Build_class.
++ intro x. exact (exists z : Ens, A z /\ IN x z).
++ apply sousym. intros a b aeqb H.
+  destruct H as [z [K1 K2]].
+  exists z. split. exact K1.
+  apply IN_sound_left with (E:=a); assumption.
+Defined.
+
+(*forall z : Ens, a z -> b z
+exact (issubclass x A).
+exact (EQC x A \/ EQC x B).
+    unfold stro*)
+
+Theorem  domias (R:Ens) : (ias (cDom R)).
 Proof.
 unfold ias in *|-*.
+exists (Power (Union (Union R))).
 Abort.
 
 (* Functions *)
