@@ -1,6 +1,10 @@
+(*
+'isas' is a constructive version of 'ias'.
+*)
+
 From ZFC Require Import Sets Axioms Cartesian Omega.
 Require Classical_Prop Classical_Pred_Type.
-
+(* page 3 *)
 Theorem axExt : forall x y : Ens,
    EQ x y <-> forall z, (IN z x <-> IN z y).
 Proof.
@@ -36,17 +40,16 @@ Defined.
  (n+1)-класс - это некоторое свойство n-классов.
 *)
 
-Fixpoint nclass (n:nat) := 
-match n with
-| 0 => Ens
-| S b => (nclass b)->Prop
-end.
-
 (* 'class' is the type of well-defined classes. *)
 Record class := {
  prty :> Ens->Prop;
  sound : forall (a b : Ens), EQ a b -> (prty a <-> prty b);
 }.
+
+(*
+Definition EQC (A B:class) := forall z:Ens, (prty A) z <-> (prty B) z.
+*)
+Definition EQC (A B: Ens->Prop) := forall z:Ens, A z <-> B z.
 
 Lemma sousym (K:Ens->Prop)
 (H:forall (a b : Ens), EQ a b -> (K a -> K b))
@@ -57,7 +60,7 @@ apply (H a b aeqb).
 apply H. apply EQ_sym. exact aeqb.
 Defined.
 
-Definition EQC (A B:class) := forall z:Ens, A z <-> B z.
+
 
 (* set to class *)
 Definition stoc : Ens -> class.
@@ -364,6 +367,12 @@ unfold EQC in w.
 rewrite <- w.
 apply eqv.
 Defined.
+
+Definition exampleproperclass : class.
+Proof.
+Abort.
+
+(*Definition ias (s: class) : Prop.*)
 (* Proof. firstorder. (* Show Proof. *) . Defined. *)
 
 Definition cprty_sound (cprty:class->Prop) (A B: class)
@@ -512,13 +521,239 @@ exact (issubclass x A).
 exact (EQC x A \/ EQC x B).
     unfold stro*)
 
+Record isas (C : class) := {
+ dmn : Ens;
+ eqvias: EQC C dmn; (*forall w : Ens, c w <-> IN w dmn;*)
+}.
+
+Definition decid (A:Type) := sum A (A->False).
+
+Record xclass := {
+ clprj :> class;
+ ciset :  decid (isas clprj);
+}.
+
+Theorem jhkl (x:Ens) (A:class) (H:EQC A x): isas A.
+Proof.
+unshelve eapply Build_isas.
+exact x. exact H.
+Defined.
+Check scosias.
+
+Theorem scosisas : forall (s : class) (m : Ens),
+       (forall x : Ens, s x -> m x) -> isas s.
+Proof. intros s m sc.
+unshelve eapply Build_isas.
+exact (Comp m s).
+intro w.
+split.
++ intro u.
+  pose(y:=sc w u).
+  (*unfold esiacf in * |- *.*)
+  apply IN_P_Comp.
+  * intros w1 w2 K H.
+    rewrite <- (sound s). exact K. exact H. (*apply (rewr _ _  K H).*)
+  * exact y.
+  * exact u.
++ intro u.
+  apply (IN_Comp_P m).
+  apply sound2rewr.
+  exact u.
+Defined.
+
+Ltac ueapp P := unshelve eapply P.
+
+Lemma EQC_refl (x:class): EQC x x.
+Proof.
+intros m; reflexivity.
+Defined.
+
+Lemma EQC_symm (x y:class): EQC x y -> EQC y x.
+Proof.
+intros H m. symmetry. apply H.
+Defined.
+
+Lemma EQC_tran (x y z:class): EQC x y -> EQC y z -> EQC x z.
+Proof.
+intros H1 H2 m.
+transitivity (y m).
+apply H1. apply H2.
+Defined.
+
+(* strange proofs ... *)
+Lemma cIN_sound_right (A:class) (D k:Ens): A k -> EQC A D -> IN k D.
+Proof.
+intros H K. unfold EQC in K. apply K in H. simpl in H. exact H.
+Defined.
+
+Lemma cIN_sound_iff (A:class) (D k:Ens) (K:EQC A D): A k <-> IN k D.
+Proof.
+split;intros H;
+ (*unfold EQC in K;*) apply K in H; (*simpl in H;*) exact H. (*twice*)
+Defined.
+
+
+(*
+Существуют ли классы такие, что то, что они - множества
+- недоказуемо? Да: определённые как ∅ или V, в зависимости от
+недоказуемого и не опровержимого утверждения.
+Можно ли, тем не менее, доказать, что образовывая синглтон из классов
+я получу множество? Да, классически: элемент либо множество, либо нет.
+Если нет, то получается ∅ .
+xclass должен хранить либо подтверждение, либо опровержение своей
+множественности.
+Цель - получить систему, в которой можно игнорировать 
+*)
+
+Definition xPair (A B:xclass) : xclass.
+Proof.
+ueapp Build_xclass.
+exact (cPair (clprj A) (clprj B)).
+left.
+destruct (ciset A) as [ASE|APC], (ciset B) as [BSE|BPC].
++ unshelve eapply Build_isas.
+  exact (Paire (dmn _ ASE) (dmn _ BSE)).
+  intro z; split; intro x.
+  - simpl in x. destruct x as [HA|HB].
+    * simpl.
+      change _ with (IN z (Paire (dmn A ASE) (dmn B BSE))).
+      exists true; simpl.
+      apply axExtC.
+      intro k; split; intro m.
+  ++ simpl. simpl in m.
+     apply (HA k) in m.
+     eapply (eqvias A ASE ). exact m.
+     (* eapply cIN_sound_right. exact m. 
+     exact (eqvias A ASE).*)
+  ++ simpl. simpl in m.
+     apply (HA k). eapply (eqvias A ASE ) in m. assumption.
+    * simpl.
+      change _ with (IN z (Paire (dmn A ASE) (dmn B BSE))).
+      exists false; simpl.
+      apply axExtC.
+      intro k; split; intro m.
+  ++ simpl. simpl in m.
+     apply (HB k) in m.
+     eapply (eqvias B BSE ). exact m.
+     (* eapply cIN_sound_right. exact m. 
+     exact (eqvias A ASE).*)
+  ++ simpl. simpl in m.
+     apply (HB k). eapply (eqvias B BSE ) in m. assumption.
+  - simpl in * |- *.
+    destruct x as [m J].
+    destruct m; simpl in J.
+    * left. apply axExtC in J.
+(*      eapply EQC_tran.
+      apply J.
+      intros a. split; intro h.
+simpl in h.
+simpl.*)
+Abort.
+
+Theorem UPeI (X:Ens): EQ (Union (Power X)) X.
+Proof.
+apply axExt. intro z. split; intro H.
++ simpl in H. 
+  apply Union_IN in H as [M [K1 K2]].
+  apply IN_Power_INC in K1.
+  apply K1.
+  exact K2.
++ apply IN_Union with (E':=X).
+  - apply INC_IN_Power. intros a K. exact K.
+  - exact H.
+Defined.
+
+Theorem XiPUX (X:Ens): INC X (Power (Union X)).
+Proof.
+intros A H.
+apply INC_IN_Power.
+intros B K.
+apply IN_Union with (E':=A).
+exact H.
+exact K.
+Defined.
+
+Theorem nPUXiX : not (forall (X:Ens),INC (Power (Union X)) X).
+Proof.
+intro H.
+pose (A:=H Vide).
+pose (B:=A Vide).
+assert (C:IN Vide (Power (Union Vide))).
++ apply INC_IN_Power.
+  intros y J.
+  apply Vide_est_vide in J as [].
++ apply B in C.
+  apply Vide_est_vide in C as [].
+Defined.
+
+(*(*Variant isas2 (C : class) : Type :=
+| Build_isas2 : forall (dmn : Ens) (_ : EQC C (stoc dmn)), isas2 C
+| Build_isas3 : forall (dmn : Ens) (_ : EQC C (stoc dmn)), isas2 C. *)
+Check isas2.
+dmn isas
+exact h.
+      apply EQC_symm.
+
+      apply axExtC.
+     rewrite <- (eqvias A ASE) in J.
+isas
+(* apply axExtC in HA. *)
+      apply IN_Paire_left.
+      simpl.
+      
+ueapp scosisas.
+simpl.
+cPair
+ eqn:M.
+(*exact (Paire A B).
+unfold isas.*)*)
+Abort.
+
+Record Category := {
+Ob : class;
+Hom : forall x y:Ens, Ob x -> Ob y -> Ens;
+}.
+
+(* to define *)
+Definition OrdPair_fst : Ens->Ens.
+
+
+Definition eFunc (x y:Ens) : Ens.
+Proof.
+ueapp Comp.
+exact (Prod x y).
+intro f.
+exact ((EQ (dom f) x) /\ True ).
+Defined.
+
+Definition Sets : Category.
+Proof.
+unshelve eapply Build_Category.
+exact cV.
+simpl.
+intros x y _ _.
+exact (eFunc x y).
+Defined.
+
 Theorem  domias (R:Ens) : (ias (cDom R)).
 Proof.
 unfold ias in *|-*.
-exists (Power (Union (Union R))).
+exists (cPow (cUnion (cUnion R))).
+intro w. split.
++ intro g.
+  simpl in g.
+  destruct g as [v wvir].
+Power
 Abort.
 
 (* Functions *)
 
 (*pose (i:=IN_Sing x).
 enough (forall x z, (IN z (Sing x)) <-> (EQ z x)).*)
+
+(* Other *)
+Fixpoint nclass (n:nat) := 
+match n with
+| 0 => Ens
+| S b => (nclass b)->Prop
+end.
