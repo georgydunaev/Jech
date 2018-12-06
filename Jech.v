@@ -1565,14 +1565,37 @@ exact Vprty.
 apply sousym. exact H.
 Defined.
 
+(* Class of all sets *)
+Definition cV : class.
+Proof.
+unshelve eapply Build_class'.
++ intro z. exact True.
++ simpl. intros a b H1 H2. exact H2.
+Defined.
+
+(* Empty class *)
+Definition cE : class.
+Proof.
+unshelve eapply Build_class'.
++ intro z. exact False.
++ simpl. intros a b H1 H2. exact H2.
+Defined.
+
 Definition cInter (c:class) : class.
 Proof.
 unshelve eapply Build_class'.
 { intro e. exact (forall z:Ens, c z -> IN e z). }
-{ simpl. intros.
+{ simpl. intros a b aeqb czainz z cz.
   eapply IN_sound_left.
-  exact H.
-  exact (H0 z H1). }
+  exact aeqb.
+  exact (czainz z cz). }
+Defined.
+
+Theorem InterEmpty : EQC (cInter cE) cV.
+Proof.
+intro z. split; intro w.
++ simpl in * |- *. constructor.
++ simpl in * |- *. intros z0 [].
 Defined.
 
 Definition cInd : class.
@@ -1586,6 +1609,18 @@ unshelve eapply Build_class'.
     apply Q1. eapply IN_sound_right.
     apply EQ_sym. exact aeqb.
     exact H.
+Defined.
+
+Definition cUnion (c:class) : class.
+Proof.
+unshelve eapply Build_class'.
+{ intro e. exact (exists z:Ens, c z /\ IN e z). }
+{ simpl. intros a b aeqb [z [cz ainz]].
+  exists z. split.
+  +  exact cz.
+  +  eapply IN_sound_left.
+     exact aeqb.
+     exact ainz. }
 Defined.
 
 (* set to class *)
@@ -1704,21 +1739,6 @@ apply Paire_IN in U1 as [V1|V2].
     exact B2.
 Defined.
 
-(* Class of all sets *)
-Definition cV : class.
-Proof.
-unshelve eapply Build_class.
-+ intro z. exact True.
-+ apply sousym. intros a b H1 H2. exact H2.
-Defined.
-
-(* Empty class *)
-Definition cE : class.
-Proof.
-unshelve eapply Build_class.
-+ intro z. exact False.
-+ apply sousym. intros a b H1 H2. exact H2.
-Defined.
 
 (*_________________________________*)
 
