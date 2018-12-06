@@ -1557,6 +1557,36 @@ apply (H a b aeqb).
 apply H. apply EQ_sym. exact aeqb.
 Defined.
 
+Definition Build_class' : forall Vprty : Ens -> Prop,
+       (forall a b : Ens, EQ a b -> Vprty a -> Vprty b) -> class.
+Proof. intros.
+unshelve eapply Build_class.
+exact Vprty.
+apply sousym. exact H.
+Defined.
+
+Definition cInter (c:class) : class.
+Proof.
+unshelve eapply Build_class'.
+{ intro e. exact (forall z:Ens, c z -> IN e z). }
+{ simpl. intros.
+  eapply IN_sound_left.
+  exact H.
+  exact (H0 z H1). }
+Defined.
+
+Definition cInd : class.
+Proof.
+unshelve eapply Build_class'.
++ exact Ind.
++ intros a b aeqb [Q0 Q1]. split.
+  * eapply IN_sound_right. exact aeqb. exact Q0.
+  * intros Y H.
+    eapply IN_sound_right. exact aeqb.
+    apply Q1. eapply IN_sound_right.
+    apply EQ_sym. exact aeqb.
+    exact H.
+Defined.
 
 (* set to class *)
 Definition stoc : Ens -> class.
