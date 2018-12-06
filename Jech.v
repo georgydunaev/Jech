@@ -1470,6 +1470,54 @@ constructor. (*split.*)
   - apply H1. assumption.
 Defined.
 
+Lemma lem_ex_1_4 : forall w1 w2 : Ens,
+(forall z : Ens, IN z w1 -> INC z w1) ->
+EQ w1 w2 -> forall z : Ens, IN z w2 -> INC z w2.
+Proof.
+  { intros.
+    eapply INC_sound_right. exact H0.
+    apply H.
+    eapply IN_sound_right. apply EQ_sym. exact H0. exact H1.
+  }
+Defined.
+
+Definition isTrans := (fun x:Ens => forall z, IN z x -> INC z x).
+
+Theorem sutra E (H:isTrans E): isTrans (Class_succ E).
+Proof.
+intros w K.
+apply IN_Class_succ_or in K as [L|R].
++ eapply INC_sound_left.
+  exact L.
+  eapply INC_Class_succ.
++ apply H in R.
+  intros q qinw. 
+  eapply INC_Class_succ.
+  apply R.
+  exact qinw.
+Defined.
+
+Theorem ex_1_4 (X:Ens) (H: Ind X) 
+ : Ind (Comp X isTrans).
+Proof.
+destruct H as [Ha Hb].
+split.
++ apply IN_P_Comp.
+  { exact lem_ex_1_4. }
+  { exact Ha. }
+  { intros x H. destruct (Vide_est_vide _ H). }
++ intros Y H.
+  apply IN_Comp_P in H as H1.
+  2 : exact lem_ex_1_4.
+  apply Comp_INC in H as H0.
+  clear H.
+  apply Hb in H0.
+  apply sutra in H1.
+  apply IN_P_Comp.
+  exact lem_ex_1_4.
+  exact H0. exact H1.
+Defined.
+
 (* DEVELOPMENT IS HERE *)
 
 (*============================================
