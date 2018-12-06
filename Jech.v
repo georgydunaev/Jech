@@ -890,17 +890,19 @@ apply H0.
 exact G.
 Defined.
 
-(* (P x) means "Every set that contains x as an element is regular." *)
-Definition P x := forall u : Ens, (IN x u -> exists y,
+(* (regular_over x) means
+"Every set that contains x as an element is regular." *)
+Definition regular_over x := forall u : Ens, (IN x u -> exists y,
 IN y u /\ forall z, IN z u -> ~ IN z y).
 
 Definition epsmin a b := IN a b /\ forall c, IN c b -> ~ IN c a.
 
-(* Soundness of the definition of P. *)
-Theorem sou_P : forall a b : Ens, EQ a b -> P a <-> P b.
+(* Soundness of the definition of regular_over. *)
+Theorem regular_over_sound : forall a b : Ens, 
+ EQ a b -> regular_over a <-> regular_over b.
 Proof.
 intros.
-unfold P.
+unfold regular_over.
 split; intros.
 + apply IN_sound_left with (E':=a) in H1.
   apply H0. apply H1.
@@ -971,9 +973,9 @@ https://math.stackexchange.com/users/48510/andreas-blass *)
 Module ClassicRegularity.
 (*Import Classical_Prop.
 Import Classical_Pred_Type.*)
-Theorem Blass x : P x.
+Theorem Blass x : regular_over x.
 Proof.
-unfold P.
+unfold regular_over.
 pose (A:=Zuhair_2 x); unfold WF in A.
 intros u xinu.
 (* Series of the equivalent tranformations.*)
@@ -1002,7 +1004,7 @@ Theorem axreg (x:Ens) :
 .
 Proof.
 pose (Q:= Blass).
-unfold P in Q.
+unfold regular_over in Q.
 intro e.
 destruct e as [z zinx].
 pose (f:= Q z x zinx).
