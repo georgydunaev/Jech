@@ -1548,6 +1548,25 @@ Definition EQC (A B:class) := forall z:Ens, (prty A) z <-> (prty B) z.
 *)
 Definition EQC (A B: Ens->Prop) := forall z:Ens, A z <-> B z.
 
+(* "is a set" predicate on classes *)
+Definition ias (s: class) : Prop.
+Proof.
+exact (exists (x:Ens), forall w, s w <-> IN w x).
+Defined.
+
+(* "is a set" is a sound property on classes. *)
+Definition ias_sound (A B: class)
+(w:EQC A B) (H:ias A): ias B.
+Proof.
+unfold ias in * |- *.
+destruct H as [x eqv].
+exists x.
+intro z.
+unfold EQC in w.
+rewrite <- w.
+apply eqv.
+Defined.
+
 Lemma sousym (K:Ens->Prop)
 (H:forall (a b : Ens), EQ a b -> (K a -> K b))
 : forall (a b : Ens), EQ a b -> (K a <-> K b).
@@ -1597,6 +1616,31 @@ intro z. split; intro w.
 + simpl in * |- *. constructor.
 + simpl in * |- *. intros z0 [].
 Defined.
+
+Theorem InterSS (c:class) (x:Ens) (H : c x) :
+ forall g, (cInter c) g -> (IN g x).
+Proof.
+simpl.
+intros g K.
+apply (K x H).
+Defined.
+
+Theorem InterNonEmpty (c:class) (x:Ens) (H : c x) : ias (cInter c).
+Proof.
+unfold ias.
+exists (Comp x c).
+simpl.
+intro w. split; intros.
++ apply IN_P_Comp.
+ admit.
+apply H0, H.
+(*apply InterSS.
+  { }
+class
+Search Comp.
+ apply H0.
+Defined.*)
+Abort.
 
 Definition cInd : class.
 Proof.
@@ -1766,24 +1810,7 @@ apply OrdPair_sound_left.
 auto with zfc. (*apply EQ_sym; exact aeqb.*)
 Defined.
 
-(* "is a set" predicate on classes *)
-Definition ias (s: class) : Prop.
-Proof.
-exact (exists (x:Ens), forall w, s w <-> IN w x).
-Defined.
 
-(* "is a set" is a sound property on classes. *)
-Definition ias_sound (A B: class)
-(w:EQC A B) (H:ias A): ias B.
-Proof.
-unfold ias in * |- *.
-destruct H as [x eqv].
-exists x.
-intro z.
-unfold EQC in w.
-rewrite <- w.
-apply eqv.
-Defined.
 
 Definition exampleproperclass : class.
 Proof.
@@ -1911,9 +1938,9 @@ Defined.
 
 Definition cPow (A:class) : class.
 Proof.
-unshelve eapply Build_class.
+unshelve eapply Build_class'.
 + intro x. exact (issubclass x A).
-+ apply sousym. intros a b aeqb H.
++ simpl. intros a b aeqb H.
   unfold issubclass in * |- *.
   intros x bx.
   apply axExtC in aeqb.
