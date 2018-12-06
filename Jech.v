@@ -193,35 +193,6 @@ elim H1; intros HA HB; elim (HA x); intros.
 exists x0; apply EQ_tran with (e x); auto with zfc.
 Defined.
 
-
-(* page 3 *)
-Theorem axExt : forall x y : Ens,
-   EQ x y <-> forall z, (IN z x <-> IN z y).
-Proof.
-intros.
-split.
-+ intros.
-  split.
-  - apply IN_sound_right. exact H.
-  - apply IN_sound_right. apply EQ_sym. exact H.
-+ induction x as [A f], y as [B g].
-  intro K.
-  simpl in * |- *.
-  split.
-  - intro x.
-    apply K.
-    exists x.
-    apply EQ_refl.
-  - intro y.
-    assert (Q:exists y0 : B, EQ (g y) (g y0)).
-    * exists y.
-      apply EQ_refl.
-    * destruct (proj2 (K (g y)) Q).
-      exists x.
-      apply EQ_sym.
-      exact H0.
-Defined.
-
 (************ Remastered Axioms.v ***************)
 
 (* Definitions of the empty set, pair, union, intersection, comprehension  *)
@@ -692,6 +663,450 @@ simpl in |- *; simple induction 1; intros xx; elim xx; simple induction 1.
 apply IN_sound_right with (Sing E); auto with zfc.
 Defined.
 
+(*=== AXIOMS ===*)
+
+(* page 3 *)
+Theorem axExt : forall x y : Ens,
+   EQ x y <-> forall z, (IN z x <-> IN z y).
+Proof.
+intros.
+split.
++ intros.
+  split.
+  - apply IN_sound_right. exact H.
+  - apply IN_sound_right. apply EQ_sym. exact H.
++ induction x as [A f], y as [B g].
+  intro K.
+  simpl in * |- *.
+  split.
+  - intro x.
+    apply K.
+    exists x.
+    apply EQ_refl.
+  - intro y.
+    assert (Q:exists y0 : B, EQ (g y) (g y0)).
+    * exists y.
+      apply EQ_refl.
+    * destruct (proj2 (K (g y)) Q).
+      exists x.
+      apply EQ_sym.
+      exact H0.
+Defined.
+
+(*=== Omega.v ===*)
+
+Definition Class_succ (E : Ens) := Union (Paire E (Sing E)).
+
+(*
+Inductive Ord : Ens -> Prop :=
+  Oo : (Ord Vide)
+| So : (E:Ens)(Ord E)->(Ord (Class_succ E))
+| Lo : (E:Ens)((e:Ens)(IN e E)->(Ord e))->(Ord (Union E))
+| Eo : (E,E':Ens)(Ord E)->(EQ E E')->(Ord E').
+
+Hints Resolve Oo So Lo : zfc.
+*)
+
+
+Definition Nat : nat -> Ens.
+Proof.
+simple induction 1; intros.
+exact Vide.
+exact (Class_succ X).
+Defined.
+
+(*
+Theorem Nat_Ord : (n:nat)(Ord (Nat n)).
+Induction n; Simpl; Auto with zfc.
+Save.
+*)
+
+Definition Omega : Ens := sup nat Nat.
+
+Theorem IN_Class_succ : forall E : Ens, IN E (Class_succ E).
+Proof.
+intros E; unfold Class_succ in |- *; unfold Sing in |- *;
+ apply IN_Union with (Paire E E); auto with zfc.
+Defined.
+
+
+Theorem INC_Class_succ : forall E : Ens, INC E (Class_succ E).
+Proof.
+unfold INC in |- *; unfold Class_succ in |- *.
+intros.
+apply IN_Union with E; auto with zfc.
+Defined.
+
+Hint Resolve IN_Class_succ INC_Class_succ: zfc.
+
+
+Theorem IN_Class_succ_or :
+ forall E E' : Ens, IN E' (Class_succ E) -> EQ E E' \/ IN E' E.
+Proof.
+intros E E' i.
+unfold Class_succ in i.
+elim (Union_IN (Paire E (Sing E)) E' i).
+intros E1; simple induction 1; intros i1 i2.
+elim (Paire_IN E (Sing E) E1 i1).
+intros; right; apply IN_sound_right with E1; auto with zfc.
+intros; left; cut (IN E' (Sing E)).
+auto with zfc.
+apply IN_sound_right with E1; auto with zfc.
+Defined.
+
+Theorem E_not_IN_E : forall E : Ens, IN E E -> F.
+Proof.
+simple induction E; intros A f r i.
+cut False.
+simple induction 1.
+elim (IN_EXType (sup A f) (sup A f) i); intros a e.
+simpl in a.
+change (EQ (sup A f) (f a)) in e.
+elim (r a).
+apply IN_sound_right with (sup A f); auto with zfc.
+exists a; auto with zfc.
+Defined.
+
+Theorem Nat_IN_Omega : forall n : nat, IN (Nat n) Omega.
+Proof.
+intros; simpl in |- *; exists n; auto with zfc.
+Defined.
+Hint Resolve Nat_IN_Omega: zfc.
+
+Theorem IN_Omega_EXType :
+ forall E : Ens, IN E Omega -> exists n : nat, EQ (Nat n) E.
+Proof.
+simpl in |- *; simple induction 1.
+intros n e.
+exists n; auto with zfc.
+Defined.
+
+Theorem IN_Nat_EXType :
+ forall (n : nat) (E : Ens),
+ IN E (Nat n) -> exists p : nat, EQ E (Nat p).
+Proof.
+simple induction n.
+simpl in |- *.
+simple induction 1.
+simple induction x.
+
+intros.
+change (IN E (Class_succ (Nat n0))) in H0.
+elim (IN_Class_succ_or (Nat n0) E H0).
+intros; exists n0.
+auto with zfc.
+
+intros.
+elim (H E); auto with zfc.
+Defined.
+
+Theorem Omega_EQ_Union : EQ Omega (Union Omega).
+Proof.
+apply INC_EQ; unfold INC in |- *.
+intros.
+elim (IN_Omega_EXType E H); intros n e.
+apply IN_Union with (Nat (S n)).
+auto with zfc.
+
+apply IN_sound_left with (Nat n).
+auto with zfc.
+
+auto with zfc.
+change (IN (Nat n) (Class_succ (Nat n))) in |- *; auto with zfc.
+
+intros.
+elim (Union_IN Omega E H).
+intros e h.
+elim h.
+intros i1 i2.
+elim (IN_Omega_EXType e i1).
+intros n e1.
+cut (IN E (Nat n)).
+intros.
+elim (IN_Nat_EXType n E H0); intros.
+apply IN_sound_left with (Nat x); auto with zfc.
+
+apply IN_sound_right with e; auto with zfc.
+Defined.
+
+(*
+Theorem Omega_Ord : (Ord Omega).
+
+apply Eo with (Union Omega).
+apply Lo.
+intros.
+elim (IN_Omega_EXType e H).
+intros n ee.
+apply Eo with (Nat n); Auto with zfc.
+elim n.
+auto with zfc.
+auto with zfc.
+intros.
+change (Ord (Class_succ (Nat n0))); Auto with zfc.
+apply EQ_sym; Auto with zfc.
+apply Omega_EQ_Union.
+
+Save.
+*)
+
+
+
+Fixpoint Vee (E : Ens) : Ens :=
+  match E with
+  | sup A f => Union (sup A (fun a : A => Power (Vee (f a))))
+  end.
+
+(*
+Definition Alpha : (E:Ens)Ens.
+(Induction E; Intros A f r).
+apply Union.
+apply (sup A).
+intros a.
+exact (Power (r a)).
+
+Save.
+Transparent Alpha.
+*)
+
+(*=== 3_Regularity.v ===*)
+
+(* Epsilon induction. *)
+Theorem eps_ind (R:Ens->Prop)
+(Sou_R:forall a b, EQ a b -> (R a <-> R b))
+: (forall x:Ens, (forall y, IN y x -> R y) -> R x)
+-> forall z, R z.
+Proof.
+intros.
+induction z.
+apply H.
+simpl.
+intros y q.
+destruct q as [a G].
+rewrite  (Sou_R y (e a)).
+apply H0.
+exact G.
+Defined.
+
+(* (P x) means "Every set that contains x as an element is regular." *)
+Definition P x := forall u : Ens, (IN x u -> exists y,
+IN y u /\ forall z, IN z u -> ~ IN z y).
+
+Definition epsmin a b := IN a b /\ forall c, IN c b -> ~ IN c a.
+
+(* Soundness of the definition of P. *)
+Theorem sou_P : forall a b : Ens, EQ a b -> P a <-> P b.
+Proof.
+intros.
+unfold P.
+split; intros.
++ apply IN_sound_left with (E':=a) in H1.
+  apply H0. apply H1.
+  apply EQ_sym. exact H.
++ apply IN_sound_left with (E':=b) in H1.
+  apply H0. apply H1.
+  exact H.
+Defined.
+
+(* Here I follow Zuhair's proof from source.
+https://math.stackexchange.com/users/489784/zuhair *)
+
+(* Unending chain *)
+Definition UC c := forall m, IN m c -> exists n, IN n m /\ IN n c.
+Definition WF x := ~(exists c, UC c /\ IN x c).
+
+(* Inductive step *)
+Theorem Zuhair_1 (a:Ens): (forall x, IN x a -> WF x) -> WF a.
+Proof.
+unfold WF.
+intros H K0.
+pose (K:=K0).
+destruct K as [c [M1 M2]].
+unfold UC in M1.
+pose (B:=M1 a M2).
+destruct B as [n [nina ninc]].
+apply (H n nina).
+exists c.
+split.
+exact M1.
+exact ninc.
+Defined.
+
+(* Soundness of WF *)
+Theorem sou_WF : forall a b : Ens, EQ a b -> WF a <-> WF b.
+Proof.
+intros.
+unfold WF.
+* split.
++ intros A B.
+  apply A.
+  destruct B as [c [a1 a2]].
+  exists c.
+  split. exact a1.
+  apply IN_sound_left with (E:=b).
+  apply EQ_sym. exact H.
+  exact a2.
++ intros A B.
+  apply A.
+  destruct B as [c [a1 a2]].
+  exists c.
+  split. exact a1.
+  apply IN_sound_left with (E:=a).
+  exact H.
+  exact a2.
+Defined.
+
+(* Induction. "Every set is well-founded." *)
+Theorem Zuhair_2 (y:Ens): WF y.
+Proof.
+apply eps_ind.
+- exact sou_WF.
+- intros a. exact (Zuhair_1 a).
+Defined.
+
+(* Formalization of Andreas Blass variant of proof. 
+https://math.stackexchange.com/users/48510/andreas-blass *)
+Module ClassicRegularity.
+Import Classical_Prop.
+Import Classical_Pred_Type.
+Theorem Blass x : P x.
+Proof.
+unfold P.
+pose (A:=Zuhair_2 x); unfold WF in A.
+intros u xinu.
+(* Series of the equivalent tranformations.*)
+apply not_ex_all_not with (n:=u) in A.
+apply not_and_or in A.
+ destruct A as [H1|H2].
+ 2 : destruct (H2 xinu).
+ unfold UC in H1.
+apply not_all_ex_not in H1.
+ destruct H1 as [yy yH].
+ exists yy.
+apply imply_to_and in yH.
+ destruct yH as [Ha Hb].
+ split. exact Ha.
+ intro z.
+apply not_ex_all_not with (n:=z) in Hb.
+apply not_and_or in Hb.
+ intro v.
+ destruct Hb as [L0|L1]. exact L0.
+ destruct (L1 v).
+Defined.
+
+(* Standard formulation of the regularity axiom. *)
+Theorem axreg (x:Ens) :
+(exists a, IN a x)->(exists y, IN y x /\ ~ exists z, IN z y /\ IN z x)
+.
+Proof.
+pose (Q:= Blass).
+unfold P in Q.
+intro e.
+destruct e as [z zinx].
+pose (f:= Q z x zinx).
+destruct f as [g G].
+exists g.
+destruct G as [G1 G2].
+split.
++ exact G1.
++ intro s.
+  destruct s as [w [W1 W2]].
+  exact (G2 w W2 W1).
+Defined.
+End ClassicRegularity.
+
+(* Other theorems *)
+
+(* every set is a class *)
+(* 1) function *)
+Theorem esiacf : Ens -> (Ens -> Prop).
+Proof.
+intro e.
+exact (fun x => IN x e).
+Defined.
+
+(* "is a set" predicate *)
+Definition ias (s: Ens -> Prop) : Prop.
+Proof.
+exact (exists x:Ens, forall w, s w <-> esiacf x w).
+Defined.
+
+(* class must respect extensional equality
+   sree is a witness of the soundness of class' definition *)
+Section TheoremsAboutClasses.
+Context (s:Ens->Prop)
+        (sree : forall (w1 w2:Ens), EQ w1 w2 -> s w1 <-> s w2).
+
+Theorem rewr (w1 w2:Ens) (J:s w1) (H : EQ w1 w2) : s w2.
+Proof.
+rewrite <- (sree w1 w2); assumption.
+Defined.
+
+(* subclass of a set is a set *)
+Theorem scosias (m:Ens) 
+(sc : forall x, s x -> (esiacf m) x) 
+: ias s.
+Proof.
+unfold ias.
+unfold esiacf in * |- *.
+(* { x e. m | s x }*)
+exists (Comp m s).
+intro w.
+split.
++ intro u.
+  pose(y:=sc w u).
+  unfold esiacf in * |- *.
+  apply IN_P_Comp.
+  * intros w1 w2 K H.
+    apply (rewr _ _  K H).
+  * exact y.
+  * exact u.
++ intro u.
+  apply (IN_Comp_P m).
+  exact rewr.
+  exact u.
+Defined.
+
+End TheoremsAboutClasses.
+
+Theorem INC_antisym : forall E E' : Ens,
+  INC E E' -> INC E' E -> EQ E E'.
+Proof.
+unfold INC in |- *; auto with zfc.
+Show Proof.
+Defined.
+
+(*Require Import ZFC.Ordinal_theory.*)
+
+Theorem Class_succ_sound X Y (H: EQ X Y) :
+EQ (Class_succ X) (Class_succ Y).
+Proof.
+unfold Class_succ.
+assert (L1: EQ (Paire X (Sing X)) (Paire Y (Sing Y))).
+2 : apply Union_sound in L1; exact L1.
+apply EQ_tran with (E2:=Paire Y (Sing X)).
++ apply Paire_sound_left; exact H.
++ apply Paire_sound_right. apply Sing_sound. exact H.
+Defined.
+
+Theorem axInf : exists X, (IN Vide X /\ 
+forall Y, (IN Y X -> IN (Class_succ Y) X)
+).
+Proof.
+exists Omega.
+split.
++ unfold Omega.
+  unfold IN.
+  exists 0.
+  apply EQ_refl.
++ intros Y YinOm.
+  apply IN_Omega_EXType in YinOm.
+  destruct YinOm as [x H].
+  assert (as1: EQ (Class_succ (Nat x)) (Class_succ Y)).
+  apply Class_succ_sound. exact H.
+  apply (IN_sound_left _ _ _ as1).
+  (*Eval simpl in (Nat (S x)).*)
+  apply (Nat_IN_Omega (S x)).
+Defined.
 
 (*============================================
                      Part II
@@ -842,17 +1257,72 @@ exact xx.
 exact yy.
 Defined.*)
 
-Definition inSProduct (X Y z:Ens) :=
-(exists (x y:Ens), (EQ z (OrdPair x y)) /\ IN x X /\ IN y Y).
+Definition inProduct (X Y u:Ens) :=
+ exists (x y:Ens), (EQ u (OrdPair x y)) /\ IN x X /\ IN y Y.
 
 (* Product of sets *)
-Definition SProduct (X Y:Ens) :=
+Definition Product (X Y:Ens) :=
 Comp
  (Power (Power (Union (OrdPair X Y))))
- (inSProduct X Y)
+ (inProduct X Y)
 .
-(* you may prove: x is subset of *)
 
+Definition inDom (R u:Ens) := 
+ exists (v:Ens), IN (OrdPair u v) R.
+
+Definition dom (R:Ens) :=
+Comp
+ (Union (Union R))
+ (inDom R)
+.
+
+Definition inRan (R u:Ens) := 
+ exists (v:Ens), IN (OrdPair u v) R.
+
+Definition ran (R:Ens) :=
+Comp
+ (Union (Union R))
+ (inRan R)
+.
+
+Definition field (R:Ens) := Union (Paire (dom R) (ran R)).
+
+Definition isFunction (X Y f:Ens) := (EQ (dom f) X)/\(INC (ran f) Y).
+
+Definition functions (X Y:Ens) :=
+Comp
+ (Power (Product X Y))
+ (isFunction X Y)
+.
+
+Definition fun1to1 (X Y:Ens) :=
+Comp
+ (functions X Y)
+ (fun f => forall x1 x2 y, IN (OrdPair x1 y) f /\ IN (OrdPair x2 y) f 
+ -> EQ x1 x2)
+.
+
+Definition restriction (X0 Y0 f X:Ens) (H:IN f (functions X0 Y0)):=
+Comp
+ f
+ (fun e => exists x y, EQ e (OrdPair x y) /\ IN x X)
+.
+
+(* DEVELOPMENT IS HERE *)
+
+Theorem snis Y : ~(IN Y Y).
+Proof.
+
+Admitted.
+
+(* ex.1.2 p.22 *)
+Theorem ex_1_2 : ~( exists X:Ens, INC (Power X) X).
+Proof.
+intros [X H].
+apply INC_IN_Power in H.
+apply snis in H.
+exact H.
+Defined.
 (*============================================
                      Part III
 ==============================================*)
@@ -1125,7 +1595,7 @@ exact H.
 Defined.
 
 (* Cartesian product as an operation on sets *)
-Definition Product (x y:Ens): Ens.
+Definition CProduct (x y:Ens): Ens.
 Proof.
 exact (Compr (Power (Power (Union (Paire x y)))) (cProduct x y)).
 (* pose (w:=(cpss x y)). unfold ias in w.
