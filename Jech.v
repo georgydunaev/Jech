@@ -25,13 +25,12 @@ of the first-order logic and ZFC set theory.
 Pair, Union, Powerset. *)
 
 Require Classical_Prop Classical_Pred_Type.
-(*From ZFC Require Import Sets Axioms. (* Cartesian Omega.*)*)
 
 (*============================================
                      Part I
 ==============================================*)
 
-(* Remastered SETS.v *)
+(*=== Remastered SETS.v ===*)
 
 (* The type representing sets  (Ensemble = french for set) *)
 
@@ -204,11 +203,15 @@ Inductive Un : Set :=
     void : Un.
 
 Inductive F : Set :=.
-
+(*False*)
 (* The empty set  (vide = french for empty)   *)
 
-Definition Vide : Ens := sup F (fun f : F => match f return Ens with
-                                             end).
+Definition Vide : Ens := 
+sup False (fun f : False => match f return Ens with
+                        end).
+(*Definition Vide : Ens := sup F (fun f : F => match f return Ens with
+                                             end).*)
+
 
 (* The axioms of the empty set *)
 
@@ -1025,7 +1028,7 @@ exact (fun x => IN x e).
 Defined.
 
 (* "is a set" predicate *)
-Definition ias (s: Ens -> Prop) : Prop.
+Definition ias1 (s: Ens -> Prop) : Prop.
 Proof.
 exact (exists x:Ens, forall w, s w <-> esiacf x w).
 Defined.
@@ -1042,11 +1045,11 @@ rewrite <- (sree w1 w2); assumption.
 Defined.
 
 (* subclass of a set is a set *)
-Theorem scosias (m:Ens) 
+Theorem scosias1 (m:Ens) 
 (sc : forall x, s x -> (esiacf m) x) 
-: ias s.
+: ias1 s.
 Proof.
-unfold ias.
+unfold ias1.
 unfold esiacf in * |- *.
 (* { x e. m | s x }*)
 exists (Comp m s).
@@ -1309,11 +1312,42 @@ Comp
 .
 
 (* DEVELOPMENT IS HERE *)
+(* Theorem E_not_IN_E : forall E : Ens, IN E E -> F. *)
+Check eps_ind.
+
+(* technical theorem for rewrite tactic *)
+
+Theorem two_sided (C : Ens -> Prop) :
+(forall a b : Ens, EQ a b -> C a -> C b)
+->
+(forall a b : Ens, EQ a b -> C a <-> C b).
+Proof.
+intros.
+split;intros H1.
+- eapply (H a b). exact H0. exact H1.
+- apply EQ_sym in H0.
+  eapply (H b a). exact H0. exact H1.
+Defined.
 
 Theorem snis Y : ~(IN Y Y).
 Proof.
-
-Admitted.
+apply (eps_ind (fun Y => ~(IN Y Y))).
++ intros a b aeqb.
+  split;intros H K.
+  - eapply IN_sound_right with (E'':=a) in K.
+    eapply IN_sound_left with (E':=a) in K.
+    exact (H K).
+    apply EQ_sym; assumption.
+    apply EQ_sym; assumption.
+  - eapply IN_sound_right with (E'':=b) in K.
+    eapply IN_sound_left with (E':=b) in K.
+    exact (H K).
+    assumption.
+    assumption.
++ intros x H xinx.
+  pose (Q:=H x xinx).
+  exact (Q xinx).
+Defined.
 
 (* ex.1.2 p.22 *)
 Theorem ex_1_2 : ~( exists X:Ens, INC (Power X) X).
@@ -1323,6 +1357,33 @@ apply INC_IN_Power in H.
 apply snis in H.
 exact H.
 Defined.
+
+(*Check Nat Omega.*)
+(* Subset of subsets of X *)
+Definition SoS (X:Ens) : Ens := Comp X (fun x => INC x X).
+
+Definition Ind (X:Ens) : Prop := 
+(IN Vide X) /\ (forall Y:Ens, IN Y X -> IN (Class_succ Y) X).
+
+
+Lemma INC_Vide (X:Ens): INC Vide X.
+Proof.
+unfold INC. intros E IN_E_Vide.
+Abort.
+
+(* SoS is inductive *)
+Theorem ex_1_3 (X:Ens) (H: Ind X) : Ind (SoS X).
+Proof.
+unfold SoS, Ind in * |- *.
+constructor. (*split.*)
++ apply IN_P_Comp.
+  - intros w1 w2 INC_w1_X EQ_w1_w2.
+    eapply INC_sound_left. exact EQ_w1_w2. exact INC_w1_X.
+  - firstorder.
+  - auto with zfc.
+(* IN_Comp_P *)
+Abort.
+
 (*============================================
                      Part III
 ==============================================*)
