@@ -1311,10 +1311,6 @@ Comp
  (fun e => exists x y, EQ e (OrdPair x y) /\ IN x X)
 .
 
-(* DEVELOPMENT IS HERE *)
-(* Theorem E_not_IN_E : forall E : Ens, IN E E -> F. *)
-Check eps_ind.
-
 (* technical theorem for rewrite tactic *)
 
 Theorem two_sided (C : Ens -> Prop) :
@@ -1359,6 +1355,7 @@ apply snis in H.
 exact H.
 Defined.
 
+(* it's for Comp ax *)
 Lemma lem_ex_1_2 : forall w1 w2 : Ens, ~ IN w1 w1 -> EQ w1 w2 -> ~ IN w2 w2.
 Proof.
 intros w1 w2 H1 H2 Y.
@@ -1426,11 +1423,21 @@ Definition SoS (X:Ens) : Ens := Comp X (fun x => INC x X).
 Definition Ind (X:Ens) : Prop := 
 (IN Vide X) /\ (forall Y:Ens, IN Y X -> IN (Class_succ Y) X).
 
-
 Lemma INC_Vide (X:Ens): INC Vide X.
 Proof.
 unfold INC. intros E IN_E_Vide.
 destruct (Vide_est_vide E IN_E_Vide).
+Defined.
+
+(* it's for Comp ax *)
+Lemma lem_ex_1_3 : 
+forall Y w1 w2 : Ens,
+IN (Class_succ Y) w1 -> EQ w1 w2 -> IN (Class_succ Y) w2.
+Proof.
+intros Y w1 w2 H1 H2.
+eapply IN_sound_right with (E':=w1).
+exact H2.
+exact H1.
 Defined.
 
 (* SoS is inductive *)
@@ -1443,10 +1450,25 @@ constructor. (*split.*)
     eapply INC_sound_left. exact EQ_w1_w2. exact INC_w1_X.
   - firstorder.
   - exact (INC_Vide X).
-+ intros.
-  
-(* IN_Comp_P *)
-Abort.
++ intros x H0.
+  pose (H1:=H0).
+  unshelve eapply IN_Comp_P with (E:=X) in H1.
+2 : { intros. apply INC_sound_left with (E:=w1). exact H3. exact H2. }
+  apply Comp_INC in H0.
+  (* . *)
+  destruct H as [Ha Hb].
+  assert (xusxinX : IN (Class_succ x) X).
+   apply Hb. exact H0.
+  apply IN_P_Comp.
+  { intros. apply INC_sound_left with (E:=w1); assumption. }
+  exact xusxinX.
+  intros M J.
+  apply IN_Class_succ_or in J as [L1|L2].
+  - apply IN_sound_left with (E:=x); assumption.
+  - apply H1. assumption.
+Defined.
+
+(* DEVELOPMENT IS HERE *)
 
 (*============================================
                      Part III
