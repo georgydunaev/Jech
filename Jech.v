@@ -25,7 +25,8 @@ of the first-order logic and ZFC set theory.
 Pair, Union, Powerset. *)
 
 Require Classical_Prop Classical_Pred_Type.
-
+Import Classical_Prop.
+Import Classical_Pred_Type.
 (*============================================
                      Part I
 ==============================================*)
@@ -199,13 +200,12 @@ Defined.
 
 (* Useful types (actually top and bottom)   *)
 
-Inductive Un : Set :=
-    void : Un.
+(*Inductive Un : Set :=
+    void : Un.*) (* Not used. *)
 
-Inductive F : Set :=.
-(*False*)
+(*Inductive F : Set :=.*) (* Renamed to False *)
+
 (* The empty set  (vide = french for empty)   *)
-
 Definition Vide : Ens := 
 sup False (fun f : False => match f return Ens with
                         end).
@@ -215,7 +215,7 @@ sup False (fun f : False => match f return Ens with
 
 (* The axioms of the empty set *)
 
-Theorem Vide_est_vide : forall E : Ens, IN E Vide -> F.
+Theorem Vide_est_vide : forall E : Ens, IN E Vide -> False.
 Proof.
 unfold Vide in |- *; simpl in |- *; intros E H; cut False.
 simple induction 1.
@@ -224,7 +224,7 @@ Defined.
 
 
 Theorem tout_vide_est_Vide :
- forall E : Ens, (forall E' : Ens, IN E' E -> F) -> EQ E Vide.
+ forall E : Ens, (forall E' : Ens, IN E' E -> False) -> EQ E Vide.
 Proof.
  unfold Vide in |- *; simple induction E; simpl in |- *; intros A e H H0;
   split.
@@ -647,7 +647,7 @@ Defined.
 
 (* small lemma *)
 
-Theorem not_EQ_Sing_Vide : forall E : Ens, EQ (Sing E) Vide -> F.
+Theorem not_EQ_Sing_Vide : forall E : Ens, EQ (Sing E) Vide -> False.
 Proof.
 intros E e; cut False.
 simple induction 1.
@@ -657,7 +657,7 @@ apply IN_sound_right with (Sing E); auto with zfc.
 Defined.
 
 
-Theorem not_EQ_Vide_Sing : forall E : Ens, EQ Vide (Sing E) -> F.
+Theorem not_EQ_Vide_Sing : forall E : Ens, EQ Vide (Sing E) -> False.
 Proof.
 intros E e; cut False.
 simple induction 1.
@@ -757,7 +757,7 @@ auto with zfc.
 apply IN_sound_right with E1; auto with zfc.
 Defined.
 
-Theorem E_not_IN_E : forall E : Ens, IN E E -> F.
+Theorem E_not_IN_E : forall E : Ens, IN E E -> False.
 Proof.
 simple induction E; intros A f r i.
 cut False.
@@ -969,8 +969,8 @@ Defined.
 (* Formalization of Andreas Blass variant of proof. 
 https://math.stackexchange.com/users/48510/andreas-blass *)
 Module ClassicRegularity.
-Import Classical_Prop.
-Import Classical_Pred_Type.
+(*Import Classical_Prop.
+Import Classical_Pred_Type.*)
 Theorem Blass x : P x.
 Proof.
 unfold P.
@@ -1329,6 +1329,7 @@ split;intros H1.
   eapply (H b a). exact H0. exact H1.
 Defined.
 
+(* Here we use epsilon-induction. *)
 Theorem snis Y : ~(IN Y Y).
 Proof.
 apply (eps_ind (fun Y => ~(IN Y Y))).
@@ -1358,6 +1359,45 @@ apply snis in H.
 exact H.
 Defined.
 
+Lemma lem_ex_1_2 : forall w1 w2 : Ens, ~ IN w1 w1 -> EQ w1 w2 -> ~ IN w2 w2.
+Proof.
+intros w1 w2 H1 H2 Y.
+  apply H1.
+  apply EQ_sym in H2.
+  apply IN_sound_left with (E':=w1) in Y.
+  apply IN_sound_right with (E'':=w1) in Y.
+  exact Y. assumption. assumption.
+Defined.
+
+(* Here we will not use epsilon-induction. *)
+Theorem ex_1_2' : ~( exists X:Ens, INC (Power X) X).
+Proof.
+intros [X H].
+pose (S:= Comp X (fun x => ~ IN x x)).
+assert (Q : INC S X).
+apply Comp_INC.
+(* Search Power. USEFUL*)
+apply INC_IN_Power in Q.
+apply H in Q.
+destruct (classic (IN S S)).
+2 : { 
+assert (R:IN S S).
+apply IN_P_Comp.
+- apply lem_ex_1_2.
+- exact Q.
+- exact H0.
+- exact (H0 R).
+}
+pose (H1:=H0).
+apply IN_Comp_P in H1.
+exact (H1 H0).
+apply lem_ex_1_2.
+Defined.
+
+(*Search Comp.
+pose (R:=).
+apply INC_IN_Power in H.*)
+
 (*Check Nat Omega.*)
 (* Subset of subsets of X *)
 Definition SoS (X:Ens) : Ens := Comp X (fun x => INC x X).
@@ -1369,7 +1409,8 @@ Definition Ind (X:Ens) : Prop :=
 Lemma INC_Vide (X:Ens): INC Vide X.
 Proof.
 unfold INC. intros E IN_E_Vide.
-Abort.
+destruct (Vide_est_vide E IN_E_Vide).
+Defined.
 
 (* SoS is inductive *)
 Theorem ex_1_3 (X:Ens) (H: Ind X) : Ind (SoS X).
@@ -1380,7 +1421,9 @@ constructor. (*split.*)
   - intros w1 w2 INC_w1_X EQ_w1_w2.
     eapply INC_sound_left. exact EQ_w1_w2. exact INC_w1_X.
   - firstorder.
-  - auto with zfc.
+  - exact (INC_Vide X).
++ intros.
+  
 (* IN_Comp_P *)
 Abort.
 
