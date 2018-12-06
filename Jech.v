@@ -1,7 +1,7 @@
 (*** Contents ***
 Part I: Large part of "/coq-contribs/zfc/" library and
 proofs of some axioms of zfc.
-Part II: Development of the classical ZFC theory with
+Part II: Development of the classic ZFC theory with
  exercises from Jech's "Set theory". (try to avoid classes)
 and "Introduction t set theory" books.
 Part III: Development of formulas and derivations.
@@ -1394,12 +1394,33 @@ exact (H1 H0).
 apply lem_ex_1_2.
 Defined.
 
-(*Search Comp.
-pose (R:=).
-apply INC_IN_Power in H.*)
+(* Here we will not use both epsilon-induction
+ and the law of the excluded middle. *)
+Theorem ex_1_2'' : ~( exists X:Ens, INC (Power X) X).
+Proof.
+intros [X H].
+pose (S:= Comp X (fun x => ~ IN x x)).
+assert (Q : INC S X).
+apply Comp_INC.
+apply INC_IN_Power in Q.
+apply H in Q.
+assert (R1:~(IN S S)).
+ intro H0.
+ pose (H1:=H0).
+ apply IN_Comp_P in H1.
+ exact (H1 H0).
+ apply lem_ex_1_2.
+{ assert (R:IN S S).
+ + apply IN_P_Comp.
+  - apply lem_ex_1_2.
+  - exact Q.
+  - exact R1.
+ + exact (R1 R). }
+Defined.
 
-(*Check Nat Omega.*)
-(* Subset of subsets of X *)
+(* Search Comp. *)
+(* Check Nat Omega. *)
+(* Subset of subsets of X. *)
 Definition SoS (X:Ens) : Ens := Comp X (fun x => INC x X).
 
 Definition Ind (X:Ens) : Prop := 
