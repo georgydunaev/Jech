@@ -1923,7 +1923,7 @@ unshelve eapply Build_class.
 Defined.
 
 (* (A:Ens->Prop) is also fine. *)
-Definition cUnion (A:class) : class.
+(*Definition cUnion (A:class) : class.
 Proof.
 unshelve eapply Build_class.
 + intro x. exact (exists z : Ens, A z /\ IN x z).
@@ -1931,7 +1931,7 @@ unshelve eapply Build_class.
   destruct H as [z [K1 K2]].
   exists z. split. exact K1.
   apply IN_sound_left with (E:=a); assumption.
-Defined.
+Defined.*)
 
 (*forall z : Ens, a z -> b z
 exact (issubclass x A).
