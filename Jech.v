@@ -1625,22 +1625,56 @@ intros g K.
 apply (K x H).
 Defined.
 
-Theorem InterNonEmpty (c:class) (x:Ens) (H : c x) : ias (cInter c).
+(* set to class *)
+Definition stoc : Ens -> class.
+Proof.
+intro x.
+unshelve eapply Build_class.
++ intro y. exact (IN y x).
++ intros a b aeqb.
+  apply sousym.
+  intros a0 b0 H H0.
+  eapply IN_sound_left. exact H. exact H0. exact aeqb.
+  (*- apply IN_sound_left. apply EQ_sym. exact aeqb.*)
+Defined.
+
+Lemma sound2rewr (s:class) : forall w1 w2 : Ens, s w1 -> EQ w1 w2 -> s w2.
+Proof.
+intros w1 w2 H1 H2. rewrite <- (sound s). exact H1. exact H2.
+Defined.
+
+(* subclass of a set is a set *)
+Theorem scosias (s:class) (m:Ens) 
+(sc : forall x, s x -> (stoc m) x) 
+: ias s.
 Proof.
 unfold ias.
-exists (Comp x c).
-simpl.
-intro w. split; intros.
-+ apply IN_P_Comp.
- admit.
-apply H0, H.
-(*apply InterSS.
-  { }
-class
-Search Comp.
- apply H0.
-Defined.*)
-Abort.
+(*unfold  stoc in * |- *. esiacf*)
+(* { x e. m | s x }*)
+exists (Comp m s).
+intro w.
+split.
++ intro u.
+  pose(y:=sc w u).
+  (*unfold esiacf in * |- *.*)
+  apply IN_P_Comp.
+  * intros w1 w2 K H.
+    rewrite <- (sound s). exact K. exact H. (*apply (rewr _ _  K H).*)
+  * exact y.
+  * exact u.
++ intro u.
+  apply (IN_Comp_P m).
+  apply sound2rewr.
+  exact u.
+Defined.
+(* try the same proof through the powerset *)
+
+Theorem InterNonEmpty (c:class) (x:Ens) (H : c x) : ias (cInter c).
+Proof.
+eapply scosias.
+eapply InterSS.
+exact H.
+Defined.
 
 Definition cInd : class.
 Proof.
@@ -1665,19 +1699,6 @@ unshelve eapply Build_class'.
   +  eapply IN_sound_left.
      exact aeqb.
      exact ainz. }
-Defined.
-
-(* set to class *)
-Definition stoc : Ens -> class.
-Proof.
-intro x.
-unshelve eapply Build_class.
-+ intro y. exact (IN y x).
-+ intros a b aeqb.
-  apply sousym.
-  intros a0 b0 H H0.
-  eapply IN_sound_left. exact H. exact H0. exact aeqb.
-  (*- apply IN_sound_left. apply EQ_sym. exact aeqb.*)
 Defined.
 
 Coercion stoc : Ens >-> class.
@@ -1828,36 +1849,9 @@ Definition cprty_unsound : exists (cprty : class->Prop)
 (A B : class) (w : EQC A B) (HA : cprty A) (HB : cprty B), False.
 Proof. Abort.
 
-Lemma sound2rewr (s:class) : forall w1 w2 : Ens, s w1 -> EQ w1 w2 -> s w2.
-Proof.
-intros w1 w2 H1 H2. rewrite <- (sound s). exact H1. exact H2.
-Defined.
 
-(* subclass of a set is a set *)
-Theorem scosias (s:class) (m:Ens) 
-(sc : forall x, s x -> (stoc m) x) 
-: ias s.
-Proof.
-unfold ias.
-(*unfold  stoc in * |- *. esiacf*)
-(* { x e. m | s x }*)
-exists (Comp m s).
-intro w.
-split.
-+ intro u.
-  pose(y:=sc w u).
-  (*unfold esiacf in * |- *.*)
-  apply IN_P_Comp.
-  * intros w1 w2 K H.
-    rewrite <- (sound s). exact K. exact H. (*apply (rewr _ _  K H).*)
-  * exact y.
-  * exact u.
-+ intro u.
-  apply (IN_Comp_P m).
-  apply sound2rewr.
-  exact u.
-Defined.
-(* try the same proof through the powerset *)
+
+
 
 (* Cartesian product of sets is a set. *)
 Theorem cpss (x y : Ens) : ias (cProduct x y).
