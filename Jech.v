@@ -193,6 +193,36 @@ elim H1; intros HA HB; elim (HA x); intros.
 exists x0; apply EQ_tran with (e x); auto with zfc.
 Defined.
 
+(*=== AXIOMS ===*)
+
+(* page 3 *)
+Theorem axExt : forall x y : Ens,
+   EQ x y <-> forall z, (IN z x <-> IN z y).
+Proof.
+intros.
+split.
++ intros.
+  split.
+  - apply IN_sound_right. exact H.
+  - apply IN_sound_right. apply EQ_sym. exact H.
++ induction x as [A f], y as [B g].
+  intro K.
+  simpl in * |- *.
+  split.
+  - intro x.
+    apply K.
+    exists x.
+    apply EQ_refl.
+  - intro y.
+    assert (Q:exists y0 : B, EQ (g y) (g y0)).
+    * exists y.
+      apply EQ_refl.
+    * destruct (proj2 (K (g y)) Q).
+      exists x.
+      apply EQ_sym.
+      exact H0.
+Defined.
+
 (************ Remastered Axioms.v ***************)
 
 (* Definitions of the empty set, pair, union, intersection, comprehension  *)
@@ -664,36 +694,6 @@ simple induction 1.
 cut (IN E Vide).
 simpl in |- *; simple induction 1; intros xx; elim xx; simple induction 1.
 apply IN_sound_right with (Sing E); auto with zfc.
-Defined.
-
-(*=== AXIOMS ===*)
-
-(* page 3 *)
-Theorem axExt : forall x y : Ens,
-   EQ x y <-> forall z, (IN z x <-> IN z y).
-Proof.
-intros.
-split.
-+ intros.
-  split.
-  - apply IN_sound_right. exact H.
-  - apply IN_sound_right. apply EQ_sym. exact H.
-+ induction x as [A f], y as [B g].
-  intro K.
-  simpl in * |- *.
-  split.
-  - intro x.
-    apply K.
-    exists x.
-    apply EQ_refl.
-  - intro y.
-    assert (Q:exists y0 : B, EQ (g y) (g y0)).
-    * exists y.
-      apply EQ_refl.
-    * destruct (proj2 (K (g y)) Q).
-      exists x.
-      apply EQ_sym.
-      exact H0.
 Defined.
 
 (*=== Omega.v ===*)
@@ -1700,6 +1700,20 @@ unshelve eapply Build_class'.
      exact aeqb.
      exact ainz. }
 Defined.
+
+Definition cOmega := cInter cInd.
+
+Theorem nat_is_set: ias cOmega.
+Proof.
+unshelve eapply InterNonEmpty.
+Abort.
+
+(* "is a class" predicate *)
+Definition iac (k:class -> Prop) : Prop.
+Proof.
+Abort.
+
+(* UNDER CONSTRUCTION *)
 
 Coercion stoc : Ens >-> class.
 
