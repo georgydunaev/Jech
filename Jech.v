@@ -1358,7 +1358,7 @@ exact H.
 Defined.
 
 (* it's for Comp ax *)
-Lemma lem_ex_1_2 : forall w1 w2 : Ens, ~ IN w1 w1 -> EQ w1 w2 -> ~ IN w2 w2.
+Lemma ex_1_2_lem : forall w1 w2 : Ens, ~ IN w1 w1 -> EQ w1 w2 -> ~ IN w2 w2.
 Proof.
 intros w1 w2 H1 H2 Y.
   apply H1.
@@ -1382,7 +1382,7 @@ destruct (classic (IN S S)).
 2 : { 
 assert (R:IN S S).
 apply IN_P_Comp.
-- apply lem_ex_1_2.
+- apply ex_1_2_lem.
 - exact Q.
 - exact H0.
 - exact (H0 R).
@@ -1390,7 +1390,7 @@ apply IN_P_Comp.
 pose (H1:=H0).
 apply IN_Comp_P in H1.
 exact (H1 H0).
-apply lem_ex_1_2.
+apply ex_1_2_lem.
 Defined.
 
 (* Here we will not use both epsilon-induction
@@ -1408,10 +1408,10 @@ assert (R1:~(IN S S)).
  pose (H1:=H0).
  apply IN_Comp_P in H1.
  exact (H1 H0).
- apply lem_ex_1_2.
+ apply ex_1_2_lem.
 { assert (R:IN S S).
  + apply IN_P_Comp.
-  - apply lem_ex_1_2.
+  - apply ex_1_2_lem.
   - exact Q.
   - exact R1.
  + exact (R1 R). }
@@ -1432,7 +1432,7 @@ destruct (Vide_est_vide E IN_E_Vide).
 Defined.
 
 (* it's for Comp ax *)
-Lemma lem_ex_1_3 : 
+Lemma ex_1_3_lem : 
 forall Y w1 w2 : Ens,
 IN (Class_succ Y) w1 -> EQ w1 w2 -> IN (Class_succ Y) w2.
 Proof.
@@ -1470,7 +1470,7 @@ constructor. (*split.*)
   - apply H1. assumption.
 Defined.
 
-Lemma lem_ex_1_4 : forall w1 w2 : Ens,
+Lemma ex_1_4_lem : forall w1 w2 : Ens,
 (forall z : Ens, IN z w1 -> INC z w1) ->
 EQ w1 w2 -> forall z : Ens, IN z w2 -> INC z w2.
 Proof.
@@ -1503,18 +1503,18 @@ Proof.
 destruct H as [Ha Hb].
 split.
 + apply IN_P_Comp.
-  { exact lem_ex_1_4. }
+  { exact ex_1_4_lem. }
   { exact Ha. }
   { intros x H. destruct (Vide_est_vide _ H). }
 + intros Y H.
   apply IN_Comp_P in H as H1.
-  2 : exact lem_ex_1_4.
+  2 : exact ex_1_4_lem.
   apply Comp_INC in H as H0.
   clear H.
   apply Hb in H0.
   apply sutra in H1.
   apply IN_P_Comp.
-  exact lem_ex_1_4.
+  exact ex_1_4_lem.
   exact H0. exact H1.
 Defined.
 
@@ -1569,7 +1569,43 @@ split.
   * exact isTrans_Vide.
   * intro videinvide. destruct (Vide_est_vide Vide videinvide).
 + intros Y H.
-  
+  apply IN_Comp_P in H as H1.
+  2 : exact ex_1_5_lem1.
+  apply Comp_INC in H as H0.
+  clear H.
+  apply Hb in H0.
+   destruct H1 as [H1 H1'].
+  apply sutra in H1.
+  apply IN_P_Comp.
+  exact ex_1_5_lem1. (*exact lem_ex_1_4.*)
+  exact H0.
+   split.
+  exact H1.
+   intro G.
+  apply IN_Class_succ_or in G as [G1|G2].
+  - pose (Q:=IN_Class_succ Y).
+    eapply IN_sound_right in Q.
+    2 : { apply EQ_sym. exact G1. }
+    exact (H1' Q).
+  - 
+Lemma ex_1_5_lem2 (Y:Ens) (H:isTrans (Class_succ Y)):isTrans Y.
+Proof.
+unfold isTrans in * |- *.
+intros z zinY w winz.
+unfold INC in H.
+
+Lemma ex_1_5_lem2_l1 E Y (B:~EQ E Y): IN E (Class_succ Y) -> IN E Y.
+intro r.
+apply IN_Class_succ_or in r as [G1|G2].
+2 :  exact G2.
+apply EQ_sym in G1.
+destruct (B G1).
+Defined.
+
+apply ex_1_5_lem2_l1.
+  Search Class_succ.
+ 
+Abort.
 Abort.
 
 (* DEVELOPMENT IS HERE *)
