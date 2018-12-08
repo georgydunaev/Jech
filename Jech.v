@@ -1518,6 +1518,60 @@ split.
   exact H0. exact H1.
 Defined.
 
+Theorem isTrans_sound (w1 w2:Ens) (eqw1w2 : EQ w1 w2) (H1 : isTrans w1)
+ : isTrans w2.
+Proof.
+unfold isTrans in * |- *.
+intros z zinw2.
+eapply INC_sound_right.
+exact eqw1w2.
+apply H1.
+eapply IN_sound_right.
+apply EQ_sym.
+exact eqw1w2.
+exact zinw2.
+Defined.
+
+Lemma ex_1_5_lem1 : forall w1 w2 : Ens,
+isTrans w1 /\ ~ IN w1 w1 -> EQ w1 w2 -> isTrans w2 /\ ~ IN w2 w2.
+Proof.
+intros w1 w2 [H1 H2] eqw1w2.
+split.
++ eapply isTrans_sound.
+  exact eqw1w2.
+  exact H1.
++ intro w2inw2.
+  apply H2.
+  apply EQ_sym in eqw1w2 as eqw2w1.
+  eapply IN_sound_right.
+  exact eqw2w1.
+  eapply IN_sound_left.
+  exact eqw2w1.
+  exact w2inw2.
+Defined.
+
+Theorem isTrans_Vide : isTrans Vide.
+Proof.
+unfold isTrans.
+intros z zinvide.
+destruct (Vide_est_vide z zinvide).
+Defined.
+
+Theorem ex_1_5 (X:Ens) (H: Ind X) 
+ : Ind (Comp X (fun x => (isTrans x)/\~(IN x x))).
+Proof.
+destruct H as [Ha Hb].
+split.
++ apply IN_P_Comp.
+  exact ex_1_5_lem1.
+  exact Ha.
+  split.
+  * exact isTrans_Vide.
+  * intro videinvide. destruct (Vide_est_vide Vide videinvide).
++ intros Y H.
+  
+Abort.
+
 (* DEVELOPMENT IS HERE *)
 
 (*============================================
