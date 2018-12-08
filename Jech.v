@@ -1708,10 +1708,40 @@ Proof.
 unshelve eapply InterNonEmpty.
 Abort.
 
-(* "is a class" predicate *)
+(* Equality of conglomerates *)
+Definition EQK (k1 k2 : class -> Prop)
+ := forall (c:class), k1 c <-> k2 c.
+
+(* "is a class" predicate on conglomerates *)
 Definition iac (k:class -> Prop) : Prop.
 Proof.
+exact (forall (c:class), (k c) -> (ias c)).
+Defined.
+
+Section sec_ex2sig.
+Context (ex2sig:forall (A:Type) (P:A->Prop), @ex A P -> @sig A P).
+Definition ctos (c:class) (H:ias c) : Ens.
+Proof.
+apply ex2sig in H.
+destruct H.
+exact x.
+Defined.
+End sec_ex2sig.
+
+Definition ktoc (k:class -> Prop) (H:iac k) : class.
+Proof.
+unshelve eapply Build_class'.
+{ intro e.
+  exact (exists c:class, k c  /\ k c ).
+}
 Abort.
+
+(* OTHER POSSIBLE DEFINITIONS OF "iac"
+exact (exists (m:class),
+ forall (c:class), (exists (w:Ens), m ) <-> (k c)
+).
+exact (exists (m:class), forall (w:Ens), m w <-> (k (stoc w))).
+*)
 
 (* UNDER CONSTRUCTION *)
 
