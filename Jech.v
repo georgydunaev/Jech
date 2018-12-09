@@ -1023,9 +1023,7 @@ Defined.
 
 (* Formalization of Andreas Blass variant of proof. 
 https://math.stackexchange.com/users/48510/andreas-blass *)
-Module ClassicRegularity.
-(*Import Classical_Prop.
-Import Classical_Pred_Type.*)
+
 Theorem Blass x : regular_over x.
 Proof.
 unfold regular_over.
@@ -1052,7 +1050,7 @@ apply not_and_or in Hb.
 Defined.
 
 (* Standard formulation of the regularity axiom. *)
-Theorem axreg (x:Ens) :
+Theorem axReg (x:Ens) :
 (exists a, IN a x)->(exists y, IN y x /\ ~ exists z, IN z y /\ IN z x)
 .
 Proof.
@@ -1070,7 +1068,6 @@ split.
   destruct s as [w [W1 W2]].
   exact (G2 w W2 W1).
 Defined.
-End ClassicRegularity.
 
 (* Other theorems *)
 
@@ -2394,6 +2391,23 @@ assert (C:IN Vide (Power (Union Vide))).
 + apply B in C.
   apply Vide_est_vide in C as [].
 Defined.
+
+
+Definition choice :=
+  forall (A B : Type) (P : A -> B -> Prop),
+  (forall a : A, (exists b : B, P a b)) ->
+  (exists f : A -> B, forall a : A, P a (f a)).
+
+Section sec_choice.
+Context (AC : choice).
+Theorem axChoice : forall S:Ens,
+(~IN Vide S) -> exists f:Ens,
+forall X, IN X S -> (exists Q, IN (OrdPair X Q) f).
+Proof.
+intros.
+
+Abort.
+End sec_choice.
 
 (* GOOD INSTRUMENTS:
 SearchPattern ( _ + _ = _ + _ ).
