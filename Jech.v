@@ -1575,26 +1575,27 @@ split.
   clear H.
   apply Hb in H0.
    destruct H1 as [H1 H1'].
-  apply sutra in H1.
+  apply sutra in H1 as isTrans_succ_Y.
   apply IN_P_Comp.
   exact ex_1_5_lem1. (*exact lem_ex_1_4.*)
   exact H0.
    split.
-  exact H1.
+  exact isTrans_succ_Y.
    intro G.
   apply IN_Class_succ_or in G as [G1|G2].
   - pose (Q:=IN_Class_succ Y).
     eapply IN_sound_right in Q.
     2 : { apply EQ_sym. exact G1. }
     exact (H1' Q).
-  - 
-Lemma ex_1_5_lem2 (Y:Ens) (H:isTrans (Class_succ Y)):isTrans Y.
-Proof.
-unfold isTrans in * |- *.
-intros z zinY w winz.
-unfold INC in H.
+  - apply H1 in G2.
+    pose (J:= IN_Class_succ Y).
+    apply G2 in J.
+    exact (H1' J).
+Defined.
 
+(* useless lemma: *)
 Lemma ex_1_5_lem2_l1 E Y (B:~EQ E Y): IN E (Class_succ Y) -> IN E Y.
+Proof.
 intro r.
 apply IN_Class_succ_or in r as [G1|G2].
 2 :  exact G2.
@@ -1602,11 +1603,18 @@ apply EQ_sym in G1.
 destruct (B G1).
 Defined.
 
-apply ex_1_5_lem2_l1.
-  Search Class_succ.
- 
+(* unfinished: NN - natural numbers.
+Theorem : forall x:Ens, IN x NN -> ~ IN x x.
 Abort.
+
+Theorem : forall x:Ens, IN x NN -> ~ EQ x (Class_succ x).
 Abort.
+*)
+
+Theorem ex_1_5 (X:Ens) (H: Ind X) 
+ : Ind (Comp X (fun x => (isTrans x)/\~(IN x x))).
+Proof.
+apply
 
 (* DEVELOPMENT IS HERE *)
 
