@@ -2397,18 +2397,75 @@ Definition choice :=
   forall (A B : Type) (P : A -> B -> Prop),
   (forall a : A, (exists b : B, P a b)) ->
   (exists f : A -> B, forall a : A, P a (f a)).
+(*
+Require Import ClassicalChoice.
+choice
+Theorem choice :
+ forall (A B : Type) (R : A->B->Prop),
+   (forall x : A, exists y : B, R x y) ->
+    exists f : A->B, (forall x : A, R x (f x)).
+*)
+
+Theorem union_vide: EQ (Union Vide) Vide.
+Proof.
+apply axExt.
+intro z. split; intro H.
++ apply Union_IN in H as [w [W1 W2]].
+  destruct (Vide_est_vide w W1).
++ destruct (Vide_est_vide z H).
+Defined.
+
+Lemma nemp_then_inh (S:Ens) (H:~EQ Vide S) : exists m, IN m S.
+Proof.
+Search Vide.
+unshelve eapply not_all_not_ex.
+intro D.
+apply H.
+apply EQ_sym.
+apply (tout_vide_est_Vide S).
+exact D.
+Defined.
 
 Section sec_choice.
 Context (AC : choice).
 Theorem axChoice : forall S:Ens,
 (~IN Vide S) -> exists f:Ens,
-forall X, IN X S -> (exists Q, IN (OrdPair X Q) f).
+forall X, IN X S <-> (exists Q, IN (OrdPair X Q) f).
 Proof.
 intros.
+pose (A:=(pi1 S)).
+pose (B:=(pi1 (Union S))).
+Check pi2.
+pose (P:= fun (a:A) (b:B) => (IN (pi2 S a) S) /\ 
+(IN (pi2 (Union S) b) (pi2 S a))).
+assert (forall a : A, (exists b : B, P a b)).
+{
+ intro a.
+ unfold B, P.
+ unfold A in a.
 
+Check sup.
+
+Lemma ac_lem (S:Ens) (H1:~EQ Vide S) (H2:~IN Vide S)
+: exists e:Ens, IN e (Union S).
+Proof.
+apply not_all_not_ex.
+intros B1.
+Search Vide.
+apply tout_vide_est_Vide in B1.
+apply H1.
+rewrite axExt.
+rewrite axExt in B1.
+intro w.
+split; intro u.
++ destruct (Vide_est_vide w u).
++ apply B1.
 Abort.
+Abort.
+
 End sec_choice.
 
+pose (P:= fun (a:A) (b:B) => (IN a S) /\ (IN b a)).
 (* GOOD INSTRUMENTS:
 SearchPattern ( _ + _ = _ + _ ).
 
