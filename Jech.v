@@ -2533,7 +2533,7 @@ assert (forall a : A, (exists b : B, P a b)).
    destruct (pi2 S a).
    admit.
  }
- exists b_aim.
+(* exists b_aim.
  exact (lem4 (Union S) b_aim).
  exists v.
 
@@ -2542,7 +2542,7 @@ IN (pi2 S a) S
  unfold A in a.
 
 Check sup.
-unfold pi1, pi2.
+unfold pi1, pi2.*)
 Lemma ac_lem (S:Ens) (H1:~EQ Vide S) (H2:~IN Vide S)
 : exists e:Ens, IN e (Union S).
 Proof.
@@ -2562,7 +2562,7 @@ Abort.
 
 End sec_choice.
 
-pose (P:= fun (a:A) (b:B) => (IN a S) /\ (IN b a)).
+(*pose (P:= fun (a:A) (b:B) => (IN a S) /\ (IN b a)).*)
 (* GOOD INSTRUMENTS:
 SearchPattern ( _ + _ = _ + _ ).
 
