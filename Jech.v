@@ -2392,20 +2392,6 @@ assert (C:IN Vide (Power (Union Vide))).
   apply Vide_est_vide in C as [].
 Defined.
 
-
-Definition choice :=
-  forall (A B : Type) (P : A -> B -> Prop),
-  (forall a : A, (exists b : B, P a b)) ->
-  (exists f : A -> B, forall a : A, P a (f a)).
-(*
-Require Import ClassicalChoice.
-choice
-Theorem choice :
- forall (A B : Type) (R : A->B->Prop),
-   (forall x : A, exists y : B, R x y) ->
-    exists f : A->B, (forall x : A, R x (f x)).
-*)
-
 Theorem union_vide: EQ (Union Vide) Vide.
 Proof.
 apply axExt.
@@ -2415,37 +2401,148 @@ intro z. split; intro H.
 + destruct (Vide_est_vide z H).
 Defined.
 
-Lemma nemp_then_inh (S:Ens) (H:~EQ Vide S) : exists m, IN m S.
+Lemma nemp_then_inh (S:Ens) (H:~EQ S Vide) : exists m, IN m S.
 Proof.
 Search Vide.
 unshelve eapply not_all_not_ex.
 intro D.
 apply H.
-apply EQ_sym.
+(*apply EQ_sym.*)
 apply (tout_vide_est_Vide S).
 exact D.
 Defined.
 
+Require Import FunctionalExtensionality.
+Lemma pi1pi2 (E:Ens): E = sup (pi1 E) (pi2 E).
+Proof.
+destruct E.
+apply f_equal.
+apply functional_extensionality.
+intro. simpl. reflexivity.
+Defined.
+
+Lemma lem3 (S:Ens) (K:~IN Vide S) :
+forall a:Ens, IN a S -> exists b:Ens, IN b a.
+Proof.
+intros a ainS.
+ pose (f:=classic (EQ a Vide)).
+ destruct f as [J|J].
+ eapply IN_sound_left in ainS.
+ 2 : exact J.
+ destruct (K ainS).
+ apply nemp_then_inh.
+ exact J.
+Defined.
+
+Theorem lem4 (S:Ens) (a:pi1 S) : IN (pi2 S a) S.
+Proof.
+induction S.
+simpl.
+exists a.
+apply EQ_refl.
+Defined.
+(*Require Import ClassicalChoice. choice
+Theorem choice :
+ forall (A B : Type) (R : A->B->Prop),
+   (forall x : A, exists y : B, R x y) ->
+    exists f : A->B, (forall x : A, R x (f x)).*)
+Definition choice :=
+  forall (A B : Type) (P : A -> B -> Prop),
+  (forall a : A, (exists b : B, P a b)) ->
+  (exists f : A -> B, forall a : A, P a (f a)).
+Check sup.
 Section sec_choice.
 Context (AC : choice).
-Theorem axChoice : forall S:Ens,
+Section sec2.
+Context (S:Ens).
+Context (H:~IN Vide S).
+Inductive indA := 
+| cindA (q:Ens) (J:IN q S): indA.
+Inductive indB := 
+| cindB (q:Ens) (J:IN q (Union S)): indB.
+
+Definition PP (iA:indA) (iB:indB) : Prop.
+Proof.
+destruct iA, iB.
+exact (IN q0 q).
+Defined.
+(*(forall a : A, exists b : B, P a b)*)
+Theorem hyp1 : forall a : indA, exists b : indB, PP a b.
+Proof. intro a. destruct a.
+pose (W:=lem3 S H q J).
+destruct W as [bb KK].
+pose (LL:= IN_Union S q bb J KK).
+exists (cindB bb LL).
+simpl.
+exact KK.
+Defined.
+
+Context (ex2sig:forall (A:Type) (P:A->Prop), @ex A P -> @sig A P).
+
+(* Definition of a choice function *)
+Definition chfu : Ens.
+Proof.
+pose (mn:=AC indA indB PP hyp1).
+apply ex2sig in mn.
+destruct mn as [a B].
+pose (ff:=Comp (Product S (Union S)) 
+(fun pa=>
+ exists l1 l2, EQ pa (OrdPair l1 l2) /\
+  exists (g: IN l1 S), 
+match (a (cindA l1 g)) with
+cindB q qinUS => EQ l2 q
+end
+)).
+exact ff.
+Defined.
+
+Theorem axChoice0 : exists f:Ens,
+forall X, IN X S <-> 
+((exists Q, IN (OrdPair X Q) f)/\
+ (forall Q1 Q2, IN (OrdPair X Q1) f /\ IN (OrdPair X Q2) f -> EQ Q1 Q2)).
+Proof.
+exists chfu.
+intros X.
+(*XinS
+unfold PP in B.
+simpl in *|-*.*)
+Abort.
+End sec2.
+Theorem axChoice0 : forall S:Ens,
 (~IN Vide S) -> exists f:Ens,
-forall X, IN X S <-> (exists Q, IN (OrdPair X Q) f).
+forall X, IN X S <-> 
+((exists Q, IN (OrdPair X Q) f)/\
+ (forall Q1 Q2, IN (OrdPair X Q1) f /\ IN (OrdPair X Q2) f -> EQ Q1 Q2)).
 Proof.
 intros.
 pose (A:=(pi1 S)).
 pose (B:=(pi1 (Union S))).
 Check pi2.
-pose (P:= fun (a:A) (b:B) => (IN (pi2 S a) S) /\ 
+pose (P:= fun (a:A) (b:B) => (*(IN (pi2 S a) S) /\ *)
 (IN (pi2 (Union S) b) (pi2 S a))).
+Check AC A B P.
 assert (forall a : A, (exists b : B, P a b)).
 {
  intro a.
- unfold B, P.
+ unfold P.
+ pose (zz := lem3 S H (pi2 S a) (lem4 S a)).
+ destruct zz as [v k].
+ Check lem4 (Union S). 
+ assert (b_aim : pi1 (pi2 S a)).
+ { unfold IN in k.
+   destruct (pi2 S a).
+   admit.
+ }
+ exists b_aim.
+ exact (lem4 (Union S) b_aim).
+ exists v.
+
+IN (pi2 S a) S
+
  unfold A in a.
 
 Check sup.
-
+unfold pi1, pi2.
 Lemma ac_lem (S:Ens) (H1:~EQ Vide S) (H2:~IN Vide S)
 : exists e:Ens, IN e (Union S).
 Proof.
