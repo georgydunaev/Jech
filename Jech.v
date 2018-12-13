@@ -30,7 +30,10 @@ of the first-order logic and ZFC set theory.
 (* These notions should not be unfolded:
 Pair, Union, Powerset. *)
 
-Require Import Classical_Prop Classical_Pred_Type.
+Require Import Logic.Classical_Prop.
+Require Import Logic.Classical_Pred_Type.
+Require Import Logic.IndefiniteDescription.
+Definition ex2sig := constructive_indefinite_description.
 (*============================================
                      Part I
 ==============================================*)
@@ -1940,7 +1943,7 @@ exact (forall (c:class), (k c) -> (ias c)).
 Defined.
 
 Section sec_ex2sig.
-Context (ex2sig:forall (A:Type) (P:A->Prop), @ex A P -> @sig A P).
+(*Context (ex2sig:forall (A:Type) (P:A->Prop), @ex A P -> @sig A P).*)
 Definition ctos (c:class) (H:ias c) : Ens.
 Proof.
 apply ex2sig in H.
@@ -2476,8 +2479,6 @@ exists (cindB bb LL).
 simpl.
 exact KK.
 Defined.
-
-Context (ex2sig:forall (A:Type) (P:A->Prop), @ex A P -> @sig A P).
 
 (* Definition of a choice function *)
 Definition chfu : Ens.
