@@ -2480,30 +2480,67 @@ simpl.
 exact KK.
 Defined.
 
+Definition mn : exists f : indA -> indB, forall a : indA, PP a (f a) 
+ := AC indA indB PP hyp1.
+
+Definition fiAtoiB : indA -> indB.
+Proof.
+destruct (ex2sig _ _ mn) as [a B].
+exact a.
+Defined.
+Definition fiAtoiB_prop : forall a : indA, PP a (fiAtoiB a).
+Proof.
+destruct (ex2sig _ _ mn) as [a B].
+try exact B.
+Abort.
+
 (* Definition of a choice function *)
 Definition chfu : Ens.
 Proof.
-pose (mn:=AC indA indB PP hyp1).
-apply ex2sig in mn.
-destruct mn as [a B].
+(*destruct (ex2sig _ _ mn) as [a B].*)
+(*apply ex2sig in mn.
+destruct mn as [a B].*)
 pose (ff:=Comp (Product S (Union S)) 
 (fun pa=>
  exists l1 l2, EQ pa (OrdPair l1 l2) /\
   exists (g: IN l1 S), 
-match (a (cindA l1 g)) with
+match (fiAtoiB (cindA l1 g)) with
 cindB q qinUS => EQ l2 q
 end
 )).
 exact ff.
 Defined.
 
+Section sec3.
+Context (X:Ens) (G:IN X S).
+Theorem chfu_total : exists Q, IN (OrdPair X Q) chfu.
+Proof.
+  destruct (lem3 S H X G) as [b binX].
+  exists b.
+  unfold chfu.
+  eapply IN_P_Comp.
+  { (* lem of soundness *) admit. }
+  { (* trivial Search Product. Need Product_IN *) admit. }
+  { exists X, b. split. apply EQ_refl. exists G. 
+    induction (fiAtoiB (cindA X G)).
+Abort.
+End sec3.
 Theorem axChoice0 : exists f:Ens,
-forall X, IN X S <-> 
+forall X, IN X S -> (*<->*)
 ((exists Q, IN (OrdPair X Q) f)/\
  (forall Q1 Q2, IN (OrdPair X Q1) f /\ IN (OrdPair X Q2) f -> EQ Q1 Q2)).
 Proof.
 exists chfu.
 intros X.
+ intro G.
++ split.
+  - (* totality of relation: existence of the ordered pair*)
+  destruct (lem3 S H X G) as [b binX].
+  exists b.
+  unfold chfu.
+  eapply IN_P_Comp.
+   (*chfu*)
+  
 (*XinS
 unfold PP in B.
 simpl in *|-*.*)
