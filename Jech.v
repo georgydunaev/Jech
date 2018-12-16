@@ -2520,22 +2520,31 @@ Definition fu := fun v : pi1 S =>
  OrdPair (pi2 S v) (pi2 (Union S) ((proj1_sig fp) v)).
 Definition chfu : Ens := (sup (pi1 S) fu).
 
-Theorem choifunc_total (X:Ens) (G:IN X S): exists Q, IN (OrdPair X Q) chfu.
+Theorem choifunc_total (X:Ens) (G:IN X S): exists Q, IN (OrdPair X Q) chfu /\ IN Q X.
 Proof.
 pose (t:=in2term S X G).
 pose (p:=fu t).
 (*&pose (p:=t). *)
 unfold fu in p.
 exists (pi2 (Union S) (proj1_sig fp t)).
+split.
 (*exists p.*)
-unfold chfu.
-unfold IN.
+{ unfold chfu.
+  unfold IN.
 exists t. (*!*)
 unfold t.
 
 apply OrdPair_sound_both.
 apply goodlem.
-apply EQ_refl.
+apply EQ_refl. }
+{ 
+pose (Y:= proj2_sig fp t).
+unfold P in Y.
+eapply IN_sound_right.
+2 : exact Y.
+unfold t.
+apply EQ_sym.
+apply goodlem. }
 Defined.
 
 unfold fu in p.
