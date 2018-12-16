@@ -2547,12 +2547,62 @@ apply EQ_sym.
 apply goodlem. }
 Defined.
 
+Theorem choifunc_func : forall X:Ens, (IN X S) ->
+(forall Q1 Q2, IN (OrdPair X Q1) chfu /\ IN (OrdPair X Q2) chfu -> EQ Q1 Q2).
+Proof.
+intros X W Q1 Q2 [K1 K2].
+unfold chfu, IN in K1,K2.
+unfold fu in K1,K2.
+destruct K1 as [y1 K1], K2 as [y2 K2].
+Search OrdPair.
+apply OrdPair_inj in K1 as [L1 R1].
+apply OrdPair_inj in K2 as [L2 R2].
+eapply EQ_tran. exact R1.
+eapply EQ_tran. 2 : { apply EQ_sym. exact R2. }
+pose (J:=(proj2_sig fp)).
+simpl in J. unfold P in J.
+(* How to prove functionality? 
+   1) Redefine P ? NO!
+   2)Choose inside preimages of 
+ DependentFunctionalChoice_on
+ *)
+(*
+EQ (pi2 S y1) (pi2 S y2) -> 
+*)
+Definition P1:= fun ts tus => IN (pi2 (Union S) tus) (pi2 S ts).
+Theorem hyp1 : forall a : A, (exists b : B, P1 a b).
+Proof.
+intro a.
+unfold A, B, P in *|-*.
+pose (XinS := lem4 S a). (*apply (lem4 S) in a as XinS.???*) (* 'IN X S' *)
+pose (X:=pi2 S a). (* Множество 'X' соответствует терму 'a'.*)
+(*'X' is nonempty *) 
+(* so there exists q, 'IN q X' *)
+pose (J:=lem3 S H X XinS).
+destruct J as [b binX].
+pose (binUS := IN_Union S X b XinS binX).
+exists (in2term _ _ binUS).
+fold X in XinS |- *.
+simpl.
+eapply IN_sound_left.
+apply goodlem.
+assumption.
+Defined.
+
+unfold fp in R1,R2.
+EQ
+fp
+unfold IN in K1.
+destruct chfu. 
+simpl  in * |- *.
+
+
+
 unfold fu in p.
-unfold fp.
+
 apply fu in t.
 
 apply goodlem.
-Search OrdPair.
 replace (exists y : A, EQ E1 (f y)).
 
 simpl.
