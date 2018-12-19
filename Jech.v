@@ -32,6 +32,7 @@ Pair, Union, Powerset. *)
 
 Require Import Logic.Classical_Prop.
 Require Import Logic.Classical_Pred_Type.
+Require Import Logic.ChoiceFacts.
 Require Import Logic.IndefiniteDescription.
 Definition ex2sig := constructive_indefinite_description.
 (*============================================
@@ -2474,31 +2475,19 @@ eapply OrdPair_sound_right.
 exact y1eqy2.
 Defined.
 
-(*Require Import ClassicalChoice. choice
-Theorem choice :
- forall (A B : Type) (R : A->B->Prop),
-   (forall x : A, exists y : B, R x y) ->
-    exists f : A->B, (forall x : A, R x (f x)).*)
-Definition choice :=
-  forall (A B : Type) (P : A -> B -> Prop),
-  (forall a : A, (exists b : B, P a b)) ->
-  (exists f : A -> B, forall a : A, P a (f a)).
-Check sup.
-Section sec_choice.
-Context (AC : choice).
-Section sec2.
+Section AC_sec.
 Context (S:Ens).
 Context (H:~IN Vide S).
 
-(* попроще: *)
-Section easy.
-Definition A:=pi1 S.
-Definition B:=pi1 (Union S).
-Definition P:= fun ts tus => IN (pi2 (Union S) tus) (pi2 S ts).
-Theorem hyp : forall a : A, (exists b : B, P a b).
+Definition AC_A:=pi1 S.
+Definition AC_B:=pi1 (Union S).
+Definition AC_T:AC_A->AC_B->Prop 
+ := fun a b => IN (pi2 (Union S) b) (pi2 S a).
+(*Definition AC_P:= fun ts tus => IN (pi2 (Union S) tus) (pi2 S ts).*)
+Theorem AC_hyp : forall a : AC_A, (exists b : AC_B, AC_T a b).
 Proof.
 intro a.
-unfold A, B, P in *|-*.
+unfold AC_A, AC_B, AC_T in *|-*.
 pose (XinS := lem4 S a). (*apply (lem4 S) in a as XinS.???*) (* 'IN X S' *)
 pose (X:=pi2 S a). (* Множество 'X' соответствует терму 'a'.*)
 (*'X' is nonempty *) 
@@ -2514,22 +2503,42 @@ apply goodlem.
 assumption.
 Defined.
 
-(* function and property *)
-Definition fp := ex2sig _ _ (AC A B P hyp).
-Definition fu := fun v : pi1 S =>
- OrdPair (pi2 S v) (pi2 (Union S) ((proj1_sig fp) v)).
-Definition chfu : Ens := (sup (pi1 S) fu).
+Definition AC_R : AC_A->AC_A->Prop := fun a1 a2 => EQ (pi2 S a1) (pi2 S a2).
 
-Theorem choifunc_total (X:Ens) (G:IN X S): exists Q, IN (OrdPair X Q) chfu /\ IN Q X.
+Theorem AC_eqvR : RelationClasses.Equivalence AC_R.
+Proof.
+constructor.
++ intro x. apply EQ_refl.
++ intros x1 x2 K. apply EQ_sym. exact K.
++ intros x1 x2 x3 K1 K2. eapply EQ_tran. exact K1. exact K2.
+Defined.
+
+Theorem T_sound : (forall (x x' : AC_A) (y : AC_B),
+ AC_R x x' -> AC_T x y -> AC_T x' y).
+Proof.
+intros x1 x2 y Rx1x2 Txy.
+eapply IN_sound_right.
+exact Rx1x2.
+exact Txy.
+Defined.
+
+Axiom (SFC:SetoidFunctionalChoice_on AC_A AC_B).
+
+Definition Afp := ex2sig _ _ (SFC AC_R AC_T AC_eqvR T_sound AC_hyp).
+Definition Afu := fun v : pi1 S =>
+ OrdPair (pi2 S v) (pi2 (Union S) ((proj1_sig Afp) v)).
+Definition Achfu : Ens := (sup (pi1 S) Afu).
+
+Theorem Achfu_total (X:Ens) (G:IN X S): exists Q, IN (OrdPair X Q) Achfu /\ IN Q X.
 Proof.
 pose (t:=in2term S X G).
-pose (p:=fu t).
+pose (p:=Afu t).
 (*&pose (p:=t). *)
-unfold fu in p.
-exists (pi2 (Union S) (proj1_sig fp t)).
+unfold Afu in p.
+exists (pi2 (Union S) (proj1_sig Afp t)).
 split.
 (*exists p.*)
-{ unfold chfu.
+{ unfold Achfu.
   unfold IN.
 exists t. (*!*)
 unfold t.
@@ -2538,339 +2547,64 @@ apply OrdPair_sound_both.
 apply goodlem.
 apply EQ_refl. }
 { 
-pose (Y:= proj2_sig fp t).
-unfold P in Y.
+pose (Y:= proj2_sig Afp t).
+unfold AC_T in Y.
+destruct Y as [Y1 Y2].
 eapply IN_sound_right.
-2 : exact Y.
+2 :  exact Y1.
 unfold t.
 apply EQ_sym.
 apply goodlem. }
 Defined.
 
-Theorem choifunc_func : forall X:Ens, (IN X S) ->
-(forall Q1 Q2, IN (OrdPair X Q1) chfu /\ IN (OrdPair X Q2) chfu -> EQ Q1 Q2).
+Lemma eq2EQ (E1 E2:Ens) (K:E1=E2): EQ E1 E2.
+Proof. destruct K. apply EQ_refl. Defined.
+
+Theorem Achfu_func : forall X:Ens, (IN X S) ->
+(forall Q1 Q2, IN (OrdPair X Q1) Achfu /\ IN (OrdPair X Q2) Achfu -> EQ Q1 Q2).
 Proof.
 intros X W Q1 Q2 [K1 K2].
-unfold chfu, IN in K1,K2.
-unfold fu in K1,K2.
+unfold Achfu, IN in K1,K2.
+unfold Afu in K1,K2.
 destruct K1 as [y1 K1], K2 as [y2 K2].
 Search OrdPair.
 apply OrdPair_inj in K1 as [L1 R1].
 apply OrdPair_inj in K2 as [L2 R2].
 eapply EQ_tran. exact R1.
 eapply EQ_tran. 2 : { apply EQ_sym. exact R2. }
-pose (J:=(proj2_sig fp)).
-simpl in J. unfold P in J.
-(* How to prove functionality? 
-   1) Redefine P ? NO!
-   2)Choose inside preimages of 
- DependentFunctionalChoice_on
- *)
-(*
-EQ (pi2 S y1) (pi2 S y2) -> 
-*)
-Definition P1:= fun ts tus => IN (pi2 (Union S) tus) (pi2 S ts).
-Theorem hyp1 : forall a : A, (exists b : B, P1 a b).
-Proof.
-intro a.
-unfold A, B, P in *|-*.
-pose (XinS := lem4 S a). (*apply (lem4 S) in a as XinS.???*) (* 'IN X S' *)
-pose (X:=pi2 S a). (* Множество 'X' соответствует терму 'a'.*)
-(*'X' is nonempty *) 
-(* so there exists q, 'IN q X' *)
-pose (J:=lem3 S H X XinS).
-destruct J as [b binX].
-pose (binUS := IN_Union S X b XinS binX).
-exists (in2term _ _ binUS).
-fold X in XinS |- *.
-simpl.
-eapply IN_sound_left.
-apply goodlem.
-assumption.
+pose (J:=(proj2_sig Afp)).
+
+apply eq2EQ.
+apply f_equal.
+
+simpl in J. unfold AC_T in J.
+destruct (J y1) as [_ QR].
+apply (QR y2).
+unfold AC_R.
+eapply EQ_tran. apply EQ_sym. exact L1. exact L2.
 Defined.
 
-unfold fp in R1,R2.
-EQ
-fp
-unfold IN in K1.
-destruct chfu. 
-simpl  in * |- *.
-
-
-
-unfold fu in p.
-
-apply fu in t.
-
-apply goodlem.
-replace (exists y : A, EQ E1 (f y)).
-
-simpl.
-
-apply EQ_sym.
-End easy.
-(*
-Inductive indA := 
-| cindA (q:Ens) (J:IN q S): indA.
-Inductive indB := 
-| cindB (q:Ens) (J:IN q (Union S)): indB.
-*)
-Definition indA := { q:Ens | IN q S}.
-Definition indB := { q:Ens | IN q (Union S)}.
-Definition PP (iA:indA) (iB:indB) : Prop.
-Proof.
-destruct iA as [q J], iB as [q0 J0].
-exact (IN q0 q).
-Defined.
-(*(forall a : A, exists b : B, P a b)*)
-Theorem hyp1 : forall a : indA, exists b : indB, PP a b.
-Proof. intro a. destruct a as [q J].
-pose (W:=lem3 S H q J).
-destruct W as [bb KK].
-pose (LL:= IN_Union S q bb J KK).
-exists (exist _ bb LL).
-simpl.
-exact KK.
-Defined.
-
-Definition mn : exists f : indA -> indB, forall a : indA, PP a (f a) 
- := AC indA indB PP hyp1.
-
-Definition mnsig : {x : indA -> indB | forall a : indA, PP a (x a)}
- := (ex2sig _ _ mn).
-
-Definition fiAtoiB : indA -> indB := proj1_sig mnsig.
-
-Definition fiAtoiB_prop
-     : forall a : indA,
-       PP a (fiAtoiB a)
- := proj2_sig mnsig.
-
-(*Definition fiAtoiB_prop
-     : forall a : indA,
-       PP a
-         (proj1_sig
-            (ex2sig (indA -> indB)
-               (fun f : indA -> indB =>
-                forall a0 : indA, PP a0 (f a0)) mn) a)
- := proj2_sig (ex2sig _ _ mn).*)
-(*
-Definition fiAtoiB' : indA -> indB.
-Proof.
-destruct (ex2sig _ _ mn) as [a B].
-exact a.
-Defined.
-
-Definition fiAtoiB_prop' : forall a : indA, PP a (fiAtoiB a).
-Proof.
-destruct (ex2sig _ _ mn) as [a B].
-try exact B.
-Abort.*)
-
-(* Definition of a choice function *)
-(*Definition chfu : Ens.
-Proof.
-unshelve eapply (Comp (Product S (Union S)) _ ).
-intro pa.
-refine (exists l1 l2, EQ pa (OrdPair l1 l2) /\ _).
-Abort.*)
-
-Definition f0: (pi1 S) -> indA.
-Proof. intro ts.
-unshelve eapply exist.
-exact (pi2 S ts).
-apply lem4.
-Defined.
-
-(*Check (sup indA).*)
-Check proj1_sig mnsig.
-Definition fu:(pi1 S -> Ens).
-Proof. intro ts.
-pose (x:=(f0 ts)).
-destruct (fiAtoiB x) as [v V].
-exact (OrdPair (proj1_sig x) v).
-Defined.
-
-Definition choifunc : Ens := (sup (pi1 S) fu).
-
-(*Definition chfu : Ens.
-Proof.
-(*destruct (ex2sig _ _ mn) as [a B].*)
-(*apply ex2sig in mn.
-destruct mn as [a B].*)
-pose (ff:=Comp (Product S (Union S)) 
-(fun pa=>
- exists l1 l2, EQ pa (OrdPair l1 l2) /\
-  exists (g: IN l1 S),
-match (fiAtoiB (cindA l1 g)) with
-cindB q qinUS => EQ l2 q
-end
-)).
-exact ff.
-Defined.*)
-
-Section sec3.
-Context (X:Ens) (G:IN X S).
-Definition XG : {q : Ens | IN q S} 
- := (exist (fun q : Ens => IN q S) X G).
-
-Theorem choifunc_total : exists Q, IN (OrdPair X Q) choifunc.
-Proof.
-assert (F:indA).
-{ unshelve eapply exist. exact X. exact G. }
-Show Proof.
-apply fiAtoiB in F as M.
-
-(*destruct F as [f p].*)
-exists (proj1_sig XG).
-unfold choifunc.
-unfold IN.
-apply in2term in G as G1.
-exists G1.
-unfold fu.
-destruct (fiAtoiB (f0 G1)).
-unfold IN in G.
-simpl.
-change.
-unshelve eapply exist.
-fu IN
-Theorem lem5 (S:Ens) (a:pi1 S) : IN (pi2 S a) S.
-Proof.
-induction S.
-simpl.
-exists a.
-apply EQ_refl.
-Defined.
-
-exists (proj1_sig (exist (fun q : Ens => IN q S) X G)).
-simpl.
-eapply lem4.
-simpl.
-exists (pi2 S X).
-
-simpl.
-
-destruct choifunc.
-destruct (proj1_sig mnsig (exist _ X _)) as [b B].
-exist 
-Defined.
-(*Theorem chfu_total : exists Q, IN (OrdPair X Q) chfu.
-Proof.
-  destruct (lem3 S H X G) as [b binX].
-  exists b.
-  unfold chfu.
-  eapply IN_P_Comp.
-  { (* lem of soundness *) admit. }
-  { (* trivial Search Product. Need Product_IN *) admit. }
-  { exists X, b. split. apply EQ_refl. exists G. 
-    induction (fiAtoiB (cindA X G)).
-Abort.*)
-End sec3.
-Theorem axChoice0 : exists f:Ens,
-forall X, IN X S -> (*<->*)
-((exists Q, IN (OrdPair X Q) f)/\
+Theorem axChoice : exists f:Ens,
+forall X, IN X S -> (* '<->' for the restriction of f on S *)
+((exists Q, IN (OrdPair X Q) f /\ IN Q X) /\
  (forall Q1 Q2, IN (OrdPair X Q1) f /\ IN (OrdPair X Q2) f -> EQ Q1 Q2)).
 Proof.
-exists chfu.
+exists Achfu.
 intros X.
  intro G.
 + split.
-  - (* totality of relation: existence of the ordered pair*)
-  destruct (lem3 S H X G) as [b binX].
-  exists b.
-  unfold chfu.
-  eapply IN_P_Comp.
-   (*chfu*)
-  
-(*XinS
-unfold PP in B.
-simpl in *|-*.*)
-Abort.
-End sec2.
-Theorem axChoice0 : forall S:Ens,
-(~IN Vide S) -> exists f:Ens,
-forall X, IN X S <-> 
-((exists Q, IN (OrdPair X Q) f)/\
- (forall Q1 Q2, IN (OrdPair X Q1) f /\ IN (OrdPair X Q2) f -> EQ Q1 Q2)).
-Proof.
-intros.
-pose (A:=(pi1 S)).
-pose (B:=(pi1 (Union S))).
-Check pi2.
-pose (P:= fun (a:A) (b:B) => (*(IN (pi2 S a) S) /\ *)
-(IN (pi2 (Union S) b) (pi2 S a))).
-Check AC A B P.
-assert (forall a : A, (exists b : B, P a b)).
-{
- intro a.
- unfold P.
- pose (zz := lem3 S H (pi2 S a) (lem4 S a)).
- destruct zz as [v k].
- Check lem4 (Union S). 
- assert (b_aim : pi1 (pi2 S a)).
- { unfold IN in k.
-   destruct (pi2 S a).
-   admit.
- }
-(* exists b_aim.
- exact (lem4 (Union S) b_aim).
- exists v.
+  - (* totality of the relation: existence of the ordered pair *)
+    apply Achfu_total with (1:=G).
+  - (* functionality of the relation *)
+    apply Achfu_func with (1:=G).
+Defined.
 
-IN (pi2 S a) S
+End AC_sec.
 
- unfold A in a.
+Check axChoice.
 
-Check sup.
-unfold pi1, pi2.*)
-Lemma ac_lem (S:Ens) (H1:~EQ Vide S) (H2:~IN Vide S)
-: exists e:Ens, IN e (Union S).
-Proof.
-apply not_all_not_ex.
-intros B1.
-Search Vide.
-apply tout_vide_est_Vide in B1.
-apply H1.
-rewrite axExt.
-rewrite axExt in B1.
-intro w.
-split; intro u.
-+ destruct (Vide_est_vide w u).
-+ apply B1.
-Abort.
-Abort.
+(************************* STOP HERE ****************************)
 
-End sec_choice.
-
-(*pose (P:= fun (a:A) (b:B) => (IN a S) /\ (IN b a)).*)
-(* GOOD INSTRUMENTS:
-SearchPattern ( _ + _ = _ + _ ).
-
-SearchPattern ( _ (Power _) ).
-*)
-
-
-(*(*Variant isas2 (C : class) : Type :=
-| Build_isas2 : forall (dmn : Ens) (_ : EQC C (stoc dmn)), isas2 C
-| Build_isas3 : forall (dmn : Ens) (_ : EQC C (stoc dmn)), isas2 C. *)
-Check isas2.
-dmn isas
-exact h.
-      apply EQC_symm.
-
-      apply axExtC.
-     rewrite <- (eqvias A ASE) in J.
-isas
-(* apply axExtC in HA. *)
-      apply IN_Paire_left.
-      simpl.
-      
-ueapp scosisas.
-simpl.
-cPair
- eqn:M.
-(*exact (Paire A B).
-unfold isas.*)*)
-(*Abort.*)
 
 Record Category := {
 Ob : class;
