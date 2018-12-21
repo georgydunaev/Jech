@@ -73,6 +73,7 @@ exact (forall y : B, exists x : A, eq1 x (g y)).
 Show Proof.
 Defined.*)
 
+(* BEST
 Fixpoint EQ (E1 E2: Ens) {struct E2}: Prop.
 Proof.
 destruct E1 as [A f].
@@ -81,7 +82,18 @@ apply and.
 exact (forall x : A, exists y : B, EQ (f x) (g y)).
 exact (forall y : B, exists x : A, EQ (f x) (g y)).
 Show Proof.
-Defined.
+Defined.*)
+
+(* Both "{struct E1}" and "{struct E2}" works good. *)
+Fixpoint EQ (E1 E2: Ens) {struct E2}: Prop :=
+  match E1 with
+   | sup A f =>
+       match E2 with
+       | sup B g =>
+           (forall x : A, exists y : B, EQ (f x) (g y)) /\
+           (forall y : B, exists x : A, EQ (f x) (g y))
+       end
+   end.
 
 
 (* NOT BAD
@@ -134,7 +146,15 @@ Definition INC : Ens -> Ens -> Prop
     ).
 
 (* EQ is an equivalence relation  *)
-Theorem EQ_refl : forall E : Ens, EQ E E.
+
+Fixpoint EQ_refl (E : Ens) : EQ E E.
+Proof.
+destruct E as [A f].
+split; intros z; exists z; exact (EQ_refl (f z)).
+Defined.
+
+(* Previous version
+Theorem EQ_refl' : forall E : Ens, EQ E E.
 Proof.
 simple induction E.
 intros A f HR.
@@ -142,8 +162,29 @@ simpl in |- *.
 split; intros.
 exists x; auto.
 exists y; auto.
+Show Proof.
+Defined.*)
+
+Fixpoint EQ_tran (E1 E2 E3 : Ens) {struct E2}:
+ EQ E1 E2 -> EQ E2 E3 -> EQ E1 E3.
+Proof.
+destruct E1 as [A1 f1], E2 as [A2 f2], E3 as [A3 f3].
+intros E1eqE2 E2eqE3.
+destruct E1eqE2 as [E12 E21].
+destruct E2eqE3 as [E23 E32].
+simpl in |- *.
+split.
++ intro x1.
+  destruct (E12 x1) as [x2 P12].
+  destruct (E23 x2) as [x3 P23].
+  exists x3. apply (EQ_tran (f1 x1) (f2 x2) (f3 x3) P12 P23).
++ intro x3.
+  destruct (E32 x3) as [x2 P32].
+  destruct (E21 x2) as [x1 P21].
+  exists x1. apply (EQ_tran (f1 x1) (f2 x2) (f3 x3) P21 P32).
 Defined.
 
+(* Complicated
 Theorem EQ_tran : forall E1 E2 E3 : Ens, EQ E1 E2 -> EQ E2 E3 -> EQ E1 E3.
 Proof.
 simple induction E1; intros A1 f1 r1; simple induction E2; intros A2 f2 r2;
@@ -157,7 +198,20 @@ apply r1 with (f2 a2); auto.
 intros a3; elim (I4 a3); intros a2; elim (I2 a2); intros a1; exists a1.
 apply r1 with (f2 a2); auto.
 Defined.
+*)
 
+Fixpoint EQ_sym (E1 E2 : Ens) {struct E2}: EQ E1 E2 -> EQ E2 E1.
+Proof.
+intro H.
+destruct E1 as [A f], E2 as [B g].
+simpl in * |- *.
+destruct H as [A2B B2A]; split.
++ intro b. destruct (B2A b) as [a J]. exists a. apply EQ_sym with (1:=J).
++ intro a. destruct (A2B a) as [b J]. exists b. apply EQ_sym with (1:=J).
+Show Proof.
+Defined.
+
+(* PREVIOUS VERSION
 Theorem EQ_sym : forall E1 E2 : Ens, EQ E1 E2 -> EQ E2 E1.
 Proof.
 simple induction E1; intros A1 f1 r1; simple induction E2; intros A2 f2 r2;
@@ -165,20 +219,49 @@ simple induction E1; intros A1 f1 r1; simple induction E2; intros A2 f2 r2;
 intros a2; elim (e2 a2); intros a1 H1; exists a1; auto.
 intros a1; elim (e1 a1); intros a2 H2; exists a2; auto.
 Defined.
-
+*)
 Hint Resolve EQ_sym EQ_refl : zfc.
 (*Definition EQ_INC := INC_refl.*)
-
 
 (* Membership is extentional (i.e. is stable w.r.t. EQ)   *)
 Theorem IN_sound_left :
  forall E E' E'' : Ens, EQ E E' -> IN E E'' -> IN E' E''.
 Proof.
-simple induction E''; intros A'' f'' r'' e; simpl in |- *; simple induction 1;
- intros a'' p; exists a''; apply EQ_tran with E; auto with zfc.
+intros A B C AeqB AinC.
+destruct C as [T F].
+simpl in * |- *.
+destruct AinC as [Y AeqFY].
+exists Y.
+apply EQ_tran with A.
++ apply EQ_sym. exact AeqB.
++ apply AeqFY.
 Defined.
 
+(* PREVIOUS VERSION
+Theorem IN_sound_left' :
+ forall E E' E'' : Ens, EQ E E' -> IN E E'' -> IN E' E''.
+Proof.
+simple induction E''; intros A'' f'' r'' e; simpl in |- *; simple induction 1;
+ intros a'' p; exists a''; apply EQ_tran with E; auto with zfc.
+Defined.*)
+
 Theorem IN_sound_right :
+ forall E E' E'' : Ens, EQ E' E'' -> IN E E' -> IN E E''.
+Proof.
+intros A B C BeqC AinB.
+destruct B as [Y G].
+destruct C as [Z H].
+simpl in *|-*.
+destruct BeqC as [Y2Z Z2Y].
+destruct AinB as [y AeqGy].
+destruct (Y2Z y) as [z GyeqHz].
+exists z.
+eapply EQ_tran with (1:=AeqGy) (2:=GyeqHz).
+Show Proof.
+Defined.
+
+(* PREVIOUS VERSION
+Theorem IN_sound_right' :
  forall E E' E'' : Ens, EQ E' E'' -> IN E E' -> IN E E''.
 Proof.
 simple induction E'; intros A' f' r'; simple induction E'';
@@ -186,7 +269,7 @@ simple induction E'; intros A' f' r'; simple induction E'';
  intros e1 e2; simple induction 1; intros a' e'; elim (e1 a'); 
  intros a'' e''; exists a''; apply EQ_tran with (f' a'); 
  assumption.
-Defined.
+Defined.*)
 
 Theorem axExt_left : forall (x y : Ens),
   (forall z, IN z x <-> IN z y) -> EQ x y.
@@ -354,10 +437,15 @@ Definition Vide_est_vide : forall E : Ens, IN E Vide -> False.
 Proof.
 intro E.
 intro H.
-induction H.
+destruct H.
 exact x.
-(*Show Proof.*)
+(* Show Proof. *)
 Defined.
+
+Definition nothing_IN_Vide (E : Ens) (H:IN E Vide) : False
+:= match H with
+   | ex_intro _ x _ => x
+   end.
 (*
 unfold Vide in |- *; simpl in |- *; intros E H; cut False.
 simple induction 1.
