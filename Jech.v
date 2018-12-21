@@ -733,16 +733,19 @@ intros A f r.
 exact f.
 Defined.*)
 
-(* Existential on the Type level *)
+(*(* Existential on the Type level *)
 Inductive depprod (A : Type) (P : A -> Type) : Type :=
     dep_i : forall x : A, P x -> depprod A P.
+Changed to sigT and existT *)
 
 (* The Union set   *)
 Definition Union : forall E : Ens, Ens.
 Proof.
-simple induction 1; intros A f r.
-apply (sup (depprod A (fun x : A => pi1 (f x)))).
-simple induction 1; intros a b.
+intros [A f].
+(*simple induction 1; intros A f r.*)
+apply (sup { x : A & pi1 (f x)} ).
+intros [a b].
+(*simple induction 1; intros a b.*)
 exact (pi2 (f a) b).
 Defined.
 
@@ -752,8 +755,8 @@ Theorem EQ_EXType :
  forall a : pi1 E,
  exists b : pi1 E', EQ (pi2 E a) (pi2 E' b).
 Proof.
-simple induction E; intros A f r; simple induction E'; intros A' f' r';
- simpl in |- *; simple induction 1; intros e1 e2 a.
+intros [A f] [A' f'] [e1 e2].
+simpl in |- *.
 apply e1.
 Defined.
 
@@ -761,54 +764,75 @@ Theorem IN_EXType :
  forall E E' : Ens,
  IN E' E -> exists a : pi1 E, EQ E' (pi2 E a).
 Proof.
-simple induction E; simpl in |- *.
+intros [A f]. simpl.
+intros [A' f']. trivial.
+(*simple induction E; simpl in |- *.
 intros A f r.
 simple induction 1; simpl in |- *.
 intros.
-exists x; auto with zfc.
+exists x; auto with zfc.*)
 Defined.
 
 (* The union axioms *)
 Theorem IN_Union :
  forall E E' E'' : Ens, IN E' E -> IN E'' E' -> IN E'' (Union E).
 Proof.
-simple induction E; intros A f r.
+intros E.
 intros.
-simpl in |- *.
-elim (IN_EXType (sup A f) E' H).
-intros x e.
-cut (EQ (pi2 (sup A f) x) E'); auto with zfc.
-intros e1.
-cut (IN E'' (pi2 (sup A f) x)).
-intros i1.
-elim (IN_EXType _ _ i1).
-intros x0 e2.
-simpl in x0.
-exists (dep_i A (fun x : A => pi1 (f x)) x x0).
-simpl in |- *.
-exact e2.
-apply IN_sound_right with E'; auto with zfc.
-Defined.
+destruct E as [A f].
+simpl in *|-*.
+destruct H as [a E'eqfy].
+unshelve eapply ex_intro.
++ exists a.
+  destruct E' as [A' f'].
+  simpl in *|-*.
+  try destruct H0 as [a' E''eqf'y].
+Abort.
 
+Theorem IN_Union :
+ forall E E' E'' : Ens, IN E' E -> IN E'' E' -> IN E'' (Union E).
+Proof.
+intros E E' E'' H H0.
+destruct (IN_EXType E E' H) as [x e].
+destruct E as [A f].
+assert (e1 : EQ (pi2 (sup A f) x) E').
+{ apply EQ_sym; exact e. }
+(*simpl in *|-*.*)
+assert (i1:IN E'' (pi2 (sup A f) x)).
+{ apply IN_sound_right with E'; auto with zfc. }
+apply IN_EXType in i1 as [x0 e2].
+simpl in x0.
+exists (existT (fun x : A => pi1 (f x)) x x0).
+exact e2.
+Defined.
 
 Theorem IN_INC_Union : forall E E' : Ens, IN E' E -> INC E' (Union E).
 Proof.
-unfold INC in |- *; simple induction E; intros A f r; unfold Union in |- *.
-intros E' i E'' i'; simpl in |- *; elim (IN_EXType (sup A f) E' i).
-intros a e; simpl in a; simpl in e.
-elim (IN_EXType E' E'' i').
-cut (IN E'' (f a)).
-intros i'' a' e''; elim (IN_EXType _ _ i''); simpl in |- *; intros aa ee.
-exists (dep_i A (fun x : A => pi1 (f x)) a aa); auto with zfc.
-apply IN_sound_right with E'; auto with zfc.
+unfold INC in |- *.
+intros [A f].
+unfold Union in |- *.
+intros E' i E'' i'; simpl in |- *.
+destruct (IN_EXType (sup A f) E' i) as [a e].
+simpl in a; simpl in e.
+destruct (IN_EXType E' E'' i') as [a' e''].
+assert (i'': IN E'' (f a)).
+{ apply IN_sound_right with E'; auto with zfc. }
+eapply IN_EXType in i'' as [aa ee].
+exists (existT (fun x : A => pi1 (f x)) a aa).
+exact ee.
 Defined.
 
 Theorem Union_IN :
  forall E E' : Ens,
  IN E' (Union E) -> exists E1 : Ens, IN E1 E /\ IN E' E1.
 Proof.
-simple induction E; unfold Union in |- *; simpl in |- *; intros A f r.
+intros [A f].
+(*simple induction E; unfold Union in |- *;simpl in |- *; intros A f r.*)
+simpl in |- *.
+
 simple induction 1.
+(*intros E' H. (*destruct E1.*)*)
+
 simple induction x.
 intros a b; simpl in |- *.
 intros.
@@ -821,6 +845,7 @@ simpl in |- *.
 generalize b; elim (f a); simpl in |- *.
 intros.
 exists b0; auto with zfc.
+(*Show Proof.*)
 Defined.
 
 
@@ -833,13 +858,13 @@ unfold Union in |- *; simple induction E; intros A f r; simple induction E';
  intros e1 e2; split.
 intros x; elim x; intros a aa; elim (e1 a); intros a' ea.
 elim (EQ_EXType (f a) (f' a') ea aa); intros aa' eaa.
-exists (dep_i A' (fun x : A' => pi1 (f' x)) a' aa'); simpl in |- *;
+exists (@existT A' (fun x : A' => pi1 (f' x)) a' aa'); simpl in |- *;
  auto with zfc.
 intros c'; elim c'; intros a' aa'; elim (e2 a'); intros a ea.
 cut (EQ (f' a') (f a)).
 2: auto with zfc.
 intros ea'; elim (EQ_EXType (f' a') (f a) ea' aa'); intros aa eaa.
-exists (dep_i A (fun x : A => pi1 (f x)) a aa); auto with zfc.
+exists (@existT A (fun x : A => pi1 (f x)) a aa); auto with zfc.
 Defined.
 
 
@@ -893,9 +918,9 @@ Definition Power (E : Ens) : Ens :=
       sup _
         (fun P : A -> Prop =>
          sup _
-           (fun c : depprod A (fun a : A => P a) =>
+           (fun c : @sigT A (fun a : A => P a) =>
             match c with
-            | dep_i _ _ a p => f a
+            | @existT _ _ a p => f a
             end))
   end.
 
@@ -931,7 +956,7 @@ intros a e.
 cut (EQ (f a) (f' x)); auto with zfc.
 intros e1.
 exists
- (dep_i A (fun a : A => exists y : A', EQ (f a) (f' y)) a
+ (@existT A (fun a : A => exists y : A', EQ (f a) (f' y)) a
     (@ex_intro A' (fun y : A' => EQ (f a) (f' y)) x e1)).
 simpl in |- *.
 auto with zfc.
