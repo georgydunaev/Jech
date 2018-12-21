@@ -494,7 +494,18 @@ Show Proof.
 Defined.*)
 
 (* The pair construction is extensional *)
+Theorem Paire_sound_left :
+ forall A A' B : Ens, EQ A A' -> EQ (Paire A B) (Paire A' B).
+Proof.
+unfold Paire in |- *.
+simpl in |- *.
+intros A A' B AeqA'; 
+split; (intros [|]; 
+ [exists true; exact AeqA' | exists false; exact (EQ_refl B)]
+).
+Defined.
 
+(* PREVIOUS
 Theorem Paire_sound_left :
  forall A A' B : Ens, EQ A A' -> EQ (Paire A B) (Paire A' B).
 Proof.
@@ -511,41 +522,43 @@ simple induction y; simpl in |- *.
 exists true; auto with zfc.
 
 exists false; auto with zfc.
-Defined.
+Defined.*)
+
 
 Theorem Paire_sound_right :
  forall A B B' : Ens, EQ B B' -> EQ (Paire A B) (Paire A B').
 Proof.
 unfold Paire in |- *; simpl in |- *; intros; split.
-simple induction x.
-exists true; auto with zfc.
-exists false; auto with zfc.
-simple induction y.
-exists true; auto with zfc.
-exists false; auto with zfc.
++ simple induction x.
+  exists true; auto with zfc.
+  exists false; auto with zfc.
++ simple induction y.
+  exists true; auto with zfc.
+  exists false; auto with zfc.
 Defined.
 
 Hint Resolve Paire_sound_right Paire_sound_left: zfc.
 
 (* The axioms of the pair *)
-
 Theorem IN_Paire_left : forall E E' : Ens, IN E (Paire E E').
 Proof.
-unfold Paire in |- *; simpl in |- *; exists true; simpl in |- *;
- auto with zfc.
+unfold Paire in |- *. simpl in |- *. exists true. simpl in |- *.
+auto with zfc.
 Defined.
 
 Theorem IN_Paire_right : forall E E' : Ens, IN E' (Paire E E').
 Proof.
-unfold Paire in |- *; simpl in |- *; exists false; simpl in |- *;
- auto with zfc.
+unfold Paire in |- *. simpl in |- *. exists false. simpl in |- *.
+exact (EQ_refl E').
 Defined.
 
 Theorem Paire_IN :
  forall E E' A : Ens, IN A (Paire E E') -> EQ A E \/ EQ A E'.
 Proof.
 unfold Paire in |- *; simpl in |- *.
-simple induction 1; intros b; elim b; simpl in |- *; auto with zfc.
+intros E E' A [b P].
+destruct b; auto with zfc.
+(*simple induction 1. intros b. elim b. simpl in |- *; auto with zfc.*)
 Defined.
 
 Hint Resolve IN_Paire_left IN_Paire_right Vide_est_vide: zfc.
@@ -565,30 +578,37 @@ Defined.
 
 Theorem IN_Sing_EQ : forall E E' : Ens, IN E (Sing E') -> EQ E E'.
 Proof.
-unfold Sing in |- *; intros E E' H; elim (Paire_IN E' E' E);
- auto with zfc.
+unfold Sing in |- *. 
+intros E E' H.
+apply Paire_IN in H as [H|H]; assumption.
+(*elim (Paire_IN E' E' E).
+  auto.
+  auto.
+  assumption. *)
 Defined.
 
 Hint Resolve IN_Sing IN_Sing_EQ: zfc.
 
 Theorem Sing_sound : forall A A' : Ens, EQ A A' -> EQ (Sing A) (Sing A').
 Proof.
-unfold Sing in |- *; intros; apply EQ_tran with (Paire A A');
+unfold Sing in |- *; intros. apply EQ_tran with (Paire A A').
  auto with zfc.
-Show Proof.
+ auto with zfc.
+(*Show Proof.*)
 Defined.
 
 Hint Resolve Sing_sound: zfc.
 
 Theorem EQ_Sing_EQ : forall E1 E2 : Ens, EQ (Sing E1) (Sing E2) -> EQ E1 E2.
 Proof.
-intros; cut (IN E1 (Sing E2)).
-intros; auto with zfc.
-apply IN_sound_right with (Sing E1); auto with zfc.
+intros. cut (IN E1 (Sing E2)).
+intros. auto with zfc.
+apply IN_sound_right with (Sing E1).
+ auto with zfc.
+ auto with zfc.
 Defined.
 
 Hint Resolve EQ_Sing_EQ: zfc.
-
 
 
 (* We here need sigma types -- i.e. computational existentials *)
@@ -601,28 +621,73 @@ Inductive sig (A : Type) (P : A -> Prop) : Type :=
 
 Definition Comp : Ens -> (Ens -> Prop) -> Ens.
 Proof.
-simple induction 1; intros A f fr P.
-apply (sup (@sig A (fun x => P (f x)))).
-simple induction 1; intros x p; exact (f x).
+intros [A f] P.
+(*simple induction 1; intros A f fr P.*)
+apply (sup (@sig A (fun x:A => P (f x)))).
+intros [x _].
+ exact (f x).
+Show Proof.
 Defined.
+(*simple induction 1; intros x p. todo: swap args*)
 
 (* The comprehension/separation axioms *)
 
+
 Theorem Comp_INC : forall (E : Ens) (P : Ens -> Prop), INC (Comp E P) E.
 Proof.
-unfold Comp, INC in |- *; simple induction E; simpl in |- *; intros.
-elim H0; simple induction x; intros; exists x0; auto with zfc.
+intros E P z zinCompEP.
+destruct E as [A f].
+simpl in *|-*.
+destruct zinCompEP as [w R].
+destruct w as [a Pfa].
+exists a. exact R.
 Defined.
+
+(* PREVIOUS (too large)
+Theorem Comp_INC : forall (E : Ens) (P : Ens -> Prop), INC (Comp E P) E.
+Proof.
+unfold Comp, INC in |- *. simple induction E. simpl in |- *. intros.
+elim H0. simple induction x. intros. exists x0. auto with zfc.
+Defined. *)
 
 Theorem IN_Comp_P :
  forall (E A : Ens) (P : Ens -> Prop),
  (forall w1 w2 : Ens, P w1 -> EQ w1 w2 -> P w2) -> IN A (Comp E P) -> P A.
 Proof.
-simple induction E; simpl in |- *; intros B f Hr A P H i; elim i; intros c;
- elim c; simpl in |- *; intros x q e; apply H with (f x); 
- auto with zfc.
+intros E A P H H0.
+destruct E,H0,x as [a p].
+apply H with (1:=p).
+apply EQ_sym. assumption.
 Defined.
 
+(* PREVIOUS 
+Theorem IN_Comp_P :
+ forall (E A : Ens) (P : Ens -> Prop),
+ (forall w1 w2 : Ens, P w1 -> EQ w1 w2 -> P w2) -> IN A (Comp E P) -> P A.
+Proof.
+simple induction E. simpl in |- *. intros B f Hr A P H i. elim i. intros c.
+ elim c. simpl in |- *. intros x q e. apply H with (f x);
+ auto with zfc.
+Defined.*)
+
+Theorem IN_P_Comp :
+ forall (E A : Ens) (P : Ens -> Prop),
+ (forall w1 w2 : Ens, P w1 -> EQ w1 w2 -> P w2) ->
+ IN A E -> P A -> IN A (Comp E P).
+Proof.
+intros.
+destruct E.
+simpl in *|-*.
+destruct H0 as [a p].
+unshelve eapply ex_intro.
+exists a.
+apply H with (1:=H1).
+exact p.
+simpl.
+exact p.
+Defined.
+
+(* PREVIOUS
 Theorem IN_P_Comp :
  forall (E A : Ens) (P : Ens -> Prop),
  (forall w1 w2 : Ens, P w1 -> EQ w1 w2 -> P w2) ->
@@ -635,7 +700,8 @@ intros Pf.
 exists (@exist B (fun x : B => P (f x)) x Pf); simpl in |- *;
  auto with zfc.
 apply H with A; auto with zfc.
-Defined.
+Show Proof.
+Defined.*)
 
 (* Again, extentionality is not stated, but easy *)
 
