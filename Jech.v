@@ -64,11 +64,14 @@ pair    to  pair
 (* Recursive Definition of the extentional equality on sets *)
 Definition EQ : Ens -> Ens -> Prop.
 Proof.
-simple induction 1; intros A f eq1.
-simple induction 1; intros B g eq2.
+induction 1 as [A f eq1].
+induction 1 as [B g eq2].
+(*simple induction 1; intros A f eq1.
+simple induction 1; intros B g eq2.*)
 apply and.
 exact (forall x : A, exists y : B, eq1 x (g y)).
 exact (forall y : B, exists x : A, eq1 x (g y)).
+(*Show Proof.*)
 Defined.
 
 (* Membership on sets *)
@@ -77,6 +80,7 @@ Definition IN (E1 E2 : Ens) : Prop :=
   | sup A f => exists y : A, EQ E1 (f y)
   end.
 
+(*
 Definition EQ' : Ens -> Ens -> Prop.
 Proof.
 intros x y.
@@ -87,13 +91,14 @@ Definition IN' (E1 E2 : Ens) : Prop :=
   match E2 with
   | sup A f => exists y : A, EQ' E1 (f y)
   end.
-
+*)
 
 (* INCLUSION *)
 Definition INC : Ens -> Ens -> Prop.
 Proof.
 intros E1 E2.
 exact (forall E : Ens, IN E E1 -> IN E E2).
+Show Proof.
 Defined.
 
 
@@ -142,21 +147,6 @@ Defined.
 
 Hint Resolve EQ_sym EQ_refl EQ_INC: zfc.
 
-(* easy lemma *)
-Theorem INC_EQ : forall E E' : Ens, INC E E' -> INC E' E -> EQ E E'.
-Proof.
-simple induction E; intros A f r; simple induction E'; intros A' f' r';
- unfold INC in |- *; simpl in |- *; intros I1 I2; split.
-intros a; apply I1.
-exists a; auto with zfc.
-intros a'; cut (exists x : A, EQ (f' a') (f x)).
-simple induction 1; intros a ea; exists a; auto with zfc.
-apply I2; exists a'; auto with zfc.
-Defined.
-
-Hint Resolve INC_EQ: zfc.
-
-
 (* Membership is extentional (i.e. is stable w.r.t. EQ)   *)
 Theorem IN_sound_left :
  forall E E' E'' : Ens, EQ E E' -> IN E E'' -> IN E' E''.
@@ -174,6 +164,66 @@ simple induction E'; intros A' f' r'; simple induction E'';
  intros a'' e''; exists a''; apply EQ_tran with (f' a'); 
  assumption.
 Defined.
+
+Theorem axExt_left : forall (x y : Ens),
+  (forall z, IN z x <-> IN z y) -> EQ x y.
+Proof.
+intros x y K.
+ induction x as [A f], y as [B g].
+  simpl in * |- *.
+  split.
+  - intro x.
+    apply K.
+    exists x.
+    apply EQ_refl.
+  - intro y.
+    assert (Q:exists y0 : B, EQ (g y) (g y0)).
+    * exists y.
+      apply EQ_refl.
+    * destruct (proj2 (K (g y)) Q).
+      exists x.
+      apply EQ_sym.
+      exact H0.
+Defined.
+
+Theorem axExt_right : forall x y : Ens,
+   EQ x y -> forall z, (IN z x <-> IN z y).
+Proof.
+ intros.
+  split.
+  - apply IN_sound_right. exact H.
+  - apply IN_sound_right. apply EQ_sym. exact H.
+Defined.
+
+Theorem axExt : forall x y : Ens,
+   EQ x y <-> forall z, (IN z x <-> IN z y).
+Proof.
+intros.
+split.
++ apply axExt_right.
++ apply axExt_left.
+Defined.
+
+Theorem INC_EQ : forall E E' : Ens, INC E E' -> INC E' E -> EQ E E'.
+Proof.
+intros E E' H1 H2.
+apply axExt_left.
+intro z. split. apply H1. apply H2.
+Defined.
+(* easy lemma *)
+(* COMPLICATED VERSION
+Theorem INC_EQ : forall E E' : Ens, INC E E' -> INC E' E -> EQ E E'.
+Proof.
+simple induction E; intros A f r; simple induction E'; intros A' f' r';
+ unfold INC in |- *; simpl in |- *; intros I1 I2; split.
+intros a; apply I1.
+exists a; auto with zfc.
+intros a'; cut (exists x : A, EQ (f' a') (f x)).
+simple induction 1; intros a ea; exists a; auto with zfc.
+apply I2; exists a'; auto with zfc.
+Defined.
+*)
+Hint Resolve INC_EQ: zfc.
 
 (* Inclusion is reflexive, transitive, extentional *)
 
@@ -220,21 +270,40 @@ Defined.
 
 (* The empty set  (vide = french for empty)   *)
 Definition Vide : Ens := 
-sup False (fun f : False => match f return Ens with
-                        end).
+sup False (fun x : False => match x return Ens with
+                            end).
 (*Definition Vide : Ens := sup F (fun f : F => match f return Ens with
                                              end).*)
 
 
 (* The axioms of the empty set *)
 
-Theorem Vide_est_vide : forall E : Ens, IN E Vide -> False.
+Definition Vide_est_vide : forall E : Ens, IN E Vide -> False
+:=
+(fun (E : Ens) (H : IN E Vide) =>
+ ex_ind (fun (x : False) (_ : EQ E match x return Ens with
+                                   end) => x) H).
+
+Inductive qex (A : Type) (P : A -> Prop) : Prop :=
+     qex_i : forall x : A, P x -> qex A P
+|    qex_i2 : forall x : A, P x -> qex A P.
+
+Check qex_ind.
+
+Print qex_ind.
+(*ex_intro
 Proof.
+intro E.
+intro H.
+induction H.
+exact x.
+Show Proof.
+Defined.
 unfold Vide in |- *; simpl in |- *; intros E H; cut False.
 simple induction 1.
 elim H; intros x; elim x.
 Defined.
-
+*)
 
 Theorem tout_vide_est_Vide :
  forall E : Ens, (forall E' : Ens, IN E' E -> False) -> EQ E Vide.
@@ -858,32 +927,7 @@ Transparent Alpha.
 (*=== AXIOMS ===*)
 
 (* page 3 *)
-Theorem axExt : forall x y : Ens,
-   EQ x y <-> forall z, (IN z x <-> IN z y).
-Proof.
-intros.
-split.
-+ intros.
-  split.
-  - apply IN_sound_right. exact H.
-  - apply IN_sound_right. apply EQ_sym. exact H.
-+ induction x as [A f], y as [B g].
-  intro K.
-  simpl in * |- *.
-  split.
-  - intro x.
-    apply K.
-    exists x.
-    apply EQ_refl.
-  - intro y.
-    assert (Q:exists y0 : B, EQ (g y) (g y0)).
-    * exists y.
-      apply EQ_refl.
-    * destruct (proj2 (K (g y)) Q).
-      exists x.
-      apply EQ_sym.
-      exact H0.
-Defined.
+(* axExt see above *)
 
 Theorem axPair : forall a b : Ens, exists w:Ens,
    forall z, (IN z w <-> EQ z a \/ EQ z b).
@@ -1715,7 +1759,7 @@ split.
     exact ex_1_5_lem1. }
   admit.
 + intros.
-Search Comp.
+(*Search Comp.*)
 Abort.
 (* DEVELOPMENT IS HERE *)
 
@@ -2384,7 +2428,7 @@ exact K.
 Defined.
 
 Theorem nPUXiX : not (forall (X:Ens),INC (Power (Union X)) X).
-Proof.
+Proof. 
 intro H.
 pose (A:=H Vide).
 pose (B:=A Vide).
@@ -2407,7 +2451,7 @@ Defined.
 
 Lemma nemp_then_inh (S:Ens) (H:~EQ S Vide) : exists m, IN m S.
 Proof.
-Search Vide.
+(*Search Vide.*)
 unshelve eapply not_all_not_ex.
 intro D.
 apply H.
@@ -2529,6 +2573,8 @@ Definition Afu := fun v : pi1 S =>
  OrdPair (pi2 S v) (pi2 (Union S) ((proj1_sig Afp) v)).
 Definition Achfu : Ens := (sup (pi1 S) Afu).
 
+(*Search Power.*)
+
 Theorem Achfu_total (X:Ens) (G:IN X S): exists Q, IN (OrdPair X Q) Achfu /\ IN Q X.
 Proof.
 pose (t:=in2term S X G).
@@ -2567,7 +2613,7 @@ intros X W Q1 Q2 [K1 K2].
 unfold Achfu, IN in K1,K2.
 unfold Afu in K1,K2.
 destruct K1 as [y1 K1], K2 as [y2 K2].
-Search OrdPair.
+(*Search OrdPair.*)
 apply OrdPair_inj in K1 as [L1 R1].
 apply OrdPair_inj in K2 as [L2 R2].
 eapply EQ_tran. exact R1.
@@ -2601,7 +2647,7 @@ Defined.
 
 End AC_sec.
 
-Check axChoice.
+(*Check axChoice.*)
 
 (************************* STOP HERE ****************************)
 
