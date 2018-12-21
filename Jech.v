@@ -135,17 +135,9 @@ intros a2; elim (e2 a2); intros a1 H1; exists a1; auto.
 intros a1; elim (e1 a1); intros a2 H2; exists a2; auto.
 Defined.
 
-Theorem EQ_INC : forall E E' : Ens, EQ E E' -> INC E E'.
-Proof.
-simple induction E; intros A f r; simple induction E'; intros A' f' r';
- simpl in |- *; simple induction 1; intros e1 e2; unfold INC in |- *;
- simpl in |- *.
-intros C; simple induction 1; intros a ea; elim (e1 a); intros a' ea';
- exists a'.
-apply EQ_tran with (f a); assumption.
-Defined.
+Hint Resolve EQ_sym EQ_refl : zfc.
+(*Definition EQ_INC := INC_refl.*)
 
-Hint Resolve EQ_sym EQ_refl EQ_INC: zfc.
 
 (* Membership is extentional (i.e. is stable w.r.t. EQ)   *)
 Theorem IN_sound_left :
@@ -204,13 +196,34 @@ split.
 + apply axExt_left.
 Defined.
 
+Theorem EQ_INC : forall E E' : Ens, EQ E E' -> INC E E'.
+Proof.
+intros E E' H z.
+eapply axExt_right in H.
+destruct H as [H1 H2].
+exact H1.
+Defined.
+(* COMPLICATED VERSION
+Theorem EQ_INC : forall E E' : Ens, EQ E E' -> INC E E'.
+Proof.
+simple induction E; intros A f r; simple induction E'; intros A' f' r';
+ simpl in |- *; simple induction 1; intros e1 e2; unfold INC in |- *;
+ simpl in |- *.
+intros C; simple induction 1; intros a ea; elim (e1 a); intros a' ea';
+ exists a'.
+apply EQ_tran with (f a); assumption.
+Defined.
+*)
+
+Hint Resolve EQ_sym EQ_refl EQ_INC: zfc.
+
+(* easy lemma *)
 Theorem INC_antisym : forall E E' : Ens, INC E E' -> INC E' E -> EQ E E'.
 Proof.
 intros E E' H1 H2.
 apply axExt_left.
 intro z. split. apply H1. apply H2.
 Defined.
-(* easy lemma *)
 (* COMPLICATED VERSION
 Theorem INC_antisym : forall E E' : Ens, INC E E' -> INC E' E -> EQ E E'.
 Proof.
@@ -245,13 +258,35 @@ Defined.
 
 
 Theorem INC_sound_left :
+ forall A B C : Ens, EQ A B -> INC A C -> INC B C.
+Proof.
+intros A B C AeqB AincC Z ZinB.
+apply AincC.
+eapply IN_sound_right.
++ apply EQ_sym. exact AeqB.
++ exact ZinB.
+Defined.
+(* COMPLICATED
+Theorem INC_sound_left' :
  forall E E' E'' : Ens, EQ E E' -> INC E E'' -> INC E' E''.
 Proof.
 simple induction E''; unfold INC in |- *; simpl in |- *;
  intros A f HR e H1 E0 i; apply H1.
 apply IN_sound_right with E'; auto with zfc.
 Defined.
+*)
 
+Theorem INC_sound_right :
+ forall A B C : Ens, EQ B C -> INC A B -> INC A C.
+Proof.
+intros A B C BeqC AincB Z ZinA.
+eapply IN_sound_right.
++ exact BeqC.
++ apply AincB.
+  exact ZinA.
+Defined.
+
+(* COMPLICATED:
 Theorem INC_sound_right :
  forall E E' E'' : Ens, EQ E' E'' -> INC E E' -> INC E E''.
 Proof.
@@ -260,7 +295,7 @@ simple induction E'; simple induction E''; unfold INC in |- *; simpl in |- *;
 elim (H2 E0); try assumption; intros.
 elim H1; intros HA HB; elim (HA x); intros.
 exists x0; apply EQ_tran with (e x); auto with zfc.
-Defined.
+Defined. *)
 
 (************ Remastered Axioms.v ***************)
 
@@ -320,7 +355,7 @@ exact E.
 exact E'.
 Defined.
 
-(* The pair construction is extentional *)
+(* The pair construction is extensional *)
 
 Theorem Paire_sound_left :
  forall A A' B : Ens, EQ A A' -> EQ (Paire A B) (Paire A' B).
@@ -1541,14 +1576,16 @@ constructor. (*split.*)
 + intros x H0.
   pose (H1:=H0).
   unshelve eapply IN_Comp_P with (E:=X) in H1.
-2 : { intros. apply INC_sound_left with (E:=w1). exact H3. exact H2. }
+2 : { intros. apply INC_sound_left with (1:=H3). exact H2. }
+(*(E:=w1). exact H3. exact H2. }*)
   apply Comp_INC in H0.
   (* . *)
   destruct H as [Ha Hb].
   assert (xusxinX : IN (Class_succ x) X).
    apply Hb. exact H0.
   apply IN_P_Comp.
-  { intros. apply INC_sound_left with (E:=w1); assumption. }
+  { intros. unshelve eapply INC_sound_left (*with (E:=w1)*).
+exact w1. exact H2. exact H. }
   exact xusxinX.
   intros M J.
   apply IN_Class_succ_or in J as [L1|L2].
