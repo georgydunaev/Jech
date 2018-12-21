@@ -62,17 +62,51 @@ pair    to  pair
 
 
 (* Recursive Definition of the extentional equality on sets *)
-Definition EQ : Ens -> Ens -> Prop.
+(*Definition EQ' : Ens -> Ens -> Prop.
 Proof.
-induction 1 as [A f eq1].
-induction 1 as [B g eq2].
-(*simple induction 1; intros A f eq1.
-simple induction 1; intros B g eq2.*)
+intro E.
+induction E as [A f eq1].
+intros [B g].
 apply and.
 exact (forall x : A, exists y : B, eq1 x (g y)).
 exact (forall y : B, exists x : A, eq1 x (g y)).
-(*Show Proof.*)
+Show Proof.
+Defined.*)
+
+Fixpoint EQ (E1 E2: Ens) {struct E2}: Prop.
+Proof.
+destruct E1 as [A f].
+destruct E2 as [B g].
+apply and.
+exact (forall x : A, exists y : B, EQ (f x) (g y)).
+exact (forall y : B, exists x : A, EQ (f x) (g y)).
+Show Proof.
 Defined.
+
+
+(* NOT BAD
+Fixpoint EQ (E1: Ens) {struct E1}: Ens -> Prop.
+Proof.
+destruct E1 as [A f].
+(*induction E1 as [A f eq1].*)
+intros [B g].
+apply and.
+exact (forall x : A, exists y : B, EQ (f x) (g y)).
+exact (forall y : B, exists x : A, EQ (f x) (g y)).
+Show Proof.
+Defined. *)
+
+(*
+induction 1 as [A f eq1].
+destruct 1 as [B g].
+apply and.
+exact (forall x : A, exists y : B, eq1 x (g y)).
+exact (forall y : B, exists x : A, eq1 x (g y)).
+*)
+(*induction 1 as [B g eq2].*)
+(*simple induction 1; intros A f eq1.
+simple induction 1; intros B g eq2.*)
+
 
 (* Membership on sets *)
 Definition IN (E1 E2 : Ens) : Prop :=
@@ -94,13 +128,10 @@ Definition IN' (E1 E2 : Ens) : Prop :=
 *)
 
 (* INCLUSION *)
-Definition INC : Ens -> Ens -> Prop.
-Proof.
-intros E1 E2.
-exact (forall E : Ens, IN E E1 -> IN E E2).
-Show Proof.
-Defined.
-
+Definition INC : Ens -> Ens -> Prop 
+ := (fun E1 E2 : Ens => 
+      forall E : Ens, IN E E1 -> IN E E2
+    ).
 
 (* EQ is an equivalence relation  *)
 Theorem EQ_refl : forall E : Ens, EQ E E.
