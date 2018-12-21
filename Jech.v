@@ -204,7 +204,7 @@ split.
 + apply axExt_left.
 Defined.
 
-Theorem INC_EQ : forall E E' : Ens, INC E E' -> INC E' E -> EQ E E'.
+Theorem INC_antisym : forall E E' : Ens, INC E E' -> INC E' E -> EQ E E'.
 Proof.
 intros E E' H1 H2.
 apply axExt_left.
@@ -212,7 +212,7 @@ intro z. split. apply H1. apply H2.
 Defined.
 (* easy lemma *)
 (* COMPLICATED VERSION
-Theorem INC_EQ : forall E E' : Ens, INC E E' -> INC E' E -> EQ E E'.
+Theorem INC_antisym : forall E E' : Ens, INC E E' -> INC E' E -> EQ E E'.
 Proof.
 simple induction E; intros A f r; simple induction E'; intros A' f' r';
  unfold INC in |- *; simpl in |- *; intros I1 I2; split.
@@ -223,7 +223,13 @@ simple induction 1; intros a ea; exists a; auto with zfc.
 apply I2; exists a'; auto with zfc.
 Defined.
 *)
-Hint Resolve INC_EQ: zfc.
+Hint Resolve INC_antisym: zfc.
+
+Theorem INC_EQ : forall E E' : Ens,
+  INC E E' -> INC E' E -> EQ E E'.
+Proof.
+unfold INC in |- *; auto with zfc.
+Defined.
 
 (* Inclusion is reflexive, transitive, extentional *)
 
@@ -278,27 +284,15 @@ sup False (fun x : False => match x return Ens with
 
 (* The axioms of the empty set *)
 
-Definition Vide_est_vide : forall E : Ens, IN E Vide -> False
-:=
-(fun (E : Ens) (H : IN E Vide) =>
- ex_ind (fun (x : False) (_ : EQ E match x return Ens with
-                                   end) => x) H).
-
-Inductive qex (A : Type) (P : A -> Prop) : Prop :=
-     qex_i : forall x : A, P x -> qex A P
-|    qex_i2 : forall x : A, P x -> qex A P.
-
-Check qex_ind.
-
-Print qex_ind.
-(*ex_intro
+Definition Vide_est_vide : forall E : Ens, IN E Vide -> False.
 Proof.
 intro E.
 intro H.
 induction H.
 exact x.
-Show Proof.
+(*Show Proof.*)
 Defined.
+(*
 unfold Vide in |- *; simpl in |- *; intros E H; cut False.
 simple induction 1.
 elim H; intros x; elim x.
@@ -713,7 +707,7 @@ Defined.
 Theorem Power_sound : forall E E' : Ens, EQ E E' -> EQ (Power E) (Power E').
 Proof.
 intros E E' e.
-apply INC_EQ; unfold INC in |- *.
+apply INC_antisym; unfold INC in |- *.
 intros A i.
 cut (INC A E').
 intros; apply INC_IN_Power; assumption.
@@ -858,7 +852,7 @@ Defined.
 
 Theorem Omega_EQ_Union : EQ Omega (Union Omega).
 Proof.
-apply INC_EQ; unfold INC in |- *.
+apply INC_antisym; unfold INC in |- *.
 intros.
 elim (IN_Omega_EXType E H); intros n e.
 apply IN_Union with (Nat (S n)).
@@ -1170,13 +1164,6 @@ split.
 Defined.
 
 End TheoremsAboutClasses.
-
-Theorem INC_antisym : forall E E' : Ens,
-  INC E E' -> INC E' E -> EQ E E'.
-Proof.
-unfold INC in |- *; auto with zfc.
-Show Proof.
-Defined.
 
 (*Require Import ZFC.Ordinal_theory.*)
 
