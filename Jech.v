@@ -452,8 +452,23 @@ simple induction 1.
 elim H; intros x; elim x.
 Defined.
 *)
+(*tout_vide_est_Vide*)
+Theorem empty_set_EQ_Vide :
+ forall E : Ens, (forall E' : Ens, IN E' E -> False) -> EQ E Vide.
+Proof.
+intros E K.
+destruct E as [A e].
+simpl in *|-*.
+split.
++ intro x.
+  exfalso.
+  apply (K (e x)).
+  exists x.
+  apply EQ_refl.
++ intro y. destruct y.
+Defined.
 
-Theorem tout_vide_est_Vide :
+(*Theorem tout_vide_est_Vide' :
  forall E : Ens, (forall E' : Ens, IN E' E -> False) -> EQ E Vide.
 Proof.
  unfold Vide in |- *; simple induction E; simpl in |- *; intros A e H H0;
@@ -461,18 +476,22 @@ Proof.
 intros; elim (H0 (e x)); auto with zfc.
 exists x; auto with zfc.
 simple induction y.
-Defined.
+Defined.*)
 
 (* Pair *)
 
-Definition Paire : forall E E' : Ens, Ens.
+Definition Paire (A B:Ens) : Ens
+ := sup bool (fun b : bool => if b then A else B).
+
+(*Definition Paire : forall E E' : Ens, Ens.
 Proof.
 intros.
 apply (sup bool).
 simple induction 1.
 exact E.
 exact E'.
-Defined.
+Show Proof.
+Defined.*)
 
 (* The pair construction is extensional *)
 
@@ -483,6 +502,7 @@ unfold Paire in |- *.
 simpl in |- *.
 intros; split.
 simple induction x.
+Show Proof.
 exists true; auto with zfc.
 
 exists false; auto with zfc.
@@ -555,6 +575,7 @@ Theorem Sing_sound : forall A A' : Ens, EQ A A' -> EQ (Sing A) (Sing A').
 Proof.
 unfold Sing in |- *; intros; apply EQ_tran with (Paire A A');
  auto with zfc.
+Show Proof.
 Defined.
 
 Hint Resolve Sing_sound: zfc.
@@ -621,20 +642,30 @@ Defined.
 
 (* Projections of a set: *)
 (*  1: its base type     *)
-Definition pi1 : Ens -> Type.
+Definition pi1 (X:Ens):Type
+ := match X with
+    | sup A _ => A
+    end.
+(*Definition pi1 : Ens -> Type.
 Proof.
 simple induction 1.
 intros A f r.
 exact A.
-Defined.
+Defined.*)
 
 (*  2: the function      *)
+Definition pi2 (X:Ens) (m:pi1 X):Ens 
+:= match X as E return (pi1 E -> Ens) with
+   | sup A f => fun k : pi1 (sup A f) => f k
+   end m.
+
+(* PREVIOUS
 Definition pi2 : forall E : Ens, pi1 E -> Ens.
 Proof.
 simple induction E.
 intros A f r.
 exact f.
-Defined.
+Defined.*)
 
 (* Existential on the Type level *)
 Inductive depprod (A : Type) (P : A -> Type) : Type :=
@@ -2599,7 +2630,7 @@ unshelve eapply not_all_not_ex.
 intro D.
 apply H.
 (*apply EQ_sym.*)
-apply (tout_vide_est_Vide S).
+apply (empty_set_EQ_Vide S).
 exact D.
 Defined.
 
