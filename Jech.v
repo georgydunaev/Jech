@@ -1,8 +1,8 @@
 (*** Contents ***
 
 Part I: Large isolated part of "/coq-contribs/zfc/" library and
-proofs of some axioms of zfc. We are not 
-going to directly use these definitions .
+proofs of some axioms of zfc. We are not going to directly use
+these definitions.
 
 Part II: Development of the classic ZFC theory with
  exercises from Jech's "Set theory". (try to avoid classes)
@@ -27,17 +27,22 @@ of the first-order logic and ZFC set theory.
  The second aim is to solve exercises from Jech's "Set theory".
 *)
 
-(* These notions should not be unfolded:
-Pair, Union, Powerset. *)
+(* These notions should not be unfolded during 
+the proofs in Part II: Pair, Union, Powerset. *)
 
+Require Import FunctionalExtensionality. (* for pi1pi2 *)
 Require Import Logic.Classical_Prop.
 Require Import Logic.Classical_Pred_Type.
 Require Import Logic.ChoiceFacts.
 Require Import Logic.IndefiniteDescription.
+
+Axiom (axSFC:SetoidFunctionalChoice).
 Definition ex2sig := constructive_indefinite_description.
-(*============================================
+(*
+==============================================
                      Part I
-==============================================*)
+==============================================
+*)
 
 (*=== Remastered SETS.v ===*)
 
@@ -62,17 +67,6 @@ pair    to  pair
 
 
 (* Recursive Definition of the extentional equality on sets *)
-(*Definition EQ' : Ens -> Ens -> Prop.
-Proof.
-intro E.
-induction E as [A f eq1].
-intros [B g].
-apply and.
-exact (forall x : A, exists y : B, eq1 x (g y)).
-exact (forall y : B, exists x : A, eq1 x (g y)).
-Show Proof.
-Defined.*)
-
 (* BEST
 Fixpoint EQ (E1 E2: Ens) {struct E2}: Prop.
 Proof.
@@ -82,7 +76,8 @@ apply and.
 exact (forall x : A, exists y : B, EQ (f x) (g y)).
 exact (forall y : B, exists x : A, EQ (f x) (g y)).
 Show Proof.
-Defined.*)
+Defined.
+*)
 
 (* Both "{struct E1}" and "{struct E2}" works good. *)
 Fixpoint EQ (E1 E2: Ens) {struct E2}: Prop :=
@@ -95,49 +90,11 @@ Fixpoint EQ (E1 E2: Ens) {struct E2}: Prop :=
        end
    end.
 
-
-(* NOT BAD
-Fixpoint EQ (E1: Ens) {struct E1}: Ens -> Prop.
-Proof.
-destruct E1 as [A f].
-(*induction E1 as [A f eq1].*)
-intros [B g].
-apply and.
-exact (forall x : A, exists y : B, EQ (f x) (g y)).
-exact (forall y : B, exists x : A, EQ (f x) (g y)).
-Show Proof.
-Defined. *)
-
-(*
-induction 1 as [A f eq1].
-destruct 1 as [B g].
-apply and.
-exact (forall x : A, exists y : B, eq1 x (g y)).
-exact (forall y : B, exists x : A, eq1 x (g y)).
-*)
-(*induction 1 as [B g eq2].*)
-(*simple induction 1; intros A f eq1.
-simple induction 1; intros B g eq2.*)
-
-
 (* Membership on sets *)
 Definition IN (E1 E2 : Ens) : Prop :=
   match E2 with
   | sup A f => exists y : A, EQ E1 (f y)
   end.
-
-(*
-Definition EQ' : Ens -> Ens -> Prop.
-Proof.
-intros x y.
-exact (forall w:Ens, IN w x <-> IN w y).
-Defined.
-
-Definition IN' (E1 E2 : Ens) : Prop :=
-  match E2 with
-  | sup A f => exists y : A, EQ' E1 (f y)
-  end.
-*)
 
 (* INCLUSION *)
 Definition INC : Ens -> Ens -> Prop 
@@ -146,24 +103,11 @@ Definition INC : Ens -> Ens -> Prop
     ).
 
 (* EQ is an equivalence relation  *)
-
 Fixpoint EQ_refl (E : Ens) : EQ E E.
 Proof.
 destruct E as [A f].
 split; intros z; exists z; exact (EQ_refl (f z)).
 Defined.
-
-(* Previous version
-Theorem EQ_refl' : forall E : Ens, EQ E E.
-Proof.
-simple induction E.
-intros A f HR.
-simpl in |- *.
-split; intros.
-exists x; auto.
-exists y; auto.
-Show Proof.
-Defined.*)
 
 Fixpoint EQ_tran (E1 E2 E3 : Ens) {struct E2}:
  EQ E1 E2 -> EQ E2 E3 -> EQ E1 E3.
@@ -184,22 +128,6 @@ split.
   exists x1. apply (EQ_tran (f1 x1) (f2 x2) (f3 x3) P21 P32).
 Defined.
 
-(* Complicated
-Theorem EQ_tran : forall E1 E2 E3 : Ens, EQ E1 E2 -> EQ E2 E3 -> EQ E1 E3.
-Proof.
-simple induction E1; intros A1 f1 r1; simple induction E2; intros A2 f2 r2;
- simple induction E3; intros A3 f3 r3; simpl in |- *; 
- intros e1 e2.
-split; (elim e1; intros I1 I2; elim e2; intros I3 I4).
-intros a1; elim (I1 a1); intros a2.
-elim (I3 a2); intros a3.
-exists a3.
-apply r1 with (f2 a2); auto.
-intros a3; elim (I4 a3); intros a2; elim (I2 a2); intros a1; exists a1.
-apply r1 with (f2 a2); auto.
-Defined.
-*)
-
 Fixpoint EQ_sym (E1 E2 : Ens) {struct E2}: EQ E1 E2 -> EQ E2 E1.
 Proof.
 intro H.
@@ -208,18 +136,8 @@ simpl in * |- *.
 destruct H as [A2B B2A]; split.
 + intro b. destruct (B2A b) as [a J]. exists a. apply EQ_sym with (1:=J).
 + intro a. destruct (A2B a) as [b J]. exists b. apply EQ_sym with (1:=J).
-Show Proof.
 Defined.
 
-(* PREVIOUS VERSION
-Theorem EQ_sym : forall E1 E2 : Ens, EQ E1 E2 -> EQ E2 E1.
-Proof.
-simple induction E1; intros A1 f1 r1; simple induction E2; intros A2 f2 r2;
- simpl in |- *; simple induction 1; intros e1 e2; split.
-intros a2; elim (e2 a2); intros a1 H1; exists a1; auto.
-intros a1; elim (e1 a1); intros a2 H2; exists a2; auto.
-Defined.
-*)
 Hint Resolve EQ_sym EQ_refl : zfc.
 (*Definition EQ_INC := INC_refl.*)
 
@@ -237,14 +155,6 @@ apply EQ_tran with A.
 + apply AeqFY.
 Defined.
 
-(* PREVIOUS VERSION
-Theorem IN_sound_left' :
- forall E E' E'' : Ens, EQ E E' -> IN E E'' -> IN E' E''.
-Proof.
-simple induction E''; intros A'' f'' r'' e; simpl in |- *; simple induction 1;
- intros a'' p; exists a''; apply EQ_tran with E; auto with zfc.
-Defined.*)
-
 Theorem IN_sound_right :
  forall E E' E'' : Ens, EQ E' E'' -> IN E E' -> IN E E''.
 Proof.
@@ -257,19 +167,7 @@ destruct AinB as [y AeqGy].
 destruct (Y2Z y) as [z GyeqHz].
 exists z.
 eapply EQ_tran with (1:=AeqGy) (2:=GyeqHz).
-Show Proof.
 Defined.
-
-(* PREVIOUS VERSION
-Theorem IN_sound_right' :
- forall E E' E'' : Ens, EQ E' E'' -> IN E E' -> IN E E''.
-Proof.
-simple induction E'; intros A' f' r'; simple induction E'';
- intros A'' f'' r''; simpl in |- *; simple induction 1; 
- intros e1 e2; simple induction 1; intros a' e'; elim (e1 a'); 
- intros a'' e''; exists a''; apply EQ_tran with (f' a'); 
- assumption.
-Defined.*)
 
 Theorem axExt_left : forall (x y : Ens),
   (forall z, IN z x <-> IN z y) -> EQ x y.
@@ -317,17 +215,6 @@ eapply axExt_right in H.
 destruct H as [H1 H2].
 exact H1.
 Defined.
-(* COMPLICATED VERSION
-Theorem EQ_INC : forall E E' : Ens, EQ E E' -> INC E E'.
-Proof.
-simple induction E; intros A f r; simple induction E'; intros A' f' r';
- simpl in |- *; simple induction 1; intros e1 e2; unfold INC in |- *;
- simpl in |- *.
-intros C; simple induction 1; intros a ea; elim (e1 a); intros a' ea';
- exists a'.
-apply EQ_tran with (f a); assumption.
-Defined.
-*)
 
 Hint Resolve EQ_sym EQ_refl EQ_INC: zfc.
 
@@ -338,18 +225,6 @@ intros E E' H1 H2.
 apply axExt_left.
 intro z. split. apply H1. apply H2.
 Defined.
-(* COMPLICATED VERSION
-Theorem INC_antisym : forall E E' : Ens, INC E E' -> INC E' E -> EQ E E'.
-Proof.
-simple induction E; intros A f r; simple induction E'; intros A' f' r';
- unfold INC in |- *; simpl in |- *; intros I1 I2; split.
-intros a; apply I1.
-exists a; auto with zfc.
-intros a'; cut (exists x : A, EQ (f' a') (f x)).
-simple induction 1; intros a ea; exists a; auto with zfc.
-apply I2; exists a'; auto with zfc.
-Defined.
-*)
 Hint Resolve INC_antisym: zfc.
 
 Theorem INC_EQ : forall E E' : Ens,
@@ -359,7 +234,6 @@ unfold INC in |- *; auto with zfc.
 Defined.
 
 (* Inclusion is reflexive, transitive, extentional *)
-
 Theorem INC_refl : forall E : Ens, INC E E.
 Proof.
 unfold INC in |- *; auto with zfc.
@@ -370,7 +244,6 @@ Proof.
 unfold INC in |- *; auto with zfc.
 Defined.
 
-
 Theorem INC_sound_left :
  forall A B C : Ens, EQ A B -> INC A C -> INC B C.
 Proof.
@@ -380,15 +253,6 @@ eapply IN_sound_right.
 + apply EQ_sym. exact AeqB.
 + exact ZinB.
 Defined.
-(* COMPLICATED
-Theorem INC_sound_left' :
- forall E E' E'' : Ens, EQ E E' -> INC E E'' -> INC E' E''.
-Proof.
-simple induction E''; unfold INC in |- *; simpl in |- *;
- intros A f HR e H1 E0 i; apply H1.
-apply IN_sound_right with E'; auto with zfc.
-Defined.
-*)
 
 Theorem INC_sound_right :
  forall A B C : Ens, EQ B C -> INC A B -> INC A C.
@@ -400,58 +264,30 @@ eapply IN_sound_right.
   exact ZinA.
 Defined.
 
-(* COMPLICATED:
-Theorem INC_sound_right :
- forall E E' E'' : Ens, EQ E' E'' -> INC E E' -> INC E E''.
-Proof.
-simple induction E'; simple induction E''; unfold INC in |- *; simpl in |- *;
- intros.
-elim (H2 E0); try assumption; intros.
-elim H1; intros HA HB; elim (HA x); intros.
-exists x0; apply EQ_tran with (e x); auto with zfc.
-Defined. *)
-
 (************ Remastered Axioms.v ***************)
 
 (* Definitions of the empty set, pair, union, intersection, comprehension  *)
 (*  axiom and powerset, together with their properties                     *)
 
-(* Useful types (actually top and bottom)   *)
-
-(*Inductive Un : Set :=
-    void : Un.*) (* Not used. *)
-
-(*Inductive F : Set :=.*) (* Renamed to False *)
-
 (* The empty set  (vide = french for empty)   *)
-Definition Vide : Ens := 
-sup False (fun x : False => match x return Ens with
-                            end).
-(*Definition Vide : Ens := sup F (fun f : F => match f return Ens with
-                                             end).*)
-
+Definition Vide : Ens :=
+  sup False (fun x : False => match x return Ens with
+                              end).
 
 (* The axioms of the empty set *)
-
 Definition Vide_est_vide : forall E : Ens, IN E Vide -> False.
 Proof.
 intro E.
 intro H.
 destruct H.
 exact x.
-(* Show Proof. *)
-Defined.
+Abort. (* nothing_IN_Vide = Vide_est_vide *)
 
 Definition nothing_IN_Vide (E : Ens) (H:IN E Vide) : False
 := match H with
    | ex_intro _ x _ => x
    end.
-(*
-unfold Vide in |- *; simpl in |- *; intros E H; cut False.
-simple induction 1.
-elim H; intros x; elim x.
-Defined.
-*)
+
 (*tout_vide_est_Vide*)
 Theorem empty_set_EQ_Vide :
  forall E : Ens, (forall E' : Ens, IN E' E -> False) -> EQ E Vide.
@@ -505,26 +341,6 @@ split; (intros [|];
 ).
 Defined.
 
-(* PREVIOUS
-Theorem Paire_sound_left :
- forall A A' B : Ens, EQ A A' -> EQ (Paire A B) (Paire A' B).
-Proof.
-unfold Paire in |- *.
-simpl in |- *.
-intros; split.
-simple induction x.
-Show Proof.
-exists true; auto with zfc.
-
-exists false; auto with zfc.
-
-simple induction y; simpl in |- *.
-exists true; auto with zfc.
-
-exists false; auto with zfc.
-Defined.*)
-
-
 Theorem Paire_sound_right :
  forall A B B' : Ens, EQ B B' -> EQ (Paire A B) (Paire A B').
 Proof.
@@ -558,19 +374,14 @@ Proof.
 unfold Paire in |- *; simpl in |- *.
 intros E E' A [b P].
 destruct b; auto with zfc.
-(*simple induction 1. intros b. elim b. simpl in |- *; auto with zfc.*)
 Defined.
 
-Hint Resolve IN_Paire_left IN_Paire_right Vide_est_vide: zfc.
+Hint Resolve IN_Paire_left IN_Paire_right nothing_IN_Vide: zfc.
 
 (* The singleton set  *)
-(* Note that we could define it directly using the base type Un *)
-
 Definition Sing (E : Ens) := Paire E E.
 
-
 (* The axioms  *)
-
 Theorem IN_Sing : forall E : Ens, IN E (Sing E).
 Proof.
 unfold Sing in |- *; auto with zfc.
@@ -581,10 +392,6 @@ Proof.
 unfold Sing in |- *. 
 intros E E' H.
 apply Paire_IN in H as [H|H]; assumption.
-(*elim (Paire_IN E' E' E).
-  auto.
-  auto.
-  assumption. *)
 Defined.
 
 Hint Resolve IN_Sing IN_Sing_EQ: zfc.
@@ -594,7 +401,6 @@ Proof.
 unfold Sing in |- *; intros. apply EQ_tran with (Paire A A').
  auto with zfc.
  auto with zfc.
-(*Show Proof.*)
 Defined.
 
 Hint Resolve Sing_sound: zfc.
@@ -602,14 +408,13 @@ Hint Resolve Sing_sound: zfc.
 Theorem EQ_Sing_EQ : forall E1 E2 : Ens, EQ (Sing E1) (Sing E2) -> EQ E1 E2.
 Proof.
 intros. cut (IN E1 (Sing E2)).
-intros. auto with zfc.
-apply IN_sound_right with (Sing E1).
- auto with zfc.
- auto with zfc.
++ intros. auto with zfc.
++ apply IN_sound_right with (Sing E1).
+  - auto with zfc.
+  - auto with zfc.
 Defined.
 
 Hint Resolve EQ_Sing_EQ: zfc.
-
 
 (* We here need sigma types -- i.e. computational existentials *)
 (*
@@ -622,17 +427,13 @@ Inductive sig (A : Type) (P : A -> Prop) : Type :=
 Definition Comp : Ens -> (Ens -> Prop) -> Ens.
 Proof.
 intros [A f] P.
-(*simple induction 1; intros A f fr P.*)
-apply (sup (@sig A (fun x:A => P (f x)))).
+apply (sup (sig (fun x:A => P (f x)))).
 intros [x _].
- exact (f x).
-Show Proof.
+exact (f x).
 Defined.
 (*simple induction 1; intros x p. todo: swap args*)
 
 (* The comprehension/separation axioms *)
-
-
 Theorem Comp_INC : forall (E : Ens) (P : Ens -> Prop), INC (Comp E P) E.
 Proof.
 intros E P z zinCompEP.
@@ -643,13 +444,6 @@ destruct w as [a Pfa].
 exists a. exact R.
 Defined.
 
-(* PREVIOUS (too large)
-Theorem Comp_INC : forall (E : Ens) (P : Ens -> Prop), INC (Comp E P) E.
-Proof.
-unfold Comp, INC in |- *. simple induction E. simpl in |- *. intros.
-elim H0. simple induction x. intros. exists x0. auto with zfc.
-Defined. *)
-
 Theorem IN_Comp_P :
  forall (E A : Ens) (P : Ens -> Prop),
  (forall w1 w2 : Ens, P w1 -> EQ w1 w2 -> P w2) -> IN A (Comp E P) -> P A.
@@ -659,16 +453,6 @@ destruct E,H0,x as [a p].
 apply H with (1:=p).
 apply EQ_sym. assumption.
 Defined.
-
-(* PREVIOUS 
-Theorem IN_Comp_P :
- forall (E A : Ens) (P : Ens -> Prop),
- (forall w1 w2 : Ens, P w1 -> EQ w1 w2 -> P w2) -> IN A (Comp E P) -> P A.
-Proof.
-simple induction E. simpl in |- *. intros B f Hr A P H i. elim i. intros c.
- elim c. simpl in |- *. intros x q e. apply H with (f x);
- auto with zfc.
-Defined.*)
 
 Theorem IN_P_Comp :
  forall (E A : Ens) (P : Ens -> Prop),
@@ -687,24 +471,9 @@ simpl.
 exact p.
 Defined.
 
-(* PREVIOUS
-Theorem IN_P_Comp :
- forall (E A : Ens) (P : Ens -> Prop),
- (forall w1 w2 : Ens, P w1 -> EQ w1 w2 -> P w2) ->
- IN A E -> P A -> IN A (Comp E P).
-Proof.
-simple induction E; simpl in |- *; intros B f HR A P H i; elim i;
- simpl in |- *; intros.
-cut (P (f x)).
-intros Pf.
-exists (@exist B (fun x : B => P (f x)) x Pf); simpl in |- *;
- auto with zfc.
-apply H with A; auto with zfc.
-Show Proof.
-Defined.*)
-
-(* Again, extentionality is not stated, but easy *)
-
+(* Again, extentionality is not stated, but easy 
+   only if P preserves EQ.
+*)
 
 (* Projections of a set: *)
 (*  1: its base type     *)
@@ -712,12 +481,6 @@ Definition pi1 (X:Ens):Type
  := match X with
     | sup A _ => A
     end.
-(*Definition pi1 : Ens -> Type.
-Proof.
-simple induction 1.
-intros A f r.
-exact A.
-Defined.*)
 
 (*  2: the function      *)
 Definition pi2 (X:Ens) (m:pi1 X):Ens 
@@ -725,27 +488,12 @@ Definition pi2 (X:Ens) (m:pi1 X):Ens
    | sup A f => fun k : pi1 (sup A f) => f k
    end m.
 
-(* PREVIOUS
-Definition pi2 : forall E : Ens, pi1 E -> Ens.
-Proof.
-simple induction E.
-intros A f r.
-exact f.
-Defined.*)
-
-(*(* Existential on the Type level *)
-Inductive depprod (A : Type) (P : A -> Type) : Type :=
-    dep_i : forall x : A, P x -> depprod A P.
-Changed to sigT and existT *)
-
 (* The Union set   *)
 Definition Union : forall E : Ens, Ens.
 Proof.
 intros [A f].
-(*simple induction 1; intros A f r.*)
 apply (sup { x : A & pi1 (f x)} ).
 intros [a b].
-(*simple induction 1; intros a b.*)
 exact (pi2 (f a) b).
 Defined.
 
@@ -766,11 +514,6 @@ Theorem IN_EXType :
 Proof.
 intros [A f]. simpl.
 intros [A' f']. trivial.
-(*simple induction E; simpl in |- *.
-intros A f r.
-simple induction 1; simpl in |- *.
-intros.
-exists x; auto with zfc.*)
 Defined.
 
 (* The union axioms *)
@@ -797,7 +540,6 @@ destruct (IN_EXType E E' H) as [x e].
 destruct E as [A f].
 assert (e1 : EQ (pi2 (sup A f) x) E').
 { apply EQ_sym; exact e. }
-(*simpl in *|-*.*)
 assert (i1:IN E'' (pi2 (sup A f) x)).
 { apply IN_sound_right with E'; auto with zfc. }
 apply IN_EXType in i1 as [x0 e2].
@@ -827,14 +569,9 @@ Theorem Union_IN :
  IN E' (Union E) -> exists E1 : Ens, IN E1 E /\ IN E' E1.
 Proof.
 intros [A f].
-(*simple induction E; unfold Union in |- *;simpl in |- *; intros A f r.*)
 simpl in |- *.
-
 simple induction 1.
-(*intros E' H. (*destruct E1.*)*)
 intros [a b].
-(*simple induction x. intros a b. 
-simpl in |- *.*)
 intros.
 exists (f a).
 split.
@@ -843,7 +580,6 @@ split.
   1 : auto with zfc.
   simpl in |- *.
   destruct (f a). simpl.
-  (*generalize b. elim (f a). simpl in |- *. intros. b0 *)
   exists b. auto with zfc.
 Defined.
 
@@ -852,19 +588,16 @@ Theorem Union_sound : forall E E' : Ens, EQ E E' -> EQ (Union E) (Union E').
 Proof.
 unfold Union in |- *.
 intros [A f] [A' f'].
-(* simple induction E; intros A f r.
- simple induction E'; intros A' f' r'.*)
  simpl in |- *.
- intros [e1 e2]. (*simple induction 1. intros e1 e2.*)
+ intros [e1 e2].
  split.
-+ intros [a aa]. (*intros x. elim x. intros a aa.*)
-  destruct (e1 a) as [a' ea]. (*elim (e1 a); intros a' ea.*)
++ intros [a aa].
+  destruct (e1 a) as [a' ea].
   destruct (EQ_EXType (f a) (f' a') ea aa) as [aa' eaa].
-  (*elim (EQ_EXType (f a) (f' a') ea aa); intros aa' eaa.*)
   exists (existT (fun x : A' => pi1 (f' x)) a' aa'); simpl in |- *;
   auto with zfc.
-+ intros [a' aa']. (*intros c'; elim c'; intros a' aa'.*)
-  destruct (e2 a') as [a ea]. (*elim (e2 a'); intros a ea.*)
++ intros [a' aa'].
+  destruct (e2 a') as [a ea].
   assert(ea': EQ (f' a') (f a)).
   { auto with zfc. }
   destruct (EQ_EXType (f' a') (f a) ea' aa') as [aa eaa].
@@ -878,12 +611,10 @@ Proof.
 unfold INC in |- *; intros E E' IEE E'' IEE''.
 destruct (Union_IN E E'') as [E''' [I1 I2]].
 + auto with zfc.
-+ (*intros E'''. simple induction 1; intros I1 I2.*)
-  apply IN_Union with E'''; auto with zfc.
++ apply IN_Union with E'''; auto with zfc.
 Defined.
 
 (*  The powerset and its axioms   *)
-
 Definition Power (E : Ens) : Ens :=
   match E with
   | sup A f =>
@@ -896,43 +627,28 @@ Definition Power (E : Ens) : Ens :=
             end))
   end.
 
-
 Theorem IN_Power_INC : forall E E' : Ens, IN E' (Power E) -> INC E' E.
 Proof.
-intros [A f]. (* unfold INC in |- *; simpl in |- *. *)
+intros [A f].
 intros E'.
-
 intros [P H]. revert H.
-(*simple induction 1 ;intros P.*)
-
 destruct E' as [A' f'].
-(* elim E'. intros A' f' r'.  simpl in |- *.*)
-
 intros [HA HB].
-(*simple induction 1; intros HA HB.*)
-
 intros E'' [a' e].
-(*intros E''. simple induction 1. intros a' e.*)
-
 destruct (HA a') as [[a p] H].
-(* elim (HA a'). simple induction x; intros a p.*)
 intros; exists a.
 apply EQ_tran with (f' a'); auto with zfc.
 Defined.
 
-
 Theorem INC_IN_Power : forall E E' : Ens, INC E' E -> IN E' (Power E).
 Proof.
 intros [A f].
-(*simple induction E; intros A f r; unfold INC in |- *; simpl in |- *.*)
 intros [A' f'] i.
-(*simple induction E'; intros A' f' r' i.*)
-
 exists (fun a : A => IN (f a) (sup A' f')).
 simpl in |- *.
 split.
 + intros.
-  elim (i (f' x)). (*auto with zfc.*)
+  elim (i (f' x)).
   - intros a e.
     cut (EQ (f a) (f' x)); auto with zfc.
     intros e1.
@@ -1001,29 +717,12 @@ Defined.
 
 Definition Class_succ (E : Ens) := Union (Paire E (Sing E)).
 
-(*
-Inductive Ord : Ens -> Prop :=
-  Oo : (Ord Vide)
-| So : (E:Ens)(Ord E)->(Ord (Class_succ E))
-| Lo : (E:Ens)((e:Ens)(IN e E)->(Ord e))->(Ord (Union E))
-| Eo : (E,E':Ens)(Ord E)->(EQ E E')->(Ord E').
-
-Hints Resolve Oo So Lo : zfc.
-*)
-
-
 Definition Nat : nat -> Ens.
 Proof.
 simple induction 1; intros.
 exact Vide.
 exact (Class_succ X).
 Defined.
-
-(*
-Theorem Nat_Ord : (n:nat)(Ord (Nat n)).
-Induction n; Simpl; Auto with zfc.
-Save.
-*)
 
 Definition Omega : Ens := sup nat Nat.
 
@@ -1033,7 +732,6 @@ intros E; unfold Class_succ in |- *; unfold Sing in |- *;
  apply IN_Union with (Paire E E); auto with zfc.
 Defined.
 
-
 Theorem INC_Class_succ : forall E : Ens, INC E (Class_succ E).
 Proof.
 unfold INC in |- *; unfold Class_succ in |- *.
@@ -1042,7 +740,6 @@ apply IN_Union with E; auto with zfc.
 Defined.
 
 Hint Resolve IN_Class_succ INC_Class_succ: zfc.
-
 
 Theorem IN_Class_succ_or :
  forall E E' : Ens, IN E' (Class_succ E) -> EQ E E' \/ IN E' E.
@@ -1090,47 +787,37 @@ Theorem IN_Nat_EXType :
  IN E (Nat n) -> exists p : nat, EQ E (Nat p).
 Proof.
 simple induction n.
-simpl in |- *.
-simple induction 1.
-simple induction x.
-
-intros.
-change (IN E (Class_succ (Nat n0))) in H0.
-elim (IN_Class_succ_or (Nat n0) E H0).
-intros; exists n0.
-auto with zfc.
-
-intros.
-elim (H E); auto with zfc.
++ simpl in |- *.
+  simple induction 1.
+  simple induction x.
++ intros.
+  change (IN E (Class_succ (Nat n0))) in H0.
+  elim (IN_Class_succ_or (Nat n0) E H0).
+  - intros; exists n0.
+    auto with zfc.
+  - intros.
+    elim (H E); auto with zfc.
 Defined.
 
 Theorem Omega_EQ_Union : EQ Omega (Union Omega).
 Proof.
 apply INC_antisym; unfold INC in |- *.
-intros.
-elim (IN_Omega_EXType E H); intros n e.
-apply IN_Union with (Nat (S n)).
-auto with zfc.
-
-apply IN_sound_left with (Nat n).
-auto with zfc.
-
-auto with zfc.
-change (IN (Nat n) (Class_succ (Nat n))) in |- *; auto with zfc.
-
-intros.
-elim (Union_IN Omega E H).
-intros e h.
-elim h.
-intros i1 i2.
-elim (IN_Omega_EXType e i1).
-intros n e1.
-cut (IN E (Nat n)).
-intros.
-elim (IN_Nat_EXType n E H0); intros.
-apply IN_sound_left with (Nat x); auto with zfc.
-
-apply IN_sound_right with e; auto with zfc.
++ intros.
+  elim (IN_Omega_EXType E H); intros n e.
+  apply IN_Union with (Nat (S n)).
+  - auto with zfc.
+  - apply IN_sound_left with (Nat n).
+    auto with zfc.
+    change (IN (Nat n) (Class_succ (Nat n))) in |- *.
+    auto with zfc.
++ intros.
+  destruct (Union_IN Omega E H) as [e h].
+  destruct h as [i1 i2].
+  destruct (IN_Omega_EXType e i1) as [n e1].
+  assert (H0: IN E (Nat n)).
+  1 : apply IN_sound_right with e; auto with zfc.
+  destruct (IN_Nat_EXType n E H0) as [x H1].
+  apply IN_sound_left with (Nat x); auto with zfc.
 Defined.
 
 (*
@@ -1153,8 +840,6 @@ apply Omega_EQ_Union.
 Save.
 *)
 
-
-
 Fixpoint Vee (E : Ens) : Ens :=
   match E with
   | sup A f => Union (sup A (fun a : A => Power (Vee (f a))))
@@ -1176,7 +861,6 @@ Transparent Alpha.
 
 (* page 3 *)
 (* axExt see above *)
-
 Theorem axPair : forall a b : Ens, exists w:Ens,
    forall z, (IN z w <-> EQ z a \/ EQ z b).
 Proof.
@@ -1420,7 +1104,6 @@ Defined.
 End TheoremsAboutClasses.
 
 (*Require Import ZFC.Ordinal_theory.*)
-
 Theorem Class_succ_sound X Y (H: EQ X Y) :
 EQ (Class_succ X) (Class_succ Y).
 Proof.
@@ -1456,35 +1139,6 @@ Defined.
 (*============================================
                      Part II
 ==============================================*)
-
-(* The  Intersection set   *)
-Definition Inter (E : Ens) : Ens :=
-  Comp (Union E) (fun e : Ens => forall a : Ens, IN a E -> IN e a).
-
-Theorem IN_Inter_all :
- forall E E' : Ens,
- IN E' (Inter E) -> forall E'' : Ens, IN E'' E -> IN E' E''.
-Proof.
-unfold Inter in |- *.
-intros E E' i.
-change ((fun e : Ens => forall a : Ens, IN a E -> IN e a) E') in |- *.
-apply (IN_Comp_P (Union E) E').
-intros.
-apply IN_sound_left with w1; auto with zfc.
-assumption.
-Defined.
-
-Theorem all_IN_Inter :
- forall E E' E'' : Ens,
- IN E'' E -> (forall E'' : Ens, IN E'' E -> IN E' E'') -> IN E' (Inter E).
-Proof.
-unfold Inter in |- *.
-intros.
-apply IN_P_Comp.
-intros; apply IN_sound_left with w1; auto with zfc.
-apply IN_Union with (E' := E''); auto with zfc.
-auto with zfc.
-Defined.
 
 (* Traditional Product needs Kuratowski ordered pair *)
 
@@ -1554,13 +1208,12 @@ unfold OrdPair in |- *. intros.
 pose (H1:=H).
 apply Paire_EQ_cases in H1 as [K1 K2].
 split.
- destruct K1 as [A|B].
-  apply EQ_Sing_EQ. assumption.
-  apply SingEqPair in B as [n1 n2]. assumption.
-
- destruct K1 as [A|B], K2 as [C|D].
++ destruct K1 as [A|B].
+   apply EQ_Sing_EQ. assumption.
+   apply SingEqPair in B as [n1 n2]. assumption.
++ destruct K1 as [A|B], K2 as [C|D].
  (*as [[A|B] [C|D]].*)
-+ (*split. apply EQ_Sing_EQ. assumption.*)
+- (*split. apply EQ_Sing_EQ. assumption.*)
   apply EQ_sym in C.
   apply SingEqPair in C as [J1 J2].
   assert(i: EQ (Paire (Sing a) (Paire a b))
@@ -1575,7 +1228,7 @@ split.
   eapply EQ_tran. apply EQ_sym. exact J2.
   eapply EQ_tran. apply EQ_sym. exact U1.
   exact U2.
-+ pose (i:=IN_Paire_right c d).
+- pose (i:=IN_Paire_right c d).
   eapply IN_sound_right in i.
   2 : { apply EQ_sym, D. }
   apply Paire_IN in i as [X1|X2].
@@ -1588,12 +1241,12 @@ split.
    apply EQ_tran with (E2:=c). assumption.
    apply EQ_sym, EQ_tran with (E2:=a); assumption.
   assumption.
-+ apply EQ_sym, SingEqPair in C as [F1 F2].
+- apply EQ_sym, SingEqPair in C as [F1 F2].
   apply SingEqPair in B as [P1 P2].
   apply EQ_tran with (E2:=c). apply EQ_sym; exact F2.
   apply EQ_tran with (E2:=a). apply EQ_sym; exact P1.
   exact P2.
-+ pose (i:=IN_Paire_right c d).
+- pose (i:=IN_Paire_right c d).
   eapply IN_sound_right in i.
   2 : { apply EQ_sym, D. }
   apply Paire_IN in i as [X1|X2].
@@ -1610,6 +1263,35 @@ Theorem OrdPair_inj_right :
  forall A A' B B' : Ens, EQ (OrdPair A A') (OrdPair B B') -> EQ A' B'.
 Proof.
 intros. apply OrdPair_inj in H as [a b]. exact b.
+Defined.
+
+(* The Intersection of a nonempty set.  *)
+Definition Inter (E : Ens) : Ens :=
+  Comp (Union E) (fun e : Ens => forall a : Ens, IN a E -> IN e a).
+
+Theorem IN_Inter_all :
+ forall E E' : Ens,
+ IN E' (Inter E) -> forall E'' : Ens, IN E'' E -> IN E' E''.
+Proof.
+unfold Inter in |- *.
+intros E E' i.
+change ((fun e : Ens => forall a : Ens, IN a E -> IN e a) E') in |- *.
+apply (IN_Comp_P (Union E) E').
+intros.
+apply IN_sound_left with w1; auto with zfc.
+assumption.
+Defined.
+
+Theorem all_IN_Inter :
+ forall E E' E'' : Ens,
+ IN E'' E -> (forall E'' : Ens, IN E'' E -> IN E' E'') -> IN E' (Inter E).
+Proof.
+unfold Inter in |- *.
+intros.
+apply IN_P_Comp.
+intros; apply IN_sound_left with w1; auto with zfc.
++ apply IN_Union with (E' := E''); auto with zfc.
++ auto.
 Defined.
 
 (* predicate for separation of the product *)
@@ -1786,8 +1468,6 @@ assert (R1:~(IN S S)).
  + exact (R1 R). }
 Defined.
 
-(* Search Comp. *)
-(* Check Nat Omega. *)
 (* Subset of subsets of X. *)
 Definition SoS (X:Ens) : Ens := Comp X (fun x => INC x X).
 
@@ -1797,7 +1477,7 @@ Definition Ind (X:Ens) : Prop :=
 Lemma INC_Vide (X:Ens): INC Vide X.
 Proof.
 unfold INC. intros E IN_E_Vide.
-destruct (Vide_est_vide E IN_E_Vide).
+destruct (nothing_IN_Vide E IN_E_Vide).
 Defined.
 
 (* it's for Comp ax *)
@@ -1827,7 +1507,6 @@ constructor. (*split.*)
 2 : { intros. apply INC_sound_left with (1:=H3). exact H2. }
 (*(E:=w1). exact H3. exact H2. }*)
   apply Comp_INC in H0.
-  (* . *)
   destruct H as [Ha Hb].
   assert (xusxinX : IN (Class_succ x) X).
    apply Hb. exact H0.
@@ -1876,7 +1555,7 @@ split.
 + apply IN_P_Comp.
   { exact ex_1_4_lem. }
   { exact Ha. }
-  { intros x H. destruct (Vide_est_vide _ H). }
+  { intros x H. destruct (nothing_IN_Vide _ H). }
 + intros Y H.
   apply IN_Comp_P in H as H1.
   2 : exact ex_1_4_lem.
@@ -1925,7 +1604,7 @@ Theorem isTrans_Vide : isTrans Vide.
 Proof.
 unfold isTrans.
 intros z zinvide.
-destruct (Vide_est_vide z zinvide).
+destruct (nothing_IN_Vide z zinvide).
 Defined.
 
 Theorem ex_1_5 (X:Ens) (H: Ind X) 
@@ -1938,7 +1617,7 @@ split.
   exact Ha.
   split.
   * exact isTrans_Vide.
-  * intro videinvide. destruct (Vide_est_vide Vide videinvide).
+  * intro videinvide. destruct (nothing_IN_Vide Vide videinvide).
 + intros Y H.
   apply IN_Comp_P in H as H1.
   2 : exact ex_1_5_lem1.
@@ -2029,11 +1708,7 @@ split.
     apply IN_Comp_P in P1 as [P1' P1''].
     exact P1'.
     exact ex_1_5_lem1. }
-  admit.
-+ intros.
-(*Search Comp.*)
 Abort.
-(* DEVELOPMENT IS HERE *)
 
 (*============================================
                      Part III
@@ -2613,22 +2288,9 @@ Defined.
 
 Lemma cIN_sound_iff (A:class) (D k:Ens) (K:EQC A D): A k <-> IN k D.
 Proof.
-split;intros H;
- (*unfold EQC in K;*) apply K in H; (*simpl in H;*) exact H. (*twice*)
+split; intros H; 
+apply K in H; (*simpl in H;*) exact H. (*twice*)
 Defined.
-
-
-(*
-Существуют ли классы такие, что то, что они - множества
-- недоказуемо? Да: определённые как ∅ или V, в зависимости от
-недоказуемого и не опровержимого утверждения.
-Можно ли, тем не менее, доказать, что образовывая синглтон из классов
-я получу множество? Да, классически: элемент либо множество, либо нет.
-Если нет, то получается ∅ .
-xclass должен хранить либо подтверждение, либо опровержение своей
-множественности.
-Цель - получить систему, в которой можно игнорировать 
-*)
 
 Definition xPair (A B:xclass) : xclass.
 Proof.
@@ -2668,7 +2330,7 @@ destruct (ciset A) as [ASE|APC], (ciset B) as [BSE|BPC].
     destruct x as [m J].
     destruct m; simpl in J.
     * left. apply axExtC in J.
-(*      eapply EQC_tran.
+(*    eapply EQC_tran.
       apply J.
       intros a. split; intro h.
 simpl in h.
@@ -2700,16 +2362,16 @@ exact K.
 Defined.
 
 Theorem nPUXiX : not (forall (X:Ens),INC (Power (Union X)) X).
-Proof. 
+Proof.
 intro H.
 pose (A:=H Vide).
 pose (B:=A Vide).
 assert (C:IN Vide (Power (Union Vide))).
 + apply INC_IN_Power.
   intros y J.
-  apply Vide_est_vide in J as [].
+  apply nothing_IN_Vide in J as [].
 + apply B in C.
-  apply Vide_est_vide in C as [].
+  apply nothing_IN_Vide in C as [].
 Defined.
 
 Theorem union_vide: EQ (Union Vide) Vide.
@@ -2717,28 +2379,31 @@ Proof.
 apply axExt.
 intro z. split; intro H.
 + apply Union_IN in H as [w [W1 W2]].
-  destruct (Vide_est_vide w W1).
-+ destruct (Vide_est_vide z H).
+  destruct (nothing_IN_Vide w W1).
++ destruct (nothing_IN_Vide z H).
 Defined.
 
 Lemma nemp_then_inh (S:Ens) (H:~EQ S Vide) : exists m, IN m S.
 Proof.
-(*Search Vide.*)
 unshelve eapply not_all_not_ex.
 intro D.
 apply H.
-(*apply EQ_sym.*)
 apply (empty_set_EQ_Vide S).
 exact D.
 Defined.
 
-Require Import FunctionalExtensionality.
 Lemma pi1pi2 (E:Ens): E = sup (pi1 E) (pi2 E).
 Proof.
 destruct E.
 apply f_equal.
 apply functional_extensionality.
 intro. simpl. reflexivity.
+Defined.
+
+Lemma pi1pi2' (E:Ens): EQ E (sup (pi1 E) (pi2 E)).
+Proof.
+destruct E. simpl. 
+split; intro z; exists z; auto with zfc.
 Defined.
 
 Lemma lem3 (S:Ens) (K:~IN Vide S) :
@@ -2838,7 +2503,8 @@ exact Rx1x2.
 exact Txy.
 Defined.
 
-Axiom (SFC:SetoidFunctionalChoice_on AC_A AC_B).
+(*Axiom (SFC:SetoidFunctionalChoice_on AC_A AC_B).*)
+Definition SFC:= axSFC AC_A AC_B.
 
 Definition Afp := ex2sig _ _ (SFC AC_R AC_T AC_eqvR T_sound AC_hyp).
 Definition Afu := fun v : pi1 S =>
@@ -2918,8 +2584,6 @@ intros X.
 Defined.
 
 End AC_sec.
-
-(*Check axChoice.*)
 
 (************************* STOP HERE ****************************)
 
