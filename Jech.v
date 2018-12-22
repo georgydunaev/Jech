@@ -1,3 +1,6 @@
+(* IST = "Introduction to Set Theory".(T.Jech, 2003)
+    ST = "Set Theory".(K.Hrbacek, T.Jech)
+*)
 (*** Contents ***
 
 Part I: Large isolated part of "/coq-contribs/zfc/" library and
@@ -2585,6 +2588,52 @@ Defined.
 
 End AC_sec.
 
+Definition uniqueEns : (Ens -> Prop) -> Ens -> Prop 
+:= fun (P : Ens -> Prop) (x : Ens) =>
+   P x /\ (forall x' : Ens, P x' -> EQ x x').
+
+(* Projections for ordered pairs. *)
+Definition Pi1 (p : Ens) : Ens
+:= Union (Inter p).
+
+(* Projections for ordered pairs. *)
+Definition Pi2 (p : Ens) : Ens
+:= Union (Comp (Union p)
+ (fun x => ~(EQ (Union p) (Inter p))->~(IN x (Inter p)) )
+).
+
+
+Definition AT : Ens -> Ens -> Ens.
+Proof.
+intro E.
+Admitted.
+(*(AT f Vide)*)
+Theorem AT_sound_right (F X Y:Ens) (H:EQ X Y)
+: EQ (AT F X) (AT F Y).
+Proof.
+Abort.
+
+(*** Recursion theorem ***)
+(* IST p.46 *)
+Theorem rec_thm (a A g:Ens) (H1:IN a A) 
+(H2: IN g (functions (Product A Omega) A)) 
+: ex (uniqueEns (fun f:Ens=>
+   IN f (functions Omega A) /\
+   (EQ (AT f Vide) a) /\
+   forall n:Ens, IN n Omega ->
+    EQ (AT f (Class_succ n)) (AT g
+     (OrdPair (AT f n) n)
+    )
+  )).
+Proof.
+
+
+(*unique
+exists ().
+(*ex (unique ... )*)
+constructor.
+"exists!"*)
+Abort.
 (************************* STOP HERE ****************************)
 
 
