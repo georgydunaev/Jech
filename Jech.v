@@ -2781,11 +2781,40 @@ apply Comp_sound.
     exact L2.
 Defined.
 
-(* correctness *)
-Theorem OrdPair_cor1 (A B:Ens): EQ (Pi1 (OrdPair A B)) A.
+Theorem InterOP A B : EQ (Inter (OrdPair A B)) (Sing A).
 Proof.
-Abort.
-Search OrdPair.
+apply axExt_left.
+intro z. split; intro q.
++ apply (IN_Inter_all (OrdPair A B) z q (Sing A)).
+  unfold OrdPair.
+  auto with zfc.
++ apply (all_IN_Inter (OrdPair A B) z (Sing A)).
+  unfold OrdPair.
+  auto with zfc.
+  intros E H.
+  apply IN_Sing_EQ in q.
+  apply Paire_IN in H as [H|H].
+  - apply (IN_sound_left A).
+    auto with zfc.
+    apply (IN_sound_right _ (Sing A)).
+    auto with zfc.
+    auto with zfc.
+  - apply (IN_sound_right _ (Paire A B)).
+    auto with zfc.
+    apply (IN_sound_left A).
+    auto with zfc.
+    auto with zfc.
+Defined.
+
+(* computation of Pi1 *)
+Theorem Pi1_comput (A B:Ens): EQ (Pi1 (OrdPair A B)) A.
+Proof.
+unfold Pi1.
+apply (EQ_tran _ (Union (Sing A))).
++ apply Union_sound.
+  apply InterOP.
++ apply unionsing.
+Defined.
 
 Definition AT : Ens -> Ens -> Ens.
 Proof.
