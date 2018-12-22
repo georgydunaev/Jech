@@ -2743,10 +2743,43 @@ Definition Pi2 (p : Ens) : Ens
 
 Theorem Pi1_sound (X Y: Ens) (H: EQ X Y): EQ (Pi1 X) (Pi1 Y).
 Proof.
-(*
-Search Inter.
-apply Inter_sound.*)
-Abort.
+unfold Pi1.
+apply Union_sound.
+apply Inter_sound.
+exact H.
+Defined.
+
+Theorem EQ_sound X1 X2 Y1 Y2 (H1: EQ X1 Y1) (H2: EQ X2 Y2)
+ (H: EQ X1 X2): EQ Y1 Y2.
+Proof.
+apply (EQ_tran _ X1).
+auto with zfc.
+apply (EQ_tran _ X2); auto with zfc.
+Defined.
+
+Theorem Pi2_sound (X Y: Ens) (H: EQ X Y): EQ (Pi2 X) (Pi2 Y).
+Proof.
+unfold Pi2.
+apply Union_sound.
+apply Comp_sound.
+3 : apply Union_sound; exact H.
++ intros. intro H3.
+  apply (IN_sound_left w2 w1) in H3.
+  2 : auto with zfc.
+  apply H0; assumption.
++ intro w. revert X Y H.
+  apply two_sided.
+  intros X Y H  L0 L1 L2.
+  apply L0.
+  - intro L3. apply L1.
+    apply (EQ_sound (Union X) (Inter X)).
+    3 : assumption.
+    apply Union_sound, H.
+    apply Inter_sound, H.
+  - eapply (IN_sound_right _ (Inter Y)).
+    apply Inter_sound, EQ_sym, H.
+    exact L2.
+Defined.
 
 (* correctness *)
 Theorem OrdPair_cor1 (A B:Ens): EQ (Pi1 (OrdPair A B)) A.
