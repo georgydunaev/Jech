@@ -1268,17 +1268,6 @@ Proof.
 intros. apply OrdPair_inj in H as [a b]. exact b.
 Defined.
 
-(* The Intersection of a nonempty set.  *)
-Definition Inter (E : Ens) : Ens :=
-  Comp (Union E) (fun e : Ens => forall a : Ens, IN a E -> IN e a).
-
-Theorem Inter_sound (X Y:Ens) (H:EQ X Y): EQ (Inter X) (Inter Y).
-Proof.
-unfold Inter.
-(*apply Comp_sound.*)
-Search Comp.
-Abort.
-
 (* technical theorem for rewrite tactic *)
 Theorem two_sided (C : Ens -> Prop) :
 (forall a b : Ens, EQ a b -> C a -> C b)
@@ -1337,23 +1326,29 @@ exact H0.
 exact H1.
 Defined.
 
-(*
+
 Theorem EQC_works (P R:Ens->Prop)
+(A:(Ens->Prop)->Prop)
 (H:forall w1 w2 : Ens, EQ w1 w2 -> P w1 <-> R w2)
 (P_sound:forall w1 w2 : Ens, P w1 -> EQ w1 w2 -> P w2)
+: (A P) <-> (A R).
 Proof.
-forall z : Ens, IN z (Comp X P) <-> IN z (Comp X R)
-*)
+split; intro J.
+Abort.
 
 Theorem Comp_sound_right (P R:Ens->Prop)
-(P_sound:forall w1 w2 : Ens, P w1 -> EQ w1 w2 -> P w2)
+(*P_sound:forall w1 w2 : Ens, P w1 -> EQ w1 w2 -> P w2*)
 (H:forall w1 w2 : Ens, EQ w1 w2 -> P w1 <-> R w2)
  (X:Ens) : EQ (Comp X P) (Comp X R).
 Proof.
 apply axExt.
+intro z.
+revert P R H.
+simpl.
 
-intro z. split; intro q.
+ split; intro q.
 + apply IN_P_Comp.
+
 (*  exact P_sound.
 EQC
 apply Comp_elim*)
@@ -1362,6 +1357,27 @@ destruct X as [A f].
 destruct Y as [B g].
 simpl in H.
 *|-*.*)
+Abort.
+
+(* The Intersection of a nonempty set.  *)
+Definition Inter (E : Ens) : Ens :=
+  Comp (Union E) (fun e : Ens => forall a : Ens, IN a E -> IN e a).
+
+Theorem Inter_sound (X Y:Ens) (H:EQ X Y): EQ (Inter X) (Inter Y).
+Proof.
+unfold Inter.
+eapply EQ_tran with (E2:=
+  (Comp (Union Y) (fun e : Ens => forall a : Ens, IN a X -> IN e a))
+).
++ apply Comp_sound_left.
+  - intros.
+    eapply IN_sound_left.
+    exact H1.
+    exact (H0 a H2).
+  - eapply Union_sound; exact H.
++
+(*apply Comp_sound.*)
+Search Comp.
 Abort.
 
 Theorem IN_Inter_all :
