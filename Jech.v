@@ -1,8 +1,8 @@
 (*** Contents ***
 
 Part I: Large isolated part of "/coq-contribs/zfc/" library and
-proofs of some axioms of zfc. These definitions we are not 
-going to use directly.
+proofs of some axioms of zfc. We are not 
+going to directly use these definitions .
 
 Part II: Development of the classic ZFC theory with
  exercises from Jech's "Set theory". (try to avoid classes)
