@@ -1272,6 +1272,98 @@ Defined.
 Definition Inter (E : Ens) : Ens :=
   Comp (Union E) (fun e : Ens => forall a : Ens, IN a E -> IN e a).
 
+Theorem Inter_sound (X Y:Ens) (H:EQ X Y): EQ (Inter X) (Inter Y).
+Proof.
+unfold Inter.
+(*apply Comp_sound.*)
+Search Comp.
+Abort.
+
+(* technical theorem for rewrite tactic *)
+Theorem two_sided (C : Ens -> Prop) :
+(forall a b : Ens, EQ a b -> C a -> C b)
+->
+(forall a b : Ens, EQ a b -> C a <-> C b).
+Proof.
+intros.
+split;intros H1.
+- eapply (H a b). exact H0. exact H1.
+- apply EQ_sym in H0.
+  eapply (H b a). exact H0. exact H1.
+Defined.
+
+Theorem two_sided2 (C:Ens->Ens):
+(forall X Y : Ens,
+EQ X Y -> forall z : Ens, IN z (C X) -> IN z (C Y))
+->
+(forall X Y : Ens,
+EQ X Y -> forall z : Ens, IN z (C X) <-> IN z (C Y)).
+Proof.
+intros H X Y XeqY z.
+split.
++ apply H; assumption.
++ apply H; auto with zfc.
+Defined.
+
+Theorem Comp_sound_left (P:Ens->Prop)
+(P_sound:forall w1 w2 : Ens, P w1 -> EQ w1 w2 -> P w2)
+ (X Y:Ens) (H:EQ X Y) : EQ (Comp X P) (Comp Y P).
+Proof.
+apply axExt.
+revert X Y H; apply two_sided2; intros X Y H.
+intro z.
+intro K.
+  apply IN_P_Comp.
+  exact P_sound.
+  - apply IN_sound_right with (1:=H).
+    eapply Comp_INC.
+    exact K.
+  - eapply IN_Comp_P in K.
+    * exact K.
+    * exact P_sound.
+Defined.
+
+Theorem EQC_pres_soundness (P R:Ens->Prop)
+(H:forall w1 w2 : Ens, EQ w1 w2 -> P w1 <-> R w2)
+(P_sound:forall w1 w2 : Ens, P w1 -> EQ w1 w2 -> P w2)
+:forall w1 w2 : Ens, R w1 -> EQ w1 w2 -> R w2.
+Proof.
+intros.
+apply (proj1 (H w1 w2 H1)).
+apply EQ_sym in H1.
+apply (P_sound w2 w1).
+apply (proj2 (H w2 w1 H1)).
+exact H0.
+exact H1.
+Defined.
+
+(*
+Theorem EQC_works (P R:Ens->Prop)
+(H:forall w1 w2 : Ens, EQ w1 w2 -> P w1 <-> R w2)
+(P_sound:forall w1 w2 : Ens, P w1 -> EQ w1 w2 -> P w2)
+Proof.
+forall z : Ens, IN z (Comp X P) <-> IN z (Comp X R)
+*)
+
+Theorem Comp_sound_right (P R:Ens->Prop)
+(P_sound:forall w1 w2 : Ens, P w1 -> EQ w1 w2 -> P w2)
+(H:forall w1 w2 : Ens, EQ w1 w2 -> P w1 <-> R w2)
+ (X:Ens) : EQ (Comp X P) (Comp X R).
+Proof.
+apply axExt.
+
+intro z. split; intro q.
++ apply IN_P_Comp.
+(*  exact P_sound.
+EQC
+apply Comp_elim*)
+(*simpl.
+destruct X as [A f].
+destruct Y as [B g].
+simpl in H.
+*|-*.*)
+Abort.
+
 Theorem IN_Inter_all :
  forall E E' : Ens,
  IN E' (Inter E) -> forall E'' : Ens, IN E'' E -> IN E' E''.
@@ -1366,20 +1458,6 @@ Comp
  f
  (fun e => exists x y, EQ e (OrdPair x y) /\ IN x X)
 .
-
-(* technical theorem for rewrite tactic *)
-
-Theorem two_sided (C : Ens -> Prop) :
-(forall a b : Ens, EQ a b -> C a -> C b)
-->
-(forall a b : Ens, EQ a b -> C a <-> C b).
-Proof.
-intros.
-split;intros H1.
-- eapply (H a b). exact H0. exact H1.
-- apply EQ_sym in H0.
-  eapply (H b a). exact H0. exact H1.
-Defined.
 
 (* Here we use epsilon-induction. *)
 Theorem snis Y : ~(IN Y Y).
@@ -1793,6 +1871,18 @@ unshelve eapply Build_class'.
 + simpl. intros a b H1 H2. exact H2.
 Defined.
 
+Theorem Comp_elim x y (K:class) : IN x (Comp y K) -> (IN x y /\ K x).
+Proof.
+intro e.
+split.
++ exact ((Comp_INC y K) _ e).
++ apply IN_Comp_P in e. exact e.
+  intros.
+  rewrite <- (sound K).
+  exact H.
+  exact H0.
+Defined.
+
 Definition cInter (c:class) : class.
 Proof.
 unshelve eapply Build_class'.
@@ -2155,18 +2245,6 @@ Proof. intro H. pose (y:= unionsing M).
 apply EQ_tran with (E2:=Union (Sing M)).
 apply Union_sound. assumption.
 assumption.
-Defined.
-
-Theorem Comp_elim x y (K:class) : IN x (Comp y K) -> (IN x y /\ K x).
-Proof.
-intro e.
-split.
-+ exact ((Comp_INC y K) _ e).
-+ apply IN_Comp_P in e. exact e.
-  intros.
-  rewrite <- (sound K).
-  exact H.
-  exact H0.
 Defined.
 
 (* definitions for classes *)
@@ -2602,6 +2680,17 @@ Definition Pi2 (p : Ens) : Ens
  (fun x => ~(EQ (Union p) (Inter p))->~(IN x (Inter p)) )
 ).
 
+Theorem Pi1_sound (X Y: Ens) (H: EQ X Y): EQ (Pi1 X) (Pi1 Y).
+Proof.
+Search Inter.
+(*apply Inter_sound.*)
+Abort.
+
+(* correctness *)
+Theorem OrdPair_cor1 (A B:Ens): EQ (Pi1 (OrdPair A B)) A.
+Proof.
+Abort.
+Search OrdPair.
 
 Definition AT : Ens -> Ens -> Ens.
 Proof.
