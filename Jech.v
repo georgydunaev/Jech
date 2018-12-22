@@ -810,13 +810,13 @@ Theorem IN_INC_Union : forall E E' : Ens, IN E' E -> INC E' (Union E).
 Proof.
 unfold INC in |- *.
 intros [A f].
-unfold Union in |- *.
-intros E' i E'' i'; simpl in |- *.
+ simpl in |- *.
+intros E' i E'' i'.
 destruct (IN_EXType (sup A f) E' i) as [a e].
-simpl in a; simpl in e.
+simpl in a, e.
 destruct (IN_EXType E' E'' i') as [a' e''].
 assert (i'': IN E'' (f a)).
-{ apply IN_sound_right with E'; auto with zfc. }
+{ apply IN_sound_right with E'; auto with zfc. (* e i' *) }
 eapply IN_EXType in i'' as [aa ee].
 exists (existT (fun x : A => pi1 (f x)) a aa).
 exact ee.
@@ -832,82 +832,54 @@ simpl in |- *.
 
 simple induction 1.
 (*intros E' H. (*destruct E1.*)*)
-
-simple induction x.
-intros a b; simpl in |- *.
+intros [a b].
+(*simple induction x. intros a b. 
+simpl in |- *.*)
 intros.
 exists (f a).
 split.
-exists a; auto with zfc.
-
-apply IN_sound_left with (pi2 (f a) b); auto with zfc.
-simpl in |- *.
-generalize b; elim (f a); simpl in |- *.
-intros.
-exists b0; auto with zfc.
-(*Show Proof.*)
++ exists a; auto with zfc.
++ apply IN_sound_left with (pi2 (f a) b). 
+  1 : auto with zfc.
+  simpl in |- *.
+  destruct (f a). simpl.
+  (*generalize b. elim (f a). simpl in |- *. intros. b0 *)
+  exists b. auto with zfc.
 Defined.
 
-
 (* extentionality of union  *)
-
 Theorem Union_sound : forall E E' : Ens, EQ E E' -> EQ (Union E) (Union E').
 Proof.
-unfold Union in |- *; simple induction E; intros A f r; simple induction E';
- intros A' f' r'; simpl in |- *; simple induction 1; 
- intros e1 e2; split.
-intros x; elim x; intros a aa; elim (e1 a); intros a' ea.
-elim (EQ_EXType (f a) (f' a') ea aa); intros aa' eaa.
-exists (@existT A' (fun x : A' => pi1 (f' x)) a' aa'); simpl in |- *;
- auto with zfc.
-intros c'; elim c'; intros a' aa'; elim (e2 a'); intros a ea.
-cut (EQ (f' a') (f a)).
-2: auto with zfc.
-intros ea'; elim (EQ_EXType (f' a') (f a) ea' aa'); intros aa eaa.
-exists (@existT A (fun x : A => pi1 (f x)) a aa); auto with zfc.
+unfold Union in |- *.
+intros [A f] [A' f'].
+(* simple induction E; intros A f r.
+ simple induction E'; intros A' f' r'.*)
+ simpl in |- *.
+ intros [e1 e2]. (*simple induction 1. intros e1 e2.*)
+ split.
++ intros [a aa]. (*intros x. elim x. intros a aa.*)
+  destruct (e1 a) as [a' ea]. (*elim (e1 a); intros a' ea.*)
+  destruct (EQ_EXType (f a) (f' a') ea aa) as [aa' eaa].
+  (*elim (EQ_EXType (f a) (f' a') ea aa); intros aa' eaa.*)
+  exists (existT (fun x : A' => pi1 (f' x)) a' aa'); simpl in |- *;
+  auto with zfc.
++ intros [a' aa']. (*intros c'; elim c'; intros a' aa'.*)
+  destruct (e2 a') as [a ea]. (*elim (e2 a'); intros a ea.*)
+  assert(ea': EQ (f' a') (f a)).
+  { auto with zfc. }
+  destruct (EQ_EXType (f' a') (f a) ea' aa') as [aa eaa].
+  exists (existT (fun x : A => pi1 (f x)) a aa); auto with zfc.
 Defined.
 
 
 (* The union construction is monotone w.r.t. inclusion   *)
-
 Theorem Union_mon : forall E E' : Ens, INC E E' -> INC (Union E) (Union E').
 Proof.
 unfold INC in |- *; intros E E' IEE E'' IEE''.
-elim (Union_IN E E'').
-intros E'''; simple induction 1; intros I1 I2.
-apply IN_Union with E'''; auto with zfc.
-auto with zfc.
-Defined.
-
-(* The  Intersection set   *)
-
-
-Definition Inter (E : Ens) : Ens :=
-  Comp (Union E) (fun e : Ens => forall a : Ens, IN a E -> IN e a).
-
-Theorem IN_Inter_all :
- forall E E' : Ens,
- IN E' (Inter E) -> forall E'' : Ens, IN E'' E -> IN E' E''.
-Proof.
-unfold Inter in |- *.
-intros E E' i.
-change ((fun e : Ens => forall a : Ens, IN a E -> IN e a) E') in |- *.
-apply (IN_Comp_P (Union E) E').
-intros.
-apply IN_sound_left with w1; auto with zfc.
-assumption.
-Defined.
-
-Theorem all_IN_Inter :
- forall E E' E'' : Ens,
- IN E'' E -> (forall E'' : Ens, IN E'' E -> IN E' E'') -> IN E' (Inter E).
-Proof.
-unfold Inter in |- *.
-intros.
-apply IN_P_Comp.
-intros; apply IN_sound_left with w1; auto with zfc.
-apply IN_Union with (E' := E''); auto with zfc.
-auto with zfc.
+destruct (Union_IN E E'') as [E''' [I1 I2]].
++ auto with zfc.
++ (*intros E'''. simple induction 1; intros I1 I2.*)
+  apply IN_Union with E'''; auto with zfc.
 Defined.
 
 (*  The powerset and its axioms   *)
@@ -918,7 +890,7 @@ Definition Power (E : Ens) : Ens :=
       sup _
         (fun P : A -> Prop =>
          sup _
-           (fun c : @sigT A (fun a : A => P a) =>
+           (fun c : sigT (fun a : A => P a) =>
             match c with
             | @existT _ _ a p => f a
             end))
@@ -927,47 +899,54 @@ Definition Power (E : Ens) : Ens :=
 
 Theorem IN_Power_INC : forall E E' : Ens, IN E' (Power E) -> INC E' E.
 Proof.
-simple induction E.
-intros A f r; unfold INC in |- *; simpl in |- *.
-intros E'; simple induction 1; intros P.
-elim E'; simpl in |- *.
-intros A' f' r'.
-simple induction 1; intros HA HB.
-intros E''; simple induction 1; intros a' e.
-elim (HA a').
-simple induction x; intros a p.
+intros [A f]. (* unfold INC in |- *; simpl in |- *. *)
+intros E'.
+
+intros [P H]. revert H.
+(*simple induction 1 ;intros P.*)
+
+destruct E' as [A' f'].
+(* elim E'. intros A' f' r'.  simpl in |- *.*)
+
+intros [HA HB].
+(*simple induction 1; intros HA HB.*)
+
+intros E'' [a' e].
+(*intros E''. simple induction 1. intros a' e.*)
+
+destruct (HA a') as [[a p] H].
+(* elim (HA a'). simple induction x; intros a p.*)
 intros; exists a.
-auto with zfc.
 apply EQ_tran with (f' a'); auto with zfc.
 Defined.
 
 
-
 Theorem INC_IN_Power : forall E E' : Ens, INC E' E -> IN E' (Power E).
 Proof.
-simple induction E; intros A f r; unfold INC in |- *; simpl in |- *.
-simple induction E'; intros A' f' r' i.
+intros [A f].
+(*simple induction E; intros A f r; unfold INC in |- *; simpl in |- *.*)
+intros [A' f'] i.
+(*simple induction E'; intros A' f' r' i.*)
+
 exists (fun a : A => IN (f a) (sup A' f')).
 simpl in |- *.
 split.
-intros.
-elim (i (f' x)); auto with zfc.
-intros a e.
-cut (EQ (f a) (f' x)); auto with zfc.
-intros e1.
-exists
- (@existT A (fun a : A => exists y : A', EQ (f a) (f' y)) a
-    (@ex_intro A' (fun y : A' => EQ (f a) (f' y)) x e1)).
-simpl in |- *.
-auto with zfc.
-
-auto with zfc.
-simpl in |- *.
-exists x; auto with zfc.
-
-simple induction y; simpl in |- *.
-simple induction 1; intros.
-exists x0; auto with zfc.
++ intros.
+  elim (i (f' x)). (*auto with zfc.*)
+  - intros a e.
+    cut (EQ (f a) (f' x)); auto with zfc.
+    intros e1.
+    exists
+     (existT (fun a : A => exists y : A', EQ (f a) (f' y)) a
+        (ex_intro (fun y : A' => EQ (f a) (f' y)) x e1)).
+    simpl in |- *.
+    auto with zfc.
+  - auto with zfc.
+    simpl in |- *.
+    exists x; auto with zfc.
++ simple induction y; simpl in |- *.
+  simple induction 1; intros.
+  exists x0; auto with zfc.
 Defined.
 
 Theorem Power_mon : forall E E' : Ens, INC E E' -> INC (Power E) (Power E').
@@ -999,24 +978,23 @@ apply IN_Power_INC; assumption.
 Defined.
 
 (* small lemma *)
-
 Theorem not_EQ_Sing_Vide : forall E : Ens, EQ (Sing E) Vide -> False.
 Proof.
-intros E e; cut False.
-simple induction 1.
+intros E e.
 cut (IN E Vide).
-simpl in |- *; simple induction 1; intros xx; elim xx; simple induction 1.
-apply IN_sound_right with (Sing E); auto with zfc.
++ simpl in |- *.
+  intros [[]].
++ apply IN_sound_right with (Sing E); auto with zfc.
 Defined.
-
 
 Theorem not_EQ_Vide_Sing : forall E : Ens, EQ Vide (Sing E) -> False.
 Proof.
-intros E e; cut False.
-simple induction 1.
+intros E e.
 cut (IN E Vide).
-simpl in |- *; simple induction 1; intros xx; elim xx; simple induction 1.
-apply IN_sound_right with (Sing E); auto with zfc.
+exact (nothing_IN_Vide E).
+apply IN_sound_right with (Sing E).
++ auto with zfc.
++ auto with zfc.
 Defined.
 
 (*=== Omega.v ===*)
@@ -1478,6 +1456,35 @@ Defined.
 (*============================================
                      Part II
 ==============================================*)
+
+(* The  Intersection set   *)
+Definition Inter (E : Ens) : Ens :=
+  Comp (Union E) (fun e : Ens => forall a : Ens, IN a E -> IN e a).
+
+Theorem IN_Inter_all :
+ forall E E' : Ens,
+ IN E' (Inter E) -> forall E'' : Ens, IN E'' E -> IN E' E''.
+Proof.
+unfold Inter in |- *.
+intros E E' i.
+change ((fun e : Ens => forall a : Ens, IN a E -> IN e a) E') in |- *.
+apply (IN_Comp_P (Union E) E').
+intros.
+apply IN_sound_left with w1; auto with zfc.
+assumption.
+Defined.
+
+Theorem all_IN_Inter :
+ forall E E' E'' : Ens,
+ IN E'' E -> (forall E'' : Ens, IN E'' E -> IN E' E'') -> IN E' (Inter E).
+Proof.
+unfold Inter in |- *.
+intros.
+apply IN_P_Comp.
+intros; apply IN_sound_left with w1; auto with zfc.
+apply IN_Union with (E' := E''); auto with zfc.
+auto with zfc.
+Defined.
 
 (* Traditional Product needs Kuratowski ordered pair *)
 
