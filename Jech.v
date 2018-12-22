@@ -1326,38 +1326,80 @@ exact H0.
 exact H1.
 Defined.
 
+Definition SoundPred (P:Ens->Prop)
+:= (forall w1 w2 : Ens, P w1 -> EQ w1 w2 -> P w2).
+ 
+Definition SoundCongl (A:(Ens->Prop)->Prop) :=
+forall P R:Ens->Prop, SoundPred P  ->
+(forall w : Ens, P w <-> R w)-> (A P -> A R).
+(* maybe add P_sound *)
 
 Theorem EQC_works (P R:Ens->Prop)
 (A:(Ens->Prop)->Prop)
-(H:forall w1 w2 : Ens, EQ w1 w2 -> P w1 <-> R w2)
+(A_sound: True)
+(H:forall w : Ens, P w <-> R w)
 (P_sound:forall w1 w2 : Ens, P w1 -> EQ w1 w2 -> P w2)
 : (A P) <-> (A R).
 Proof.
 split; intro J.
 Abort.
 
+Theorem pred_sou (P R:Ens->Prop)
+(H:forall w : Ens, P w <-> R w)
+(P_sound:forall w1 w2 : Ens, P w1 -> EQ w1 w2 -> P w2)
+: forall w1 w2 : Ens, R w1 -> EQ w1 w2 -> R w2.
+Proof.
+intros.
+apply (proj1 (H w2)).
+apply (P_sound w1 w2).
+2 : exact H1.
+apply (proj2 (H w1)).
+exact H0.
+Defined.
+
+Section cngl_sec.
+Context (X z : Ens).
+
+Check SoundCongl (fun P=>IN z (Comp X P)).
+Theorem cngl_thm : SoundCongl (fun P=>IN z (Comp X P)).
+Proof.
+unfold SoundCongl.
+intros.
+Abort.
+End cngl_sec.
+
 Theorem Comp_sound_right (P R:Ens->Prop)
-(*P_sound:forall w1 w2 : Ens, P w1 -> EQ w1 w2 -> P w2*)
-(H:forall w1 w2 : Ens, EQ w1 w2 -> P w1 <-> R w2)
+(P_sound:forall w1 w2 : Ens, P w1 -> EQ w1 w2 -> P w2)
+(H:forall w : Ens, P w <-> R w)
  (X:Ens) : EQ (Comp X P) (Comp X R).
 Proof.
 apply axExt.
 intro z.
-revert P R H.
-simpl.
-
- split; intro q.
+(*revert P R H. simpl.*)
+ split; intro q. (*TODO: REDUCE PROOF BY REMOVING SPLIT *)
 + apply IN_P_Comp.
+  - apply (pred_sou P R H P_sound).
+  - apply (Comp_INC X P z q).
+  - apply (proj1 (H z)).
+    apply (IN_Comp_P X); assumption.
++ apply IN_P_Comp.
+  - apply P_sound.
+  - apply (Comp_INC X R z q).
+  - apply (proj2 (H z)).
+    apply (IN_Comp_P X).
+    * apply (pred_sou P R H P_sound).
+    * assumption.
+Defined.
 
-(*  exact P_sound.
-EQC
-apply Comp_elim*)
-(*simpl.
-destruct X as [A f].
-destruct Y as [B g].
-simpl in H.
-*|-*.*)
-Abort.
+Theorem Comp_sound (P R:Ens->Prop)
+(P_sound:forall w1 w2 : Ens, P w1 -> EQ w1 w2 -> P w2)
+(PeqvR:forall w : Ens, P w <-> R w)
+ (X Y:Ens) (H:EQ X Y) : EQ (Comp X P) (Comp Y R).
+Proof.
+eapply EQ_tran with (E2:= (Comp Y P)).
++ apply Comp_sound_left; assumption.
++ apply Comp_sound_right; assumption.
+Defined.
 
 (* The Intersection of a nonempty set.  *)
 Definition Inter (E : Ens) : Ens :=
@@ -1366,19 +1408,22 @@ Definition Inter (E : Ens) : Ens :=
 Theorem Inter_sound (X Y:Ens) (H:EQ X Y): EQ (Inter X) (Inter Y).
 Proof.
 unfold Inter.
-eapply EQ_tran with (E2:=
-  (Comp (Union Y) (fun e : Ens => forall a : Ens, IN a X -> IN e a))
-).
-+ apply Comp_sound_left.
-  - intros.
-    eapply IN_sound_left.
-    exact H1.
-    exact (H0 a H2).
-  - eapply Union_sound; exact H.
-+
-(*apply Comp_sound.*)
-Search Comp.
-Abort.
+apply Comp_sound.
++ intros.
+  eapply IN_sound_left.
+  exact H1.
+  exact (H0 a H2).
++ intro w. split.
+  - intros. apply H0.
+    eapply IN_sound_right.
+    apply EQ_sym, H.
+    assumption.
+  - intros. apply H0.
+    eapply IN_sound_right.
+    apply H.
+    assumption.
++ apply Union_sound; assumption.
+Defined.
 
 Theorem IN_Inter_all :
  forall E E' : Ens,
@@ -2698,8 +2743,9 @@ Definition Pi2 (p : Ens) : Ens
 
 Theorem Pi1_sound (X Y: Ens) (H: EQ X Y): EQ (Pi1 X) (Pi1 Y).
 Proof.
+(*
 Search Inter.
-(*apply Inter_sound.*)
+apply Inter_sound.*)
 Abort.
 
 (* correctness *)
