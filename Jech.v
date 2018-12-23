@@ -2837,6 +2837,24 @@ intro z. split; intro q.
     auto with zfc.
 Defined.
 
+Theorem UnionOP A B : EQ (Union (OrdPair A B)) (Paire A B).
+Proof.
+apply axExt_left.
+intro z. split; intro q.
++ apply Union_IN in q as [E [q0 q1]].
+  apply Paire_IN in q0 as [q2|q2].
+  - apply IN_sound_right with (1:=q2) in q1.
+    apply IN_Sing_EQ in q1.
+    eapply IN_sound_left.
+    1 : apply EQ_sym, q1.
+    apply IN_Paire_left.
+  - eapply IN_sound_right. exact q2. exact q1.
++ eapply IN_Union.
+  2 : exact q.
+  unfold OrdPair.
+  auto with zfc.
+Defined.
+
 (* computation of Pi1 *)
 Theorem Pi1_comput (A B:Ens): EQ (Pi1 (OrdPair A B)) A.
 Proof.
@@ -2872,7 +2890,8 @@ Theorem Pi2_comput (A B:Ens): EQ (Pi2 (OrdPair A B)) B.
 Proof.
 unfold Pi2.
 apply axExt. intro z. split; intro q.
-+ apply Union_IN in q as [w [q1 q2]].
++ (* -> *)
+apply Union_IN in q as [w [q1 q2]].
 eapply Comp_elim in q1 as [q3 q4].
 2 : { unfold SoundPred.
 intros.
@@ -2882,20 +2901,65 @@ unfold Pi2_P in q4.
 apply Union_IN in q3 as [E1 [q5 q6]].
 assert (q7:=contrap q4); clear q4.
 Search Paire.
-apply Paire_IN in q5 as [q8|q9].
+apply Paire_IN in q5 as [q8|q8].
 - eapply IN_sound_right in q6. 2 : exact q8.
   assert (q9:IN w (Inter (OrdPair A B))).
   { eapply IN_sound_right.
     apply EQ_sym, InterOP. assumption. }
   assert (q10:=q7 q9).
-(*  apply IN_Sing_EQ in q6.
-Search Sing.*)
-Abort.
+  assert (q11:= EQ_tran _ _ _  q10 (InterOP A B)).
+  apply EQ_sym in q11.
+  assert (q12:= EQ_tran _ _ _  q11 (UnionOP A B)).
+  apply SingEqPair in q12 as [_ q12].
+
+  apply IN_Sing_EQ in q6.
+  eapply IN_sound_right with (1:=q12).
+  eapply IN_sound_right with (1:=q6).
+  exact q2.
+- eapply IN_sound_right in q6. 2 : exact q8.
+  apply Paire_IN in q6 as [q6|q6].
+  2 : {eapply IN_sound_right. exact q6. exact q2. }
+  (* the next is a copy *)
+    assert (q9:IN w (Inter (OrdPair A B))).
+  { eapply IN_sound_right.
+    apply EQ_sym, InterOP.
+    eapply IN_sound_right.
+    apply Sing_sound. exact q6.
+    apply IN_Sing. }
+  assert (q10:=q7 q9).
+  assert (q11:= EQ_tran _ _ _  q10 (InterOP A B)).
+  apply EQ_sym in q11.
+  assert (q12:= EQ_tran _ _ _  q11 (UnionOP A B)).
+  apply SingEqPair in q12 as [_ q12].
+  eapply IN_sound_right with (1:=q12).
+  eapply IN_sound_right with (1:=q6).
+  exact q2.
++ eapply IN_Union.
+  2 : exact q.
+  apply IN_P_Comp.
+  - apply Pi2_sound_lem1.
+  - eapply IN_Union.
+    2 : apply IN_Paire_right.
+    apply IN_Paire_right.
+  - unfold Pi2_P.
+    intros q1 q2; apply q1; clear q1. (*apply anticontrap.*)
+    eapply EQ_tran.
+    apply UnionOP.
+    apply EQ_sym.
+    eapply EQ_tran.
+    apply InterOP.
+    apply Paire_sound. apply EQ_refl.
+    eapply IN_sound_right in q2.
+    2 : apply InterOP.
+    apply IN_Sing_EQ in q2.
+    apply EQ_sym, q2.
+Defined.
 
 Definition AT : Ens -> Ens -> Ens.
 Proof.
 intro E.
 Admitted.
+
 (*(AT f Vide)*)
 Theorem AT_sound_right (F X Y:Ens) (H:EQ X Y)
 : EQ (AT F X) (AT F Y).
