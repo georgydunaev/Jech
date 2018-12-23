@@ -1932,7 +1932,7 @@ unshelve eapply Build_class'.
 + simpl. intros a b H1 H2. exact H2.
 Defined.
 
-Theorem Comp_elim x y (K:class) : IN x (Comp y K) -> (IN x y /\ K x).
+Theorem Comp_elimC x y (K:class) : IN x (Comp y K) -> (IN x y /\ K x).
 Proof.
 intro e.
 split.
@@ -1940,6 +1940,20 @@ split.
 + apply IN_Comp_P in e. exact e.
   intros.
   rewrite <- (sound K).
+  exact H.
+  exact H0.
+Defined.
+
+Theorem Comp_elim x y (K:Ens->Prop) (K_sound: SoundPred K)
+: IN x (Comp y K) -> (IN x y /\ K x).
+Proof.
+intro e.
+split.
++ exact ((Comp_INC y K) _ e).
++ apply IN_Comp_P in e. exact e.
+  intros.
+  eapply K_sound.
+  (*rewrite <- (K_sound).*)
   exact H.
   exact H0.
 Defined.
@@ -2735,11 +2749,12 @@ Definition uniqueEns : (Ens -> Prop) -> Ens -> Prop
 Definition Pi1 (p : Ens) : Ens
 := Union (Inter p).
 
+Definition Pi2_P (p:Ens) := (fun x => 
+~(EQ (Union p) (Inter p))->~(IN x (Inter p)) ).
+
 (* Projections for ordered pairs. *)
 Definition Pi2 (p : Ens) : Ens
-:= Union (Comp (Union p)
- (fun x => ~(EQ (Union p) (Inter p))->~(IN x (Inter p)) )
-).
+:= Union (Comp (Union p) (Pi2_P p)).
 
 Theorem Pi1_sound (X Y: Ens) (H: EQ X Y): EQ (Pi1 X) (Pi1 Y).
 Proof.
@@ -2757,17 +2772,23 @@ auto with zfc.
 apply (EQ_tran _ X2); auto with zfc.
 Defined.
 
-Theorem Pi2_sound (X Y: Ens) (H: EQ X Y): EQ (Pi2 X) (Pi2 Y).
+Theorem Pi2_sound_lem1 (X: Ens) : forall w1 w2 : Ens,
+Pi2_P X w1 -> EQ w1 w2 -> Pi2_P X w2.
+(*(~ EQ (Union X) (Inter X) -> ~ IN w1 (Inter X)) ->
+EQ w1 w2 -> ~ EQ (Union X) (Inter X) -> ~ IN w2 (Inter X).*)
 Proof.
-unfold Pi2.
-apply Union_sound.
-apply Comp_sound.
-3 : apply Union_sound; exact H.
-+ intros. intro H3.
+ intros w1 w2 H0 H1 H2 H3.
   apply (IN_sound_left w2 w1) in H3.
   2 : auto with zfc.
   apply H0; assumption.
-+ intro w. revert X Y H.
+Defined.
+
+Theorem Pi2_sound_lem2 (X Y : Ens) (H : EQ X Y) :
+forall w : Ens, (Pi2_P X w) <-> (Pi2_P Y w).
+(*(~ EQ (Union X) (Inter X) -> ~ IN w (Inter X)) <->
+(~ EQ (Union Y) (Inter Y) -> ~ IN w (Inter Y)).*)
+Proof.
+intro w. revert X Y H.
   apply two_sided.
   intros X Y H  L0 L1 L2.
   apply L0.
@@ -2779,6 +2800,16 @@ apply Comp_sound.
   - eapply (IN_sound_right _ (Inter Y)).
     apply Inter_sound, EQ_sym, H.
     exact L2.
+Defined.
+
+Theorem Pi2_sound (X Y: Ens) (H: EQ X Y): EQ (Pi2 X) (Pi2 Y).
+Proof.
+unfold Pi2.
+apply Union_sound.
+apply Comp_sound.
+3 : apply Union_sound; exact H.
++ apply Pi2_sound_lem1.
++ apply (Pi2_sound_lem2 X Y H).
 Defined.
 
 Theorem InterOP A B : EQ (Inter (OrdPair A B)) (Sing A).
@@ -2815,6 +2846,51 @@ apply (EQ_tran _ (Union (Sing A))).
   apply InterOP.
 + apply unionsing.
 Defined.
+
+
+Definition Pi2_C (A B:Ens) : class.
+Proof.
+apply (Build_class (Pi2_P (OrdPair A B)) ).
+apply two_sided.
+intros.
+eapply (Pi2_sound_lem1 _ a); assumption.
+Defined.
+
+(* (Pi2_sound_lem2 _ _ _ _)
+Check (Build_class (Pi2_P (OrdPair A B)) ).
+Search Comp.
+*)
+Lemma contrap {A B:Prop}: (~A->~B)->(B->A).
+Proof.
+intros. destruct (classic A).
+exact H1.
+destruct (H H1 H0).
+Defined.
+
+(* computation of Pi2 *)
+Theorem Pi2_comput (A B:Ens): EQ (Pi2 (OrdPair A B)) B.
+Proof.
+unfold Pi2.
+apply axExt. intro z. split; intro q.
++ apply Union_IN in q as [w [q1 q2]].
+eapply Comp_elim in q1 as [q3 q4].
+2 : { unfold SoundPred.
+intros.
+eapply (Pi2_sound_lem1 _ w1); assumption.
+}
+unfold Pi2_P in q4.
+apply Union_IN in q3 as [E1 [q5 q6]].
+assert (q7:=contrap q4); clear q4.
+Search Paire.
+apply Paire_IN in q5 as [q8|q9].
+- eapply IN_sound_right in q6. 2 : exact q8.
+  assert (q9:IN w (Inter (OrdPair A B))).
+  { eapply IN_sound_right.
+    apply EQ_sym, InterOP. assumption. }
+  assert (q10:=q7 q9).
+(*  apply IN_Sing_EQ in q6.
+Search Sing.*)
+Abort.
 
 Definition AT : Ens -> Ens -> Ens.
 Proof.
