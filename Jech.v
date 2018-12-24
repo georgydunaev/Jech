@@ -29,7 +29,7 @@ the big amount of bureaucracy. See part IV.
 of the first-order logic and ZFC set theory.
  The second aim is to solve exercises from Jech's "Set theory".
 *)
-
+(* TODO use constructible universe to avoid axSFC and LEM *)
 (* These notions should not be unfolded during 
 the proofs in Part II: Pair, Union, Powerset. *)
 
@@ -1312,7 +1312,7 @@ intro K.
     * exact P_sound.
 Defined.
 
-Theorem EQC_pres_soundness (P R:Ens->Prop)
+Theorem cEQ_pres_soundness (P R:Ens->Prop)
 (H:forall w1 w2 : Ens, EQ w1 w2 -> P w1 <-> R w2)
 (P_sound:forall w1 w2 : Ens, P w1 -> EQ w1 w2 -> P w2)
 :forall w1 w2 : Ens, R w1 -> EQ w1 w2 -> R w2.
@@ -1334,7 +1334,7 @@ forall P R:Ens->Prop, SoundPred P  ->
 (forall w : Ens, P w <-> R w)-> (A P -> A R).
 (* maybe add P_sound *)
 
-Theorem EQC_works (P R:Ens->Prop)
+Theorem cEQ_works (P R:Ens->Prop)
 (A:(Ens->Prop)->Prop)
 (A_sound: True)
 (H:forall w : Ens, P w <-> R w)
@@ -1457,7 +1457,7 @@ Proof.
 unshelve eapply Build_class.
 intro z.
 exact (exists (x y:Ens), (EQ z (OrdPair x y)) /\ X x /\ Y y).
-apply sousym.
+apply two_sided.
 intros a b aeqb e.
 destruct e as [x [y [aeq [xx yy]]]].
 exists x, y.
@@ -1876,9 +1876,9 @@ Record class := {
 }.
 
 (*
-Definition EQC (A B:class) := forall z:Ens, (prty A) z <-> (prty B) z.
+Definition cEQ (A B:class) := forall z:Ens, (prty A) z <-> (prty B) z.
 *)
-Definition EQC (A B: Ens->Prop) := forall z:Ens, A z <-> B z.
+Definition cEQ (A B: Ens->Prop) := forall z:Ens, A z <-> B z.
 
 (* "is a set" predicate on classes *)
 Definition ias (s: class) : Prop.
@@ -1888,18 +1888,18 @@ Defined.
 
 (* "is a set" is a sound property on classes. *)
 Definition ias_sound (A B: class)
-(w:EQC A B) (H:ias A): ias B.
+(w:cEQ A B) (H:ias A): ias B.
 Proof.
 unfold ias in * |- *.
 destruct H as [x eqv].
 exists x.
 intro z.
-unfold EQC in w.
+unfold cEQ in w.
 rewrite <- w.
 apply eqv.
 Defined.
 
-Lemma sousym (K:Ens->Prop)
+(*Lemma sousym (K:Ens->Prop)
 (H:forall (a b : Ens), EQ a b -> (K a -> K b))
 : forall (a b : Ens), EQ a b -> (K a <-> K b).
 Proof.
@@ -1907,13 +1907,15 @@ intros a b aeqb. split.
 apply (H a b aeqb).
 apply H. apply EQ_sym. exact aeqb.
 Defined.
+Check two_sided.
+*)
 
 Definition Build_class' : forall Vprty : Ens -> Prop,
        (forall a b : Ens, EQ a b -> Vprty a -> Vprty b) -> class.
 Proof. intros.
 unshelve eapply Build_class.
 exact Vprty.
-apply sousym. exact H.
+apply two_sided. exact H.
 Defined.
 
 (* Class of all sets *)
@@ -1953,7 +1955,6 @@ split.
 + apply IN_Comp_P in e. exact e.
   intros.
   eapply K_sound.
-  (*rewrite <- (K_sound).*)
   exact H.
   exact H0.
 Defined.
@@ -1968,7 +1969,7 @@ unshelve eapply Build_class'.
   exact (czainz z cz). }
 Defined.
 
-Theorem InterEmpty : EQC (cInter cE) cV.
+Theorem InterEmpty : cEQ (cInter cE) cV.
 Proof.
 intro z. split; intro w.
 + simpl in * |- *. constructor.
@@ -1987,13 +1988,12 @@ Defined.
 Definition stoc : Ens -> class.
 Proof.
 intro x.
-unshelve eapply Build_class.
+unshelve eapply Build_class'.
 + intro y. exact (IN y x).
-+ intros a b aeqb.
-  apply sousym.
++ (*intros a b aeqb.
+  apply two_sided.*)
   intros a0 b0 H H0.
-  eapply IN_sound_left. exact H. exact H0. exact aeqb.
-  (*- apply IN_sound_left. apply EQ_sym. exact aeqb.*)
+  eapply IN_sound_left. exact H. exact H0.
 Defined.
 
 Lemma sound2rewr (s:class) : forall w1 w2 : Ens, s w1 -> EQ w1 w2 -> s w2.
@@ -2131,7 +2131,7 @@ exact (exists (m:class), forall (w:Ens), m w <-> (k (stoc w))).
 
 Coercion stoc : Ens >-> class.
 
-Definition axExtC (x y:Ens) : EQ x y <-> EQC x y
+Definition axExtC (x y:Ens) : EQ x y <-> cEQ x y
  := (axExt x y).
 
 (* New comprehension *)
@@ -2154,10 +2154,10 @@ intro z. split.
 (* Product of classes *)
 Definition cProduct (X Y : class) : class.
 Proof.
-unshelve eapply Build_class.
+unshelve eapply Build_class'.
 intro z.
 exact (exists (x y:Ens), (EQ z (OrdPair x y)) /\ X x /\ Y y).
-apply sousym.
+(*apply two_sided.*)
 intros a b aeqb e.
 destruct e as [x [y [aeq [xx yy]]]].
 exists x, y.
@@ -2246,10 +2246,10 @@ end.
 
 Definition cDom (R:class) : class.
 Proof.
-unshelve eapply Build_class.
+unshelve eapply Build_class'.
 intro u.
 exact (exists v, R (OrdPair u v)).
-apply sousym.
+(*apply two_sided.*)
 intros a b aeqb H.
 destruct H as [x w].
 exists x.
@@ -2269,12 +2269,12 @@ Abort.
 (* Proof. firstorder. (* Show Proof. *) . Defined. *)
 
 Definition cprty_sound (cprty:class->Prop) (A B: class)
-(w:EQC A B) (H:cprty A): cprty B.
-Proof. unfold EQC in w. firstorder. (*impossible*) Abort.
+(w:cEQ A B) (H:cprty A): cprty B.
+Proof. unfold cEQ in w. firstorder. (*impossible*) Abort.
 
 (* ToDo: Find unsound class property. *)
 Definition cprty_unsound : exists (cprty : class->Prop) 
-(A B : class) (w : EQC A B) (HA : cprty A) (HB : cprty B), False.
+(A B : class) (w : cEQ A B) (HA : cprty A) (HB : cprty B), False.
 Proof. Abort.
 
 
@@ -2325,20 +2325,19 @@ Defined.
 (* definitions for classes *)
 Definition cPair (A B:class) : class.
 Proof.
-unshelve eapply Build_class.
-+ intro x. exact (EQC x A \/ EQC x B).
-+ apply sousym.
-  intros a b aeqb H.
+unshelve eapply Build_class'.
++ intro x. exact (cEQ x A \/ cEQ x B).
++ intros a b aeqb H.
   destruct H as [H1|H2].
   * left.
-    unfold EQC in *|-*.
+    unfold cEQ in *|-*.
     rewrite axExt in aeqb.
     intro z.
     symmetry.
     rewrite <- H1.
     exact (aeqb z).
   * right.
-    unfold EQC in *|-*.
+    unfold cEQ in *|-*.
     rewrite axExt in aeqb.
     intro z.
     symmetry.
@@ -2354,7 +2353,7 @@ unshelve eapply Build_class'.
   unfold issubclass in * |- *.
   intros x bx.
   apply axExtC in aeqb.
-  unfold EQC in aeqb.
+  unfold cEQ in aeqb.
   rewrite <- (aeqb x) in bx.
   apply (H x bx).
 Defined.
@@ -2364,7 +2363,7 @@ Defined.
 Proof.
 unshelve eapply Build_class.
 + intro x. exact (exists z : Ens, A z /\ IN x z).
-+ apply sousym. intros a b aeqb H.
++ apply two_sided. intros a b aeqb H.
   destruct H as [z [K1 K2]].
   exists z. split. exact K1.
   apply IN_sound_left with (E:=a); assumption.
@@ -2372,7 +2371,7 @@ Defined.*)
 
 (*forall z : Ens, a z -> b z
 exact (issubclass x A).
-exact (EQC x A \/ EQC x B).
+exact (cEQ x A \/ cEQ x B).
     unfold stro*)
 
 (*
@@ -2380,7 +2379,7 @@ exact (EQC x A \/ EQC x B).
 *)
 Record isas (C : class) := {
  dmn : Ens;
- eqvias: EQC C dmn; (*forall w : Ens, c w <-> IN w dmn;*)
+ eqvias: cEQ C dmn; (*forall w : Ens, c w <-> IN w dmn;*)
 }.
 
 Definition decid (A:Type) := sum A (A->False).
@@ -2390,7 +2389,7 @@ Record xclass := {
  ciset :  decid (isas clprj);
 }.
 
-Theorem jhkl (x:Ens) (A:class) (H:EQC A x): isas A.
+Theorem jhkl (x:Ens) (A:class) (H:cEQ A x): isas A.
 Proof.
 unshelve eapply Build_isas.
 exact x. exact H.
@@ -2419,17 +2418,17 @@ Defined.
 
 Ltac ueapp P := unshelve eapply P.
 
-Lemma EQC_refl (x:class): EQC x x.
+Lemma cEQ_refl (x:class): cEQ x x.
 Proof.
 intros m; reflexivity.
 Defined.
 
-Lemma EQC_symm (x y:class): EQC x y -> EQC y x.
+Lemma cEQ_symm (x y:class): cEQ x y -> cEQ y x.
 Proof.
 intros H m. symmetry. apply H.
 Defined.
 
-Lemma EQC_tran (x y z:class): EQC x y -> EQC y z -> EQC x z.
+Lemma cEQ_tran (x y z:class): cEQ x y -> cEQ y z -> cEQ x z.
 Proof.
 intros H1 H2 m.
 transitivity (y m).
@@ -2437,12 +2436,12 @@ apply H1. apply H2.
 Defined.
 
 (* strange proofs ... *)
-Lemma cIN_sound_right (A:class) (D k:Ens): A k -> EQC A D -> IN k D.
+Lemma cIN_sound_right (A:class) (D k:Ens): A k -> cEQ A D -> IN k D.
 Proof.
-intros H K. unfold EQC in K. apply K in H. simpl in H. exact H.
+intros H K. unfold cEQ in K. apply K in H. simpl in H. exact H.
 Defined.
 
-Lemma cIN_sound_iff (A:class) (D k:Ens) (K:EQC A D): A k <-> IN k D.
+Lemma cIN_sound_iff (A:class) (D k:Ens) (K:cEQ A D): A k <-> IN k D.
 Proof.
 split; intros H; 
 apply K in H; (*simpl in H;*) exact H. (*twice*)
@@ -2486,7 +2485,7 @@ destruct (ciset A) as [ASE|APC], (ciset B) as [BSE|BPC].
     destruct x as [m J].
     destruct m; simpl in J.
     * left. apply axExtC in J.
-(*    eapply EQC_tran.
+(*    eapply cEQ_tran.
       apply J.
       intros a. split; intro h.
 simpl in h.
@@ -2868,8 +2867,7 @@ Defined.
 
 Definition Pi2_C (A B:Ens) : class.
 Proof.
-apply (Build_class (Pi2_P (OrdPair A B)) ).
-apply two_sided.
+apply (Build_class' (Pi2_P (OrdPair A B)) ).
 intros.
 eapply (Pi2_sound_lem1 _ a); assumption.
 Defined.
@@ -2996,8 +2994,6 @@ Theorem rec_thm (a A g:Ens) (H1:IN a A)
     )
   )).
 Proof.
-
-
 (*unique
 exists ().
 (*ex (unique ... )*)
@@ -3019,8 +3015,22 @@ Definition choice :=
   (forall a : A, (exists b : B, P a b)) ->
   (exists f : A -> B, forall a : A, P a (f a)).
 
+Theorem thm_choice : choice.
+Proof.
+intros A B P H.
+assert (J0:RelationClasses.Equivalence (@eq A)).
+{ constructor; auto.
+  intros x y z xeqy yeqz.
+  induction xeqy. exact yeqz. }
+assert (J1:(forall (x x' : A) (y : B), x = x' -> P x y -> P x' y)).
+{ intros x x' y xeqx'. induction xeqx'. trivial. }
+(*Check (axSFC A B (@eq A) P J0 J1 H).*)
+destruct (axSFC A B (@eq A) P J0 J1 H) as [f Q].
+exists f. firstorder.
+Defined.
 
 Theorem Choice_Collection : choice -> collection.
+Proof.
 unfold collection in |- *; intro; intros P comp G E.
 cut ((exists f : Ens -> Ens, forall B : Ens, P B (f B))).
 simple induction 1; intros f pf.
@@ -3035,7 +3045,10 @@ apply comp with (g a); auto with zfc.
 unfold choice in H.
 apply H; intros.
 elim (G a); intros b hb; exists b; auto with zfc.
-Qed.
+Defined.
+
+Theorem thm_collection : collection.
+Proof. apply Choice_Collection. exact thm_choice. Defined.
 
 (* If we also assume the excluded middle, we can derive         *)
 (* the usual replacement schemata.                              *)
@@ -3123,6 +3136,14 @@ elim Hx; intros x0 Hx0; exists x0; left; assumption.
 exists Vide; right; split; auto with zfc.
 intros y Hy; elim Hx; exists y; auto with zfc.
 Defined.
+
+Theorem thm_replacement : replacement.
+Proof.
+apply classical_Collection_Replacement.
+exact classic.
+exact thm_collection.
+Defined.
+
 (************************* STOP HERE ****************************)
 
 
