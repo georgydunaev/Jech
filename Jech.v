@@ -40,7 +40,8 @@ Require Import Logic.ChoiceFacts.
 Require Import Logic.IndefiniteDescription.
 
 Axiom (axSFC:SetoidFunctionalChoice).
-Definition ex2sig := constructive_indefinite_description.
+Definition ex2sig {A : Type} {P : A -> Prop}
+ := constructive_indefinite_description P.
 (*
 ==============================================
                      Part I
@@ -233,7 +234,8 @@ Hint Resolve INC_antisym: zfc.
 Theorem INC_EQ : forall E E' : Ens,
   INC E E' -> INC E' E -> EQ E E'.
 Proof.
-unfold INC in |- *; auto with zfc.
+intros E E' H1 H2.
+apply INC_antisym; assumption.
 Defined.
 
 (* Inclusion is reflexive, transitive, extentional *)
@@ -1138,6 +1140,7 @@ split.
   apply (Nat_IN_Omega (S x)).
 Defined.
 
+Definition sOmega : Ens := proj1_sig (ex2sig axInf).
 
 (*============================================
                      Part II
@@ -1610,7 +1613,7 @@ assert (R1:~(IN S S)).
  + exact (R1 R). }
 Defined.
 
-(* Subset of subsets of X. *)
+(* Subset of X which consist of subsets of X. *)
 Definition SoS (X:Ens) : Ens := Comp X (fun x => INC x X).
 
 Definition Ind (X:Ens) : Prop := 
@@ -2087,9 +2090,24 @@ Defined.
 
 Definition cOmega := cInter cInd.
 
+(* Omega is inductive set 
+TODO: redefine Omega using set-theoretic approach.
+*)
+Theorem Omega_Ind : cInd Omega.
+Proof.
+constructor.
++ unfold Omega. simpl. exists 0. apply EQ_refl.
++ intros Y H.
+Abort.
+
 Theorem nat_is_set: ias cOmega.
 Proof.
+unfold cOmega.
 unshelve eapply InterNonEmpty.
+exact Omega.
+constructor.
+
+Search Omega.
 Abort.
 
 (* Equality of conglomerates *)
@@ -2595,7 +2613,7 @@ unfold in2term.
 destruct US.
 simpl.
 simpl in binUS.
-destruct (ex2sig A (fun y : A => EQ b (e y)) binUS).
+destruct (ex2sig binUS). (* A (fun y : A => EQ b (e y)) *)
 assumption.
 Defined.
 
@@ -2661,7 +2679,7 @@ Defined.
 (*Axiom (SFC:SetoidFunctionalChoice_on AC_A AC_B).*)
 Definition SFC:= axSFC AC_A AC_B.
 
-Definition Afp := ex2sig _ _ (SFC AC_R AC_T AC_eqvR T_sound AC_hyp).
+Definition Afp := ex2sig (SFC AC_R AC_T AC_eqvR T_sound AC_hyp).
 Definition Afu := fun v : pi1 S =>
  OrdPair (pi2 S v) (pi2 (Union S) ((proj1_sig Afp) v)).
 Definition Achfu : Ens := (sup (pi1 S) Afu).
