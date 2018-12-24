@@ -1999,6 +1999,18 @@ unshelve eapply Build_class'.
   eapply IN_sound_left. exact H. exact H0.
 Defined.
 
+(* Heterogeneous equality *)
+Definition hEQ (e:Ens) (c:class) :=
+ forall z, IN z e <-> c z.
+
+Theorem stoc_sound (e:Ens)
+: hEQ e (stoc e).
+Proof.
+intro z.
+simpl in *|-*.
+firstorder.
+Defined.
+
 Lemma sound2rewr (s:class) : forall w1 w2 : Ens, s w1 -> EQ w1 w2 -> s w2.
 Proof.
 intros w1 w2 H1 H2. rewrite <- (sound s). exact H1. exact H2.
@@ -2062,6 +2074,26 @@ unshelve eapply Build_class'.
      exact ainz. }
 Defined.
 
+Theorem UCextendsUS (e:Ens) (c:class) (p:hEQ e c)
+: hEQ (Union e) (cUnion c).
+Proof.
+intro z; split; intro H.
++ apply Union_IN in H as [y [H1 H2]].
+  simpl in * |- *.
+  exists y.
+  split.
+  - unfold hEQ in p.
+    apply (proj1 (p y)).
+    assumption.
+  - exact H2.
++ simpl in * |- *.
+  destruct H as [w [P1 P2]].
+  eapply IN_Union.
+  2 : { exact P2. }
+  unfold hEQ in p.
+  apply (proj2 (p w)).
+  exact P1.
+Defined.
 
 (* Class of all subsets *)
 Definition cPower (c:class) : class.
@@ -2089,10 +2121,6 @@ intro z. split; intro H.
 intros. constructor.
 Defined.
 
-(* Heterogeneous equality *)
-Definition hEQ (e:Ens) (c:class) :=
- forall z, IN z e <-> c z.
-
 (* Powerclass of set is a powerset of set. *)
 Theorem PCextendsPS (e:Ens) (c:class) (p:hEQ e c)
 : hEQ (Power e) (cPower c).
@@ -2106,7 +2134,6 @@ intro z. split; intro H.
   exact H.
   exact winz.
 + simpl in * |- *.
-Search Power.
   apply INC_IN_Power.
   intros w winz.
   unfold hEQ in p.
