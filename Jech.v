@@ -2074,6 +2074,7 @@ unshelve eapply Build_class'.
      exact ainz. }
 Defined.
 
+(* Unionclass extends unionset *)
 Theorem UCextendsUS (e:Ens) (c:class) (p:hEQ e c)
 : hEQ (Union e) (cUnion c).
 Proof.
@@ -2101,9 +2102,8 @@ Proof.
 unshelve eapply Build_class'.
 { intro e.
   exact (forall w, IN w e -> c w).
-(* exact (forall z:Ens, (forall w, IN w z -> c w) -> IN e z). *)
 }
-{ simpl. 
+{ simpl.
   intros a b aeqb H.
   intros z K.
   apply H.
@@ -2172,22 +2172,29 @@ Definition cOmega := cInter cInd.
 (* Omega is inductive set 
 TODO: redefine Omega using set-theoretic approach.
 *)
-Theorem Omega_Ind : cInd Omega.
+Theorem Omega_cInd : cInd Omega.
 Proof.
 constructor.
 + unfold Omega. simpl. exists 0. apply EQ_refl.
 + intros Y H.
-Abort.
+apply IN_Omega_EXType in H.
+destruct H as [n p].
+unshelve eapply IN_sound_left.
+exact (Class_succ (Nat n)).
+try apply Class_succ_sound. 
+exact p.
+simpl.
+exists (S n).
+apply EQ_refl.
+Defined.
 
 Theorem nat_is_set: ias cOmega.
 Proof.
 unfold cOmega.
 unshelve eapply InterNonEmpty.
 exact Omega.
-constructor.
-
-Search Omega.
-Abort.
+try apply Omega_cInd.
+Defined.
 
 (* Equality of conglomerates *)
 Definition EQK (k1 k2 : class -> Prop)
