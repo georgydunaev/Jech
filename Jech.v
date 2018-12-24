@@ -2062,6 +2062,58 @@ unshelve eapply Build_class'.
      exact ainz. }
 Defined.
 
+
+(* Class of all subsets *)
+Definition cPower (c:class) : class.
+Proof.
+unshelve eapply Build_class'.
+{ intro e.
+  exact (forall w, IN w e -> c w).
+(* exact (forall z:Ens, (forall w, IN w z -> c w) -> IN e z). *)
+}
+{ simpl. 
+  intros a b aeqb H.
+  intros z K.
+  apply H.
+  eapply IN_sound_right.
+  apply EQ_sym, aeqb.
+  assumption. }
+Defined.
+
+(* The powerclass of V equals V. *)
+Theorem PVeqV : cEQ (cPower cV) cV.
+Proof.
+intro z. split; intro H.
++ simpl. constructor.
++ simpl. simpl in H.
+intros. constructor.
+Defined.
+
+(* Heterogeneous equality *)
+Definition hEQ (e:Ens) (c:class) :=
+ forall z, IN z e <-> c z.
+
+(* Powerclass of set is a powerset of set. *)
+Theorem PCextendsPS (e:Ens) (c:class) (p:hEQ e c)
+: hEQ (Power e) (cPower c).
+Proof.
+intro z. split; intro H.
++ simpl in * |- *.
+  intros w winz.
+  apply IN_Power_INC in H.
+  unfold hEQ in p.
+  apply (proj1 (p w)) in H.
+  exact H.
+  exact winz.
++ simpl in * |- *.
+Search Power.
+  apply INC_IN_Power.
+  intros w winz.
+  unfold hEQ in p.
+  apply (proj2 (p w)).
+  exact (H w winz).
+Defined.
+
 Lemma schSepar_lem (c:class) :
 forall w1 w2 : Ens, c w1 -> EQ w1 w2 -> c w2.
 Proof.
