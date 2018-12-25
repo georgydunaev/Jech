@@ -2300,10 +2300,7 @@ unshelve eapply Build_class'.
   - right. eapply hEQ_sound_left. exact aeqb. exact H.
 Defined.
 
-Search Union.
-
 (* Transitive closure *)
-
 Definition trcl : Ens -> Ens.
 Proof.
 intro x.
@@ -2320,10 +2317,18 @@ Theorem trcl_subs (y:Ens) : INC y (trcl y).
 Proof.
 Admitted.
 
+(* little transformation of a soundness predicate *)
+Theorem sound_transf (T:class) (s:
+forall (a b : Ens), EQ a b -> T a <-> T b ) :
+forall w1 w2 : Ens, T w1 -> EQ w1 w2 -> T w2 .
+Proof.
+intros w1 w2 Tw1 w1eqw2.
+apply (proj1 (s w1 w2 w1eqw2) Tw1).
+Defined.
 
 (* Gödel stated regularity for classes rather than for
 sets in his 1940 monograph, which was based on lectures
-given in 1938.[9] In 1939, he proved that regularity for
+given in 1938. In 1939, he proved that regularity for
  sets implies regularity for classes. see  Kanamori 2009 *)
 Definition caxReg : forall T : class,
        (exists a : Ens, T a ) ->
@@ -2336,21 +2341,38 @@ assert (inhX:exists x':Ens, IN x' X).
 + exists x. unfold X.
 (* OR change X with (Comp t T). (*replace X with (Comp t T).*)*)
 apply IN_P_Comp.
-- admit. (*exact (sound T).*)
+- apply sound_transf.
+  exact (sound T).
 - unfold t.
   apply trcl_subs.
   apply IN_Sing.
-- exact Tx. 
-+ apply axReg in inhX as [u [P1 P2]].
-  exists u. split.
+- exact Tx.
++ apply axReg in inhX as [t0 [P1 P2]].
+  exists t0. split.
   unfold X in P1.
   - apply IN_Comp_P in P1. exact P1.
-    admit.
+    apply sound_transf; exact (sound T).
   - intros [z [zinu Tz]]. apply P2.
     exists z. split. exact zinu.
-Abort.
+    unfold X in P1 |-*.
+    apply IN_P_Comp.
+    * apply sound_transf; exact (sound T).
+    * assert (t0inct: INC t0 t).
+      {intros q W.
+       apply Comp_elim in P1 as [t0int Tt0].
+       assert(K:=trcl_tran _ _ t0int).
+       apply K.
+       assumption.
+       unfold SoundPred.
+       apply sound_transf; exact (sound T).
+      }
+      apply t0inct.
+      exact zinu.
+    * exact Tz.
+Defined.
 
-Search Comp.
+(*Search Comp.*)
+
 (*Definition nComp_sound_left x y C (H:EQ x y)
 : EQ (Compr x C) (Compr y C).
 Proof.
