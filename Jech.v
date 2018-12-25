@@ -2003,8 +2003,40 @@ Defined.
 Definition hEQ (e:Ens) (c:class) :=
  forall z, IN z e <-> c z.
 
-Theorem stoc_sound (e:Ens)
-: hEQ e (stoc e).
+Theorem eqv_rtran (T:Type) (A B C : T->Prop)
+(H1:forall z : T, A z <-> B z)
+(H2:forall z : T, A z <-> C z)
+   :forall z : T, C z <-> B z.
+Proof.
+intro z. split; intro K.
++ apply (proj1 (H1 z)).
+  apply (proj2 (H2 z)).
+  assumption.
++ apply (proj1 (H2 z)).
+  apply (proj2 (H1 z)).
+  assumption.
+Defined.
+
+Theorem hEQ_sound_left (e1 e2:Ens) (p:EQ e1 e2) (c:class)
+: (hEQ e1 c) -> (hEQ e2 c).
+Proof.
+intro H.
+unfold hEQ in H|-*.
+assert (j:=axExt_right e1 e2 p).
+apply (eqv_rtran Ens _ _ _ H j).
+Defined.
+
+Theorem hEQ_sound_right (e:Ens) (c1 c2:class) (p:cEQ c1 c2)
+: (hEQ e c1) -> (hEQ e c2).
+Proof.
+intro H.
+unfold hEQ in H|-*.
+unfold cEQ in p.
+symmetry in H.
+apply (eqv_rtran Ens _ _ _ p H).
+Defined.
+
+Theorem stoc_sound (e:Ens) : hEQ e (stoc e).
 Proof.
 intro z.
 simpl in *|-*.
