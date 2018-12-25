@@ -2277,6 +2277,18 @@ intros e c.
 exact (Comp e c).
 Defined.
 
+Definition cComp : class -> class -> class.
+Proof.
+intros A B.
+unshelve eapply Build_class'.
++ intro e. exact (A e /\ B e).
++ simpl. intros.
+  apply EQ_sym in H.
+  firstorder.
+  - eapply (sound). exact H. exact H0.
+  - eapply (sound). exact H. exact H1.
+Defined.
+
 (*Definition nComp_sound_left x y C (H:EQ x y)
 : EQ (Compr x C) (Compr y C).
 Proof.
