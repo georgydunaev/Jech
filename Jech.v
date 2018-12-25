@@ -2289,6 +2289,68 @@ unshelve eapply Build_class'.
   - eapply (sound). exact H. exact H1.
 Defined.
 
+Definition cPair : class -> class -> class.
+Proof.
+intros A B.
+unshelve eapply Build_class'.
++ intro e. exact ((hEQ e A)\/(hEQ e B)).
++ intros a b aeqb.
+  simpl. intros [H|H].
+  - left. eapply hEQ_sound_left. exact aeqb. exact H.
+  - right. eapply hEQ_sound_left. exact aeqb. exact H.
+Defined.
+
+Search Union.
+
+(* Transitive closure *)
+
+Definition trcl : Ens -> Ens.
+Proof.
+intro x.
+eapply Inter.
+eapply Comp.
+Admitted. (* we need transfinite recursion *)
+
+Theorem trcl_tran (y:Ens) 
+: forall x:Ens, IN x (trcl y) -> INC x (trcl y).
+Proof.
+Admitted.
+
+Theorem trcl_subs (y:Ens) : INC y (trcl y).
+Proof.
+Admitted.
+
+
+(* Gödel stated regularity for classes rather than for
+sets in his 1940 monograph, which was based on lectures
+given in 1938.[9] In 1939, he proved that regularity for
+ sets implies regularity for classes. see  Kanamori 2009 *)
+Definition caxReg : forall T : class,
+       (exists a : Ens, T a ) ->
+       exists y : Ens, T y /\ ~ (exists z : Ens, IN z y /\ T z).
+Proof.
+intros T [x Tx].
+pose (t:=trcl (Sing x)).
+pose (X:=Comp t T).
+assert (inhX:exists x':Ens, IN x' X).
++ exists x. unfold X.
+(* OR change X with (Comp t T). (*replace X with (Comp t T).*)*)
+apply IN_P_Comp.
+- admit. (*exact (sound T).*)
+- unfold t.
+  apply trcl_subs.
+  apply IN_Sing.
+- exact Tx. 
++ apply axReg in inhX as [u [P1 P2]].
+  exists u. split.
+  unfold X in P1.
+  - apply IN_Comp_P in P1. exact P1.
+    admit.
+  - intros [z [zinu Tz]]. apply P2.
+    exists z. split. exact zinu.
+Abort.
+
+Search Comp.
 (*Definition nComp_sound_left x y C (H:EQ x y)
 : EQ (Compr x C) (Compr y C).
 Proof.
