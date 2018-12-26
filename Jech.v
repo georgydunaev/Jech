@@ -2007,6 +2007,14 @@ unshelve eapply Build_class'.
   eapply IN_sound_left. exact H. exact H0.
 Defined.
 
+Coercion stoc : Ens >-> class.
+
+Theorem EQ2cEQ (a b : Ens) (aeqb : EQ a b) : cEQ a b.
+Proof.
+unfold cEQ.
+eapply (axExt_right a b aeqb).
+Defined.
+
 (* Heterogeneous equality *)
 Definition hEQ (e:Ens) (c:class) :=
  forall z, IN z e <-> c z.
@@ -2273,7 +2281,7 @@ exact (exists (m:class), forall (w:Ens), m w <-> (k (stoc w))).
 
 (* UNDER CONSTRUCTION *)
 
-Coercion stoc : Ens >-> class.
+
 
 Definition axExtC (x y:Ens) : EQ x y <-> cEQ x y
  := (axExt x y).
@@ -3383,41 +3391,157 @@ Definition cINC (A B:class) : Prop := forall x:Ens, A x -> B x.
 (* http://us.metamath.org/mpegif/df-tr.html *)
 Definition Tr (A:class) : Prop := cINC (cUnion A) A.
 
-Theorem Tr_sound (a b : Ens) (aeqb : EQ a b) (Tra : Tr a) : Tr b.
+Lemma cEQ_sym A B : cEQ A B -> cEQ B A.
+Proof. intros H w. split.
+exact (proj2 (H w)).
+exact (proj1 (H w)).
+Defined.
+
+Lemma two_sided3 (D:class->class) :
+(forall A B : class, cEQ A B -> forall z : Ens, (D A) z -> (D B) z)
+->
+(forall A B : class, cEQ A B -> cEQ (D A) (D B)).
+Proof.
+intros. intro q. split.
++ apply H. exact H0.
++ apply H. apply cEQ_sym. exact H0.
+Defined.
+
+Theorem cUnion_sound : forall (A B : class) (aeqb : cEQ A B),
+ cEQ (cUnion A) (cUnion B).
+Proof.
+unfold cEQ.
+apply two_sided3.
+intros.
+simpl in *|-*.
+destruct H0 as [w [P1 P2]].
+exists w. split. 2:exact P2.
+apply H. assumption.
+Defined.
+
+Theorem Tr_sound (A B : class) (aeqb : cEQ A B) : (Tr A) -> (Tr B).
 Proof.
 unfold Tr in *|-*.
-try apply cUnion.
-Abort. (*start here!*)
+unfold cINC.
+intros.
+try eapply cUnion_sound in H0.
+2 : exact aeqb.
+apply aeqb.
+apply H.
+assumption.
+Defined.
 
 (* predicate of the nonemptiness TODO: make class *)
 Definition inhab (x:Ens) : Prop := exists y:Ens, IN y x.
 
 (* "Fr" is the well-founded relation predicate.
 http://us.metamath.org/mpegif/df-fr.html *)
-Definition Fr (R A:class) : Prop := 
+Definition Fr (R A:class) : Prop :=
 forall x:Ens, ((forall y, IN y x -> A y) /\ inhab x) ->
 exists y, IN y x /\ forall z, IN z x -> ~ (R (OrdPair z y)).
 
-(* the strict partial order predicate
-http://us.metamath.org/mpegif/df-po.html *)
-Definition Po (R A:class) : Prop :=
+Definition IrrR (R A:class) : Prop :=
+ forall x, A x -> ~R (OrdPair x x).
+
+Theorem IrrR_sound_right (R A B:class)
+ (p:cEQ A B) (H:IrrR R A):IrrR R B.
+Proof.
+unfold IrrR in *|-*.
+intros x H0.
+apply H. apply p. exact H0.
+Defined.
+
+Definition TranR (R A:class) : Prop :=
  forall x, A x ->
  forall y, A y ->
  forall z, A z -> 
-(~R (OrdPair x x) /\
-((R (OrdPair x y)/\ R (OrdPair y z) -> R (OrdPair x z)))
-)
+ (R (OrdPair x y)/\ R (OrdPair y z) -> R (OrdPair x z))
 .
 
+Theorem TranR_sound_right (R A B:class)
+ (p:cEQ A B) (H:TranR R A):TranR R B.
+Proof.
+unfold TranR in *|-*.
+intros x Bx y By z Bz.
+apply H; apply p; assumption.
+Defined.
+
+(* the strict partial order predicate
+ similar with http://us.metamath.org/mpegif/df-po.html *)
+Definition Po (R A:class) : Prop := (IrrR R A)/\(TranR R A)
+.
+
+Theorem Po_sound_right (R A B:class)
+ (p:cEQ A B) (H:Po R A):Po R B.
+Proof.
+unfold Po in *|-*.
+destruct H as [H1 H2].
+split.
++ eapply IrrR_sound_right.
+  exact p.
+  exact H1.
++ eapply TranR_sound_right.
+  exact p.
+  exact H2.
+Defined.
+
+
 (* strict complete (linear) order predicate 
-http://us.metamath.org/mpegif/df-so.html *)
+ similar with http://us.metamath.org/mpegif/df-so.html *)
 Definition Or (R A:class) : Prop := Po R A /\
 (forall x, A x -> forall y, A y ->
 (R (OrdPair x y) \/ EQ x y \/ R (OrdPair y x))
 ).
 
+Theorem Or_sound_right (R A B:class)
+ (p:cEQ A B) (H:Or R A):Or R B.
+Proof.
+unfold Or in *|-*.
+destruct H as [H1 H2].
+split.
+eapply Po_sound_right.
+exact p.
+exact H1.
+intros x Qx y Qy.
+apply p in Qx.
+apply p in Qy.
+exact (H2 x Qx y Qy).
+Defined.
+
 (* http://us.metamath.org/mpegif/df-we.html *)
 Definition We (R A:class) : Prop := (Fr R A /\ Or R A).
+
+Theorem Fr_sound_right (R A B:class)
+ (p:cEQ A B) (H:Fr R A):Fr R B.
+Proof.
+unfold Fr in *|-*.
+intros.
+assert (M:(forall y : Ens, IN y x -> A y) /\ inhab x).
+{ destruct H0 as [L1 L2].
+  split. 2:exact L2.
+  intros y yinx. apply p. apply L1. exact yinx. }
+destruct (H x M) as [y [yinx P]].
+exists y.
+split. exact yinx.
+intros z zinx Rp.
+eapply P.
+exact zinx.
+exact Rp.
+Defined.
+
+Theorem We_sound_right (R A B:class)
+ (p:cEQ A B) (H:We R A):We R B.
+Proof.
+unfold We in *|-*.
+destruct H as [H1 H2].
+split.
++ eapply Fr_sound_right.
+  exact p.
+  exact H1.
++ eapply Or_sound_right.
+  exact p.
+  exact H2.
+Defined.
 
 (*
 Opaque EQ. (* forbid "simpl" to unfold "EQ" *) Transparent EQ.
@@ -3443,28 +3567,103 @@ Defined.
 (* http://us.metamath.org/mpegif/df-ord.html *)
 Definition Ord (A:class) : Prop := (Tr A /\ We cEps A).
 
-Definition Ord_sound (a b:Ens) (aeqb:EQ a b) (H:Ord a) : Ord b.
+Definition Ord_sound (A B:class) (AeqB:cEQ A B) (H:Ord A) : Ord B.
 Proof.
 unfold Ord in *|-*.
-destruct H as [Tra WeEa].
+destruct H as [TrA WeEA].
 split.
-+ try eapply Tr_sound. admit.
-+ try eapply We_sound_right. admit.
-Admitted.
++ eapply Tr_sound. exact AeqB. exact TrA.
++ eapply We_sound_right. exact AeqB. exact WeEA.
+Defined.
+
+Theorem Ord_esound : forall a b : Ens, EQ a b -> Ord a -> Ord b.
+Proof.
+intros a b aeqb.
+apply Ord_sound.
+apply EQ2cEQ.
+assumption.
+Defined.
 
 (* ordinal numbers *)
 Definition On : class.
 Proof.
 unshelve eapply Build_class'.
 + intro x. exact (Ord x).
-+ simpl. exact Ord_sound.
++ simpl. exact Ord_esound.
 Defined.
 
-Definition Fn (f x:Ens): Prop.
-Proof.
-Admitted.
+Definition Rel (A:class) : Prop := cINC A (cProduct cV cV).
 
-Definition cAT (F:class) (a:Ens) : Ens.
+Theorem EQ_sound_left (a b c : Ens) (aeqb : EQ a b) 
+ (H : EQ a c) : EQ b c.
+Proof.
+apply EQ_sym in aeqb.
+eapply EQ_tran.
+exact aeqb.
+exact H.
+Defined.
+
+(* http://us.metamath.org/mpegif/df-cnv.html *)
+Definition invR (A:class) : class.
+Proof.
+unshelve eapply Build_class'.
++ intro e.
+  exact (exists x y:Ens, EQ e (OrdPair x y) /\ A (OrdPair y x)).
++ intros a b aeqb. simpl.
+  intros [x [y [W1 W2]]].
+  exists x. exists y.
+  split.
+  eapply EQ_sound_left.
+  exact aeqb.
+  exact W1.
+  exact W2.
+Defined.
+
+(* composition *)
+Definition compos (A B:class):class.
+Proof.
+unshelve eapply Build_class'.
++ intro e.
+exact (exists x y, EQ e (OrdPair x y) /\
+ exists z, B (OrdPair x z) /\ A (OrdPair z y)
+).
++ simpl. intros a b aeqb [x [y [aeq P]]].
+  exists x. exists y. split. 2:exact P.
+  eapply EQ_sound_left.
+  exact aeqb.
+  exact aeq.
+Defined.
+
+Definition cI : class.
+Proof.
+unshelve eapply Build_class'.
++ intro e. exact (exists x:Ens, EQ e (OrdPair x x)).
++ simpl. intros a b aeqb [x p].
+  exists x. eapply EQ_sound_left. exact aeqb.
+  exact p.
+Defined.
+
+(* http://us.metamath.org/mpegif/df-fun.html *)
+Definition Fun (A:class): Prop 
+ := (Rel A) /\ (cINC (compos A (invR A)) cI).
+
+(* http://us.metamath.org/mpegif/df-dm.html *)
+Definition cdom (A:class) : class.
+Proof.
+unshelve eapply Build_class'.
++ intro e. exact (exists y, A (OrdPair e y)).
++ simpl. intros a b aeqb [y Aop].
+  exists y.
+  eapply (sound A).
+  2 : exact Aop.
+  apply OrdPair_sound_left.
+  apply EQ_sym, aeqb.
+Defined.
+
+(* http://us.metamath.org/mpegif/df-fn.html *)
+Definition Fn (A B:class): Prop := (Fun A)/\(cEQ (cdom A) B).
+
+Definition cAT (F:class) (a:class) : class.
 Proof.
 Admitted.
 
@@ -3473,7 +3672,7 @@ Proof.
 unshelve eapply Build_class'.
 + intro f.
   refine (exists x:Ens, On f /\ (Fn f x /\ forall y:Ens, IN y x
-    -> hEQ (AT f y) (cAT F y)
+    -> cEQ (cAT f y) (cAT F y)
   )).
 + admit.
 Admitted.
