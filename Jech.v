@@ -1,5 +1,7 @@
 (* IST = "Introduction to Set Theory".(T.Jech, 2003)
     ST = "Set Theory".(K.Hrbacek, T.Jech)
+ I2AST = "Introduction to Axiomatic Set Theory"(W.Zaring,G.Takeuti)
+   AST = "Axiomatic Set Theory"(W.Zaring,G.Takeuti)
 *)
 (*** Contents ***
 
@@ -459,6 +461,7 @@ apply H with (1:=p).
 apply EQ_sym. assumption.
 Defined.
 
+(* I2AST p.13, thm 4.12, (<-) *)
 Theorem IN_P_Comp :
  forall (E A : Ens) (P : Ens -> Prop),
  (forall w1 w2 : Ens, P w1 -> EQ w1 w2 -> P w2) ->
@@ -1878,6 +1881,16 @@ Record class := {
  sound : forall (a b : Ens), EQ a b -> (prty a <-> prty b);
 }.
 
+(* little transformation of a soundness predicate *)
+Theorem sound_transf (T:class) (s:
+forall (a b : Ens), EQ a b -> T a <-> T b ) :
+forall w1 w2 : Ens, T w1 -> EQ w1 w2 -> T w2 .
+Proof.
+intros w1 w2 Tw1 w1eqw2.
+apply (proj1 (s w1 w2 w1eqw2) Tw1).
+Defined.
+
+
 (*
 Definition cEQ (A B:class) := forall z:Ens, (prty A) z <-> (prty B) z.
 *)
@@ -1937,18 +1950,7 @@ unshelve eapply Build_class'.
 + simpl. intros a b H1 H2. exact H2.
 Defined.
 
-Theorem Comp_elimC x y (K:class) : IN x (Comp y K) -> (IN x y /\ K x).
-Proof.
-intro e.
-split.
-+ exact ((Comp_INC y K) _ e).
-+ apply IN_Comp_P in e. exact e.
-  intros.
-  rewrite <- (sound K).
-  exact H.
-  exact H0.
-Defined.
-
+(* I2AST p.13, thm 4.12, (->) *)
 Theorem Comp_elim x y (K:Ens->Prop) (K_sound: SoundPred K)
 : IN x (Comp y K) -> (IN x y /\ K x).
 Proof.
@@ -1960,6 +1962,12 @@ split.
   eapply K_sound.
   exact H.
   exact H0.
+Defined.
+
+Theorem Comp_elimC x y (K:class) : IN x (Comp y K) -> (IN x y /\ K x).
+Proof.
+apply Comp_elim.
+exact (sound_transf _ (sound K)).
 Defined.
 
 Definition cInter (c:class) : class.
@@ -2317,19 +2325,11 @@ Theorem trcl_subs (y:Ens) : INC y (trcl y).
 Proof.
 Admitted.
 
-(* little transformation of a soundness predicate *)
-Theorem sound_transf (T:class) (s:
-forall (a b : Ens), EQ a b -> T a <-> T b ) :
-forall w1 w2 : Ens, T w1 -> EQ w1 w2 -> T w2 .
-Proof.
-intros w1 w2 Tw1 w1eqw2.
-apply (proj1 (s w1 w2 w1eqw2) Tw1).
-Defined.
-
 (* Gödel stated regularity for classes rather than for
 sets in his 1940 monograph, which was based on lectures
 given in 1938. In 1939, he proved that regularity for
  sets implies regularity for classes. see  Kanamori 2009 *)
+(* ST p.64, Lemma 6.2 *)
 Definition caxReg : forall T : class,
        (exists a : Ens, T a ) ->
        exists y : Ens, T y /\ ~ (exists z : Ens, IN z y /\ T z).
@@ -2555,6 +2555,7 @@ assumption.
 Defined.
 
 (* definitions for classes *)
+(* DEPRECATED
 Definition cPair (A B:class) : class.
 Proof.
 unshelve eapply Build_class'.
@@ -2576,7 +2577,8 @@ unshelve eapply Build_class'.
     rewrite <- H2.
     exact (aeqb z).
 Defined.
-
+*)
+(* DEPRECATED
 Definition cPow (A:class) : class.
 Proof.
 unshelve eapply Build_class'.
@@ -2589,7 +2591,7 @@ unshelve eapply Build_class'.
   rewrite <- (aeqb x) in bx.
   apply (H x bx).
 Defined.
-
+*)
 (* (A:Ens->Prop) is also fine. *)
 (*Definition cUnion (A:class) : class.
 Proof.
@@ -3376,17 +3378,37 @@ exact classic.
 exact thm_collection.
 Defined.
 
+(* ordinal numbers *)
+Definition On : class.
+Proof.
+Admitted.
+
+Definition Fn (f x:Ens): Prop.
+Proof.
+Admitted.
+
+Definition cAT (F:class) (a:Ens) : Ens.
+Proof.
+Admitted.
+
+Definition recs_cl (F:class) : class.
+Proof.
+unshelve eapply Build_class'.
++ intro f.
+  refine (exists x:Ens, On f /\ (Fn f x /\ forall y:Ens, IN y x
+    -> hEQ (AT f y) (cAT F y)
+  )).
++ admit.
+Admitted.
+
+(* http://us.metamath.org/mpegif/df-recs.html *)
+Definition recs (F:class) := cUnion (recs_cl F).
+
+(* http://us.metamath.org/mpegif/df-rdg.html *)
+(* Definition rec (F I:class) := recs F. *)
+
 (************************* STOP HERE ****************************)
 
-
-Record Category := {
-Ob : class;
-Hom : forall x y:Ens, Ob x -> Ob y -> Ens;
-}.
-
-(* to define *)
-Definition OrdPair_fst : Ens->Ens.
-Abort.
 
 (********** LAST SECTION
 Definition eFunc (x y:Ens) : Ens.
@@ -3416,11 +3438,6 @@ intro w. split.
   destruct g as [v wvir].
 Power
 Abort.
-
-(* Functions *)
-
-(*pose (i:=IN_Sing x).
-enough (forall x z, (IN z (Sing x)) <-> (EQ z x)).*)
 
 (* Other *)
 Fixpoint nclass (n:nat) := 
