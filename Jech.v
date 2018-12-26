@@ -3378,10 +3378,87 @@ exact classic.
 exact thm_collection.
 Defined.
 
+Definition cINC (A B:class) : Prop := forall x:Ens, A x -> B x.
+
+(* http://us.metamath.org/mpegif/df-tr.html *)
+Definition Tr (A:class) : Prop := cINC (cUnion A) A.
+
+Theorem Tr_sound (a b : Ens) (aeqb : EQ a b) (Tra : Tr a) : Tr b.
+Proof.
+unfold Tr in *|-*.
+try apply cUnion.
+Abort. (*start here!*)
+
+(* predicate of the nonemptiness TODO: make class *)
+Definition inhab (x:Ens) : Prop := exists y:Ens, IN y x.
+
+(* "Fr" is the well-founded relation predicate.
+http://us.metamath.org/mpegif/df-fr.html *)
+Definition Fr (R A:class) : Prop := 
+forall x:Ens, ((forall y, IN y x -> A y) /\ inhab x) ->
+exists y, IN y x /\ forall z, IN z x -> ~ (R (OrdPair z y)).
+
+(* the strict partial order predicate
+http://us.metamath.org/mpegif/df-po.html *)
+Definition Po (R A:class) : Prop :=
+ forall x, A x ->
+ forall y, A y ->
+ forall z, A z -> 
+(~R (OrdPair x x) /\
+((R (OrdPair x y)/\ R (OrdPair y z) -> R (OrdPair x z)))
+)
+.
+
+(* strict complete (linear) order predicate 
+http://us.metamath.org/mpegif/df-so.html *)
+Definition Or (R A:class) : Prop := Po R A /\
+(forall x, A x -> forall y, A y ->
+(R (OrdPair x y) \/ EQ x y \/ R (OrdPair y x))
+).
+
+(* http://us.metamath.org/mpegif/df-we.html *)
+Definition We (R A:class) : Prop := (Fr R A /\ Or R A).
+
+(*
+Opaque EQ. (* forbid "simpl" to unfold "EQ" *) Transparent EQ.
+The following also disables simpl, but EQ can still be unfolded.
+*)
+Arguments EQ _ _ : simpl nomatch.
+
+(* TODO: EQ_sound_left *)
+
+(* http://us.metamath.org/mpegif/df-eprel.html *)
+Definition cEps : class.
+Proof.
+unshelve eapply Build_class'.
++ intro p. exact (exists x y:Ens, EQ p (OrdPair x y) /\ IN x y).
++ intros a b aeqb.
+  simpl. intros [x [y [aeqxy xiny]]].
+  exists x. exists y. split.
+  - eapply EQ_sound.
+    exact aeqb. exact aeqxy. apply EQ_refl.
+  - exact xiny.
+Defined.
+
+(* http://us.metamath.org/mpegif/df-ord.html *)
+Definition Ord (A:class) : Prop := (Tr A /\ We cEps A).
+
+Definition Ord_sound (a b:Ens) (aeqb:EQ a b) (H:Ord a) : Ord b.
+Proof.
+unfold Ord in *|-*.
+destruct H as [Tra WeEa].
+split.
++ try eapply Tr_sound. admit.
++ try eapply We_sound_right. admit.
+Admitted.
+
 (* ordinal numbers *)
 Definition On : class.
 Proof.
-Admitted.
+unshelve eapply Build_class'.
++ intro x. exact (Ord x).
++ simpl. exact Ord_sound.
+Defined.
 
 Definition Fn (f x:Ens): Prop.
 Proof.
