@@ -18,6 +18,8 @@ Part III: Development of formulas and derivations.
 Part IV: Experiments with definions of a classes
 and other experiments.
 
+Part V: Translation of Metamath theorems.
+
 *****************)
 
 (* IMPORTANT: during the development of the part II 
@@ -3663,8 +3665,61 @@ Defined.
 (* http://us.metamath.org/mpegif/df-fn.html *)
 Definition Fn (A B:class): Prop := (Fun A)/\(cEQ (cdom A) B).
 
-Definition cAT (F:class) (a:class) : class.
+Definition cSing (A:class) : class := cPair A A.
+
+(* here we use "F:class" instead of "ph:wff" *)
+Definition iota_cl (F:class) : class.
 Proof.
+unshelve eapply Build_class'.
++ intro y. exact (cEQ F (cSing y)).
++ simpl.
+(*
+pose (W:=sound (cSing F)).
+unfold cSing in W.
+simpl in W.
+  unfold cEQ in *|-*.
+Check fun a b =>.
+*)
+intros a b aeqb; intro H.
+  intro z. assert (H:=H z).
+  destruct H as [H1 H2]. split.
+  - intro Fz. assert (H1:=H1 Fz).
+    destruct H1 as [L|L]; left.
+    * eapply hEQ_sound_right.
+      apply EQ2cEQ. exact aeqb. exact L.
+    * eapply hEQ_sound_right.
+      apply EQ2cEQ. exact aeqb. exact L.
+  - intros [zheqb|zheqb]; apply H2; left.
+    * eapply hEQ_sound_right. apply EQ2cEQ, EQ_sym.
+      exact aeqb. exact zheqb.
+    * eapply hEQ_sound_right. apply EQ2cEQ, EQ_sym.
+      exact aeqb. exact zheqb.
+(* TODO: reduce repetitions! *)
+Defined.
+
+(* http://us.metamath.org/mpegif/df-iota.html *)
+Definition iota (F:class) : class
+ := cUnion (iota_cl F).
+
+Definition cIN (A B:class):Prop := exists x, hEQ x A /\ B x.
+
+(* http://us.metamath.org/mpegif/df-op.html *)
+Definition cOrdPair (A B:class):class.
+Proof.
+unshelve eapply Build_class'.
++ intro x. exact (cIN A cV /\ cIN B cV /\
+  cIN x (cPair (cSing A) (cPair A B))
+ ).
++ simpl.
+Admitted.
+
+(* http://us.metamath.org/mpegif/df-fv.html *)
+Definition cAT (F:class) (A:class) : class.
+Proof.
+apply iota.
+unshelve eapply Build_class'.
++ intro x. exact (cIN (cOrdPair A x) F).
++ simpl.
 Admitted.
 
 Definition recs_cl (F:class) : class.
@@ -3683,42 +3738,3 @@ Definition recs (F:class) := cUnion (recs_cl F).
 (* http://us.metamath.org/mpegif/df-rdg.html *)
 (* Definition rec (F I:class) := recs F. *)
 
-(************************* STOP HERE ****************************)
-
-
-(********** LAST SECTION
-Definition eFunc (x y:Ens) : Ens.
-Proof.
-ueapp Comp.
-exact (Product x y).
-intro f.
-exact ((EQ (dom f) x) /\ True ).
-Defined.
-
-Definition Sets : Category.
-Proof.
-unshelve eapply Build_Category.
-exact cV.
-simpl.
-intros x y _ _.
-exact (eFunc x y).
-Defined.
-
-Theorem  domias (R:Ens) : (ias (cDom R)).
-Proof.
-unfold ias in *|-*.
-exists (cPow (cUnion (cUnion R))).
-intro w. split.
-+ intro g.
-  simpl in g.
-  destruct g as [v wvir].
-Power
-Abort.
-
-(* Other *)
-Fixpoint nclass (n:nat) := 
-match n with
-| 0 => Ens
-| S b => (nclass b)->Prop
-end.
-**********)
