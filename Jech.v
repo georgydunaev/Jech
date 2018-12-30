@@ -1459,24 +1459,6 @@ intros; apply IN_sound_left with w1; auto with zfc.
 Defined.
 
 (* predicate for separation of the product *)
-
-(*Definition cProduct (X Y : class) : class.
-Proof.
-unshelve eapply Build_class.
-intro z.
-exact (exists (x y:Ens), (EQ z (OrdPair x y)) /\ X x /\ Y y).
-apply two_sided.
-intros a b aeqb e.
-destruct e as [x [y [aeq [xx yy]]]].
-exists x, y.
-repeat split.
-{ apply EQ_tran with (E2:=a).
-  apply EQ_sym. exact aeqb.
-  exact aeq. }
-exact xx.
-exact yy.
-Defined.*)
-
 Definition inProduct (X Y u:Ens) :=
  exists (x y:Ens), (EQ u (OrdPair x y)) /\ IN x X /\ IN y Y.
 
@@ -1505,24 +1487,25 @@ Comp
  (inRan R)
 .
 
-Definition field (R:Ens) := Union (Paire (dom R) (ran R)).
+Definition field (R:Ens) : Ens := Union (Paire (dom R) (ran R)).
 
-Definition isFunction (X Y f:Ens) := (EQ (dom f) X)/\(INC (ran f) Y).
+Definition isFunction (X Y f:Ens) : Prop := (EQ (dom f) X)/\(INC (ran f) Y).
 
-Definition functions (X Y:Ens) :=
+Definition functions (X Y:Ens) : Ens :=
 Comp
  (Power (Product X Y))
  (isFunction X Y)
 .
 
-Definition fun1to1 (X Y:Ens) :=
+Definition fun1to1 (X Y:Ens) : Ens :=
 Comp
  (functions X Y)
  (fun f => forall x1 x2 y, IN (OrdPair x1 y) f /\ IN (OrdPair x2 y) f 
  -> EQ x1 x2)
 .
 
-Definition restriction (X0 Y0 f X:Ens) (H:IN f (functions X0 Y0)):=
+Definition restriction (X0 Y0 f X:Ens) (H:IN f (functions X0 Y0)) : Ens 
+:=
 Comp
  f
  (fun e => exists x y, EQ e (OrdPair x y) /\ IN x X)
@@ -1576,7 +1559,6 @@ intros [X H].
 pose (S:= Comp X (fun x => ~ IN x x)).
 assert (Q : INC S X).
 apply Comp_INC.
-(* Search Power. USEFUL*)
 apply INC_IN_Power in Q.
 apply H in Q.
 destruct (classic (IN S S)).
@@ -1878,10 +1860,29 @@ Abort.
 *)
 
 (* 'class' is the type of well-defined classes. *)
-Record class := {
+Record class := Build_class' {
  prty :> Ens->Prop;
- sound : forall (a b : Ens), EQ a b -> (prty a <-> prty b);
+ sound : forall (a b : Ens), EQ a b -> (prty a -> prty b);
 }.
+
+(*
+Definition Build_class' : forall Vprty : Ens -> Prop,
+       (forall a b : Ens, EQ a b -> Vprty a -> Vprty b) -> class.
+Proof. intros.
+unshelve eapply Build_class.
+exact Vprty.
+apply two_sided. exact H.
+Defined.
+*)
+Definition Build_class : forall Vprty : Ens -> Prop,
+       (forall a b : Ens, EQ a b -> Vprty a <-> Vprty b) -> class.
+Proof.
+intros.
+unshelve eapply Build_class'.
++ exact Vprty.
++ intros a b aeqb.
+  apply (H a b aeqb).
+Defined.
 
 (* little transformation of a soundness predicate *)
 Theorem sound_transf (T:class) (s:
@@ -1928,13 +1929,6 @@ Defined.
 Check two_sided.
 *)
 
-Definition Build_class' : forall Vprty : Ens -> Prop,
-       (forall a b : Ens, EQ a b -> Vprty a -> Vprty b) -> class.
-Proof. intros.
-unshelve eapply Build_class.
-exact Vprty.
-apply two_sided. exact H.
-Defined.
 
 (* Class of all sets *)
 Definition cV : class.
@@ -1969,7 +1963,11 @@ Defined.
 Theorem Comp_elimC x y (K:class) : IN x (Comp y K) -> (IN x y /\ K x).
 Proof.
 apply Comp_elim.
-exact (sound_transf _ (sound K)).
+(** exact (sound_transf _ (sound K)). **)
+intros a b q aeqb.
+eapply (sound K).
+exact aeqb.
+exact q.
 Defined.
 
 Definition cInter (c:class) : class.
@@ -2063,7 +2061,10 @@ Defined.
 
 Lemma sound2rewr (s:class) : forall w1 w2 : Ens, s w1 -> EQ w1 w2 -> s w2.
 Proof.
-intros w1 w2 H1 H2. rewrite <- (sound s). exact H1. exact H2.
+intros w1 w2 H1 H2.
+(** rewrite <- (sound s).  
+exact H1. exact H2.**)
+eapply (sound s). exact H2. exact H1.
 Defined.
 
 (* subclass of a set is a set *)
@@ -2082,7 +2083,9 @@ split.
   (*unfold esiacf in * |- *.*)
   apply IN_P_Comp.
   * intros w1 w2 K H.
-    rewrite <- (sound s). exact K. exact H. (*apply (rewr _ _  K H).*)
+    eapply (sound s). exact H. exact K.
+    (** rewrite <- (sound s). exact K. exact H. **)
+    (*apply (rewr _ _  K H).*)
   * exact y.
   * exact u.
 + intro u.
@@ -2195,9 +2198,10 @@ Lemma schSepar_lem (c:class) :
 forall w1 w2 : Ens, c w1 -> EQ w1 w2 -> c w2.
 Proof.
 intros w1 w2 cw1 eqw1w2.
-rewrite (sound c).
+eapply (sound c). exact eqw1w2. exact cw1.
+(** rewrite (sound c).
 exact cw1.
-apply EQ_sym; assumption.
+apply EQ_sym; assumption. **)
 Defined.
 
 Theorem schSepar (c:class) :
@@ -2301,7 +2305,7 @@ intros A B.
 unshelve eapply Build_class'.
 + intro e. exact (A e /\ B e).
 + simpl. intros.
-  apply EQ_sym in H.
+  (* apply EQ_sym in H. *)
   firstorder.
   - eapply (sound). exact H. exact H0.
   - eapply (sound). exact H. exact H1.
@@ -2351,8 +2355,9 @@ assert (inhX:exists x':Ens, IN x' X).
 + exists x. unfold X.
 (* OR change X with (Comp t T). (*replace X with (Comp t T).*)*)
 apply IN_P_Comp.
-- apply sound_transf.
-  exact (sound T).
+- intros. eapply (sound T). exact H0. exact H.
+  (*apply sound_transf.
+  exact (sound T).*)
 - unfold t.
   apply trcl_subs.
   apply IN_Sing.
@@ -2361,12 +2366,14 @@ apply IN_P_Comp.
   exists t0. split.
   unfold X in P1.
   - apply IN_Comp_P in P1. exact P1.
-    apply sound_transf; exact (sound T).
+    intros. eapply (sound T). exact H0. exact H.
+    (** apply sound_transf; exact (sound T). **)
   - intros [z [zinu Tz]]. apply P2.
     exists z. split. exact zinu.
     unfold X in P1 |-*.
     apply IN_P_Comp.
-    * apply sound_transf; exact (sound T).
+    *  intros. eapply (sound T). exact H0. exact H.
+(** apply sound_transf; exact (sound T). **)
     * assert (t0inct: INC t0 t).
       {intros q W.
        apply Comp_elim in P1 as [t0int Tt0].
@@ -2374,7 +2381,8 @@ apply IN_P_Comp.
        apply K.
        assumption.
        unfold SoundPred.
-       apply sound_transf; exact (sound T).
+intros. eapply (sound T). exact H0. exact H.
+       (** apply sound_transf; exact (sound T). **)
       }
       apply t0inct.
       exact zinu.
@@ -2485,6 +2493,13 @@ match n with
 end.
 
 (* Relations *)
+Definition sound'
+     : forall (c : class) (a b : Ens),
+       EQ a b -> c a <-> c b.
+Proof.
+intros. split. eapply (sound c). exact H.
+eapply (sound c). apply EQ_sym. exact H.
+Defined.
 
 Definition cDom (R:class) : class.
 Proof.
@@ -2495,13 +2510,11 @@ exact (exists v, R (OrdPair u v)).
 intros a b aeqb H.
 destruct H as [x w].
 exists x.
-rewrite (sound R).
+rewrite (sound' R).
 exact w.
 apply OrdPair_sound_left.
 auto with zfc. (*apply EQ_sym; exact aeqb.*)
 Defined.
-
-
 
 Definition exampleproperclass : class.
 Proof.
@@ -2618,47 +2631,6 @@ exact (issubclass x A).
 exact (cEQ x A \/ cEQ x B).
     unfold stro*)
 
-(*
-'isas' is a constructive version of 'ias'.
-*)
-Record isas (C : class) := {
- dmn : Ens;
- eqvias: cEQ C dmn; (*forall w : Ens, c w <-> IN w dmn;*)
-}.
-
-Definition decid (A:Type) := sum A (A->False).
-
-Record xclass := {
- clprj :> class;
- ciset :  decid (isas clprj);
-}.
-
-Theorem jhkl (x:Ens) (A:class) (H:cEQ A x): isas A.
-Proof.
-unshelve eapply Build_isas.
-exact x. exact H.
-Defined.
-
-Theorem scosisas : forall (s : class) (m : Ens),
-       (forall x : Ens, s x -> m x) -> isas s.
-Proof. intros s m sc.
-unshelve eapply Build_isas.
-exact (Comp m s).
-intro w.
-split.
-+ intro u.
-  pose(y:=sc w u).
-  (*unfold esiacf in * |- *.*)
-  apply IN_P_Comp.
-  * intros w1 w2 K H.
-    rewrite <- (sound s). exact K. exact H. (*apply (rewr _ _  K H).*)
-  * exact y.
-  * exact u.
-+ intro u.
-  apply (IN_Comp_P m).
-  apply sound2rewr.
-  exact u.
-Defined.
 
 Ltac ueapp P := unshelve eapply P.
 
@@ -2691,50 +2663,6 @@ split; intros H;
 apply K in H; (*simpl in H;*) exact H. (*twice*)
 Defined.
 
-Definition xPair (A B:xclass) : xclass.
-Proof.
-ueapp Build_xclass.
-exact (cPair (clprj A) (clprj B)).
-left.
-destruct (ciset A) as [ASE|APC], (ciset B) as [BSE|BPC].
-+ unshelve eapply Build_isas.
-  exact (Paire (dmn _ ASE) (dmn _ BSE)).
-  intro z; split; intro x.
-  - simpl in x. destruct x as [HA|HB].
-    * simpl.
-      change _ with (IN z (Paire (dmn A ASE) (dmn B BSE))).
-      exists true; simpl.
-      apply axExtC.
-      intro k; split; intro m.
-  ++ simpl. simpl in m.
-     apply (HA k) in m.
-     eapply (eqvias A ASE ). exact m.
-     (* eapply cIN_sound_right. exact m. 
-     exact (eqvias A ASE).*)
-  ++ simpl. simpl in m.
-     apply (HA k). eapply (eqvias A ASE ) in m. assumption.
-    * simpl.
-      change _ with (IN z (Paire (dmn A ASE) (dmn B BSE))).
-      exists false; simpl.
-      apply axExtC.
-      intro k; split; intro m.
-  ++ simpl. simpl in m.
-     apply (HB k) in m.
-     eapply (eqvias B BSE ). exact m.
-     (* eapply cIN_sound_right. exact m. 
-     exact (eqvias A ASE).*)
-  ++ simpl. simpl in m.
-     apply (HB k). eapply (eqvias B BSE ) in m. assumption.
-  - simpl in * |- *.
-    destruct x as [m J].
-    destruct m; simpl in J.
-    * left. apply axExtC in J.
-(*    eapply cEQ_tran.
-      apply J.
-      intros a. split; intro h.
-simpl in h.
-simpl.*)
-Abort.
 
 Theorem UPeI (X:Ens): EQ (Union (Power X)) X.
 Proof.
@@ -3656,7 +3584,7 @@ unshelve eapply Build_class'.
 + intro e. exact (exists y, A (OrdPair e y)).
 + simpl. intros a b aeqb [y Aop].
   exists y.
-  eapply (sound A).
+  eapply (sound' A).
   2 : exact Aop.
   apply OrdPair_sound_left.
   apply EQ_sym, aeqb.
@@ -3819,6 +3747,16 @@ unshelve eapply Build_class'.
   exact aeqb.
 Defined.
 
+(* Later, change every soundness proof with this.
+   keeping "<->" for "rewrite" tactic is useless. *)
+Definition soundf : forall (c : class) (a b : Ens),
+       EQ a b -> c a -> c b.
+Proof.
+intros.
+apply (sound c a b H).
+exact H0.
+Defined.
+
 Definition recs_cl (F:class) : class.
 Proof.
 unshelve eapply Build_class'.
@@ -3826,7 +3764,17 @@ unshelve eapply Build_class'.
   refine (exists x:Ens, On f /\ (Fn f x /\ forall y:Ens, IN y x
     -> cEQ (cAT f y) (cAT F y)
   )).
-+ admit.
++ intros.
+  cbv beta in H0|-*.
+  destruct H0 as [x [P1 [P2 P3]]].
+  exists x.
+  split. 2 : split.
+  - eapply soundf.
+    exact H. exact P1.
+  - try apply Fn_sound_left.
+Check (sound On).
+simpl.
+admit.
 Admitted.
 
 (* http://us.metamath.org/mpegif/df-recs.html *)
@@ -3834,4 +3782,102 @@ Definition recs (F:class) := cUnion (recs_cl F).
 
 (* http://us.metamath.org/mpegif/df-rdg.html *)
 (* Definition rec (F I:class) := recs F. *)
+
+
+
+
+
+
+(* ===================================== *)
+(* START OF THE WORKING BUT USELESS CODE *)
+(* ===================================== *)
+
+(*
+'isas' is a constructive version of 'ias'.
+*)
+Record isas (C : class) := {
+ dmn : Ens;
+ eqvias: cEQ C dmn; (*forall w : Ens, c w <-> IN w dmn;*)
+}.
+
+
+Theorem jhkl (x:Ens) (A:class) (H:cEQ A x): isas A.
+Proof.
+unshelve eapply Build_isas.
+exact x. exact H.
+Defined.
+
+Theorem scosisas : forall (s : class) (m : Ens),
+       (forall x : Ens, s x -> m x) -> isas s.
+Proof. intros s m sc.
+unshelve eapply Build_isas.
+exact (Comp m s).
+intro w.
+split.
++ intro u.
+  pose(y:=sc w u).
+  (*unfold esiacf in * |- *.*)
+  apply IN_P_Comp.
+  * intros w1 w2 K H.
+    rewrite <- (sound' s). exact K. exact H. (*apply (rewr _ _  K H).*)
+  * exact y.
+  * exact u.
++ intro u.
+  apply (IN_Comp_P m).
+  apply sound2rewr.
+  exact u.
+Defined.
+
+Definition decid (A:Type) := sum A (A->False).
+
+Record xclass := {
+ clprj :> class;
+ ciset :  decid (isas clprj);
+}.
+
+Definition xPair (A B:xclass) : xclass.
+Proof.
+ueapp Build_xclass.
+exact (cPair (clprj A) (clprj B)).
+left.
+destruct (ciset A) as [ASE|APC], (ciset B) as [BSE|BPC].
++ unshelve eapply Build_isas.
+  exact (Paire (dmn _ ASE) (dmn _ BSE)).
+  intro z; split; intro x.
+  - simpl in x. destruct x as [HA|HB].
+    * simpl.
+      change _ with (IN z (Paire (dmn A ASE) (dmn B BSE))).
+      exists true; simpl.
+      apply axExtC.
+      intro k; split; intro m.
+  ++ simpl. simpl in m.
+     apply (HA k) in m.
+     eapply (eqvias A ASE ). exact m.
+     (* eapply cIN_sound_right. exact m. 
+     exact (eqvias A ASE).*)
+  ++ simpl. simpl in m.
+     apply (HA k). eapply (eqvias A ASE ) in m. assumption.
+    * simpl.
+      change _ with (IN z (Paire (dmn A ASE) (dmn B BSE))).
+      exists false; simpl.
+      apply axExtC.
+      intro k; split; intro m.
+  ++ simpl. simpl in m.
+     apply (HB k) in m.
+     eapply (eqvias B BSE ). exact m.
+     (* eapply cIN_sound_right. exact m. 
+     exact (eqvias A ASE).*)
+  ++ simpl. simpl in m.
+     apply (HB k). eapply (eqvias B BSE ) in m. assumption.
+  - simpl in * |- *.
+    destruct x as [m J].
+    destruct m; simpl in J.
+    * left. apply axExtC in J.
+(*    eapply cEQ_tran.
+      apply J.
+      intros a. split; intro h.
+simpl in h.
+simpl.*)
+Abort.
+(* END OF WORKING BUT USELESS CODE *)
 
