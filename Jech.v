@@ -1894,11 +1894,11 @@ apply (proj1 (s w1 w2 w1eqw2) Tw1).
 Defined.
 
 
-(*
-Definition cEQ (A B:class) := forall z:Ens, (prty A) z <-> (prty B) z.
-*)
-Definition cEQ (A B: Ens->Prop) := forall z:Ens, A z <-> B z.
 
+Definition cEQ (A B:class) := forall z:Ens, (prty A) z <-> (prty B) z.
+(*
+Definition cEQ (A B: Ens->Prop) := forall z:Ens, A z <-> B z.
+*)
 (* "is a set" predicate on classes *)
 Definition ias (s: class) : Prop.
 Proof.
@@ -3757,6 +3757,155 @@ apply (sound c a b H).
 exact H0.
 Defined.
 
+Lemma cINC_sound_left (A1 A2 B:class) (H:cEQ A1 A2) (K:cINC A1 B) : cINC A2 B.
+Proof.
+intros z P.
+apply K.
+apply H.
+exact P.
+Defined.
+
+Lemma Rel_sound (A1 A2:class) (H:cEQ A1 A2) (K:Rel A1) : Rel A2.
+Proof.
+unfold Rel in *|- *.
+eapply cINC_sound_left.
+exact H.
+exact K.
+Defined.
+
+Lemma compos_sound_left : forall (B A1 A2:class) (H:cEQ A1 A2),
+ cEQ (compos A1 B) (compos A2 B).
+Proof.
+intros.
+eapply (two_sidedC (fun z => (compos z B))).
+2 : exact H.
+intros.
+rename z into e. (*cbn delta in H1.*)
+simpl in H1|-*.
+destruct H1 as [x [y [zeqp [z [P1 P2]]]]].
+exists x.
+exists y.
+split. exact zeqp.
+exists z.
+split. exact P1.
+apply H0.
+exact P2.
+Defined.
+
+Lemma compos_sound_right : forall (A B1 B2:class) (H:cEQ B1 B2),
+ cEQ (compos A B1) (compos A B2).
+Proof.
+intro A.
+eapply (two_sidedC (compos A)).
+intros.
+rename z into e.
+simpl in H0|-*.
+destruct H0 as [x [y [zeqp [z [P1 P2]]]]].
+exists x.
+exists y.
+split. exact zeqp.
+exists z.
+split. apply (H). exact P1.
+exact P2.
+Defined.
+
+Lemma compos_sound (A1 A2 B1 B2:class) (HA:cEQ A1 A2) (HB:cEQ B1 B2) : 
+ cEQ (compos A1 B1) (compos A2 B2).
+Proof.
+eapply cEQ_tran.
+apply compos_sound_left. exact HA.
+apply compos_sound_right. exact HB.
+Defined.
+
+Lemma invR_sound : forall (A1 A2:class) (H:cEQ A1 A2),
+ cEQ (invR A1) (invR A2).
+Proof.
+eapply (two_sidedC (invR)).
+intros.
+simpl in H0|-*.
+destruct H0 as [x [y [P1 P2]]].
+exists x. exists y. split. exact P1.
+apply H. exact P2.
+Defined.
+
+Lemma Fun_sound (A1 A2:class) (H:cEQ A1 A2) (K:Fun A1) : Fun A2.
+Proof.
+unfold Fun in *|- *.
+destruct K.
+split.
++ eapply Rel_sound. exact H. exact H0.
++ eapply cINC_sound_left. 2 : exact H1.
+  apply compos_sound.
+  exact H.
+  apply invR_sound.
+  exact H.
+Defined.
+
+Lemma cEQ_sound_left (A1 A2 B: class) (H : cEQ A1 A2)
+(K : cEQ A1 B) : cEQ A2 B.
+Proof.
+unfold cEQ in K|-*.
+intro z.
+split; intro q.
++ apply K. apply H. exact q.
++ apply H. apply K. exact q.
+Defined.
+
+Lemma cEQ_sound_right (A B1 B2: class) (H : cEQ B1 B2)
+(K : cEQ A B1) : cEQ A B2.
+Proof.
+unfold cEQ in K|-*.
+intro z.
+split; intro q.
++ apply H. apply K. exact q.
++ apply K. apply H. exact q.
+Defined.
+
+Lemma cdom_sound : forall (A1 A2 : class) (H : cEQ A1 A2),
+  cEQ (cdom A1) (cdom A2).
+Proof.
+eapply (two_sidedC).
+simpl.
+intros.
+destruct H0 as [y P].
+exists y. apply H. exact P.
+Defined.
+
+Lemma Fn_sound_left (A1 A2 B:class) (H:cEQ A1 A2) (K:Fn A1 B) : Fn A2 B.
+Proof.
+destruct K.
+split.
+eapply Fun_sound.
+exact H. exact H0.
+eapply cEQ_sound_left.
+2 :  exact H1.
+apply cdom_sound.
+exact H.
+Defined.
+
+Lemma cAT_sound_left (B:class) : forall (A1 A2:class) (H:cEQ A1 A2),
+  cEQ (cAT A1 B) (cAT A2 B).
+Proof.
+eapply (two_sidedC).
+intros. simpl in H0|-*.
+destruct H0 as [w [P1 P2]].
+exists w.
+split.
++ eapply cEQ_sound_left.
+  2 : exact P1.
+  unfold cEQ.
+  simpl.
+  intro q. split; intro g.
+  - eapply cIN_sound_right2.
+    exact H. exact g.
+  - eapply cIN_sound_right2.
+    apply cEQ_sym. exact H. exact g.
++ exact P2.
+Defined.
+
+(* wff   ->  Prop
+   set   ->  Ens
+   class ->  class *)
 Definition recs_cl (F:class) : class.
 Proof.
 unshelve eapply Build_class'.
@@ -3771,11 +3920,14 @@ unshelve eapply Build_class'.
   split. 2 : split.
   - eapply soundf.
     exact H. exact P1.
-  - try apply Fn_sound_left.
-Check (sound On).
-simpl.
-admit.
-Admitted.
+  - eapply Fn_sound_left.
+    apply EQ2cEQ. exact H. exact P2.
+  - intros y yinx. 
+    eapply cEQ_sound_left.
+    2 : exact (P3 y yinx).
+    eapply cAT_sound_left.
+    apply EQ2cEQ. exact H.
+Defined.
 
 (* http://us.metamath.org/mpegif/df-recs.html *)
 Definition recs (F:class) := cUnion (recs_cl F).
