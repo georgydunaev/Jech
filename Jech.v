@@ -3906,7 +3906,9 @@ Defined.
 (* wff   ->  Prop
    set   ->  Ens
    class ->  class *)
-Definition recs_cl (F:class) : class.
+
+(* Constructing the class of an acceptable functions. *)
+Definition cAccept (F:class) : class.
 Proof.
 unshelve eapply Build_class'.
 + intro f.
@@ -3930,12 +3932,35 @@ unshelve eapply Build_class'.
 Defined.
 
 (* http://us.metamath.org/mpegif/df-recs.html *)
-Definition recs (F:class) := cUnion (recs_cl F).
+(* transfinite recursion "functor". *)
+Definition recs (F:class) := cUnion (cAccept F).
 
+(* http://us.metamath.org/mpegif/df-iun.html *)
+Definition iun (A:Ens->class) (B:Ens->class) : class.
+Proof.
+Abort.
+(* TODO: define "-->" - functions which respect extensional equality. *)
+
+(* http://us.metamath.org/mpegif/reluni.html *)
+Theorem reluni (A:class) : (Rel (cUnion A)) <-> (forall x, A x -> Rel x).
+Proof.
+split; intro H.
++ unfold Rel in H.
+  intros x Ax.
+  assert (Q:=H x).
+simpl in *|-*.
+unfold Rel.
+unfold recs.
+Abort.
+
+(* http://us.metamath.org/mpegif/tfr1.html *)
+Theorem recs_is_rel (F:class) : Rel (recs F).
+Proof.
+unfold recs.
+Rel
+Abort.
 (* http://us.metamath.org/mpegif/df-rdg.html *)
 (* Definition rec (F I:class) := recs F. *)
-
-
 
 
 
