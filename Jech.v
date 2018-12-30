@@ -37,7 +37,7 @@ of the first-order logic and ZFC set theory.
 (* These notions should not be unfolded during 
 the proofs in Part II: Pair, Union, Powerset. *)
 
-Require Import FunctionalExtensionality. (* for pi1pi2 *)
+Require Import FunctionalExtensionality.
 Require Import Logic.Classical_Prop.
 Require Import Logic.Classical_Pred_Type.
 Require Import Logic.ChoiceFacts.
@@ -45,6 +45,7 @@ Require Import Logic.IndefiniteDescription.
 
 Axiom (axSFC:SetoidFunctionalChoice).
 Definition ex2sig {A : Type} {P : A -> Prop}
+ : (exists x : A, P x) -> {x : A | P x}
  := constructive_indefinite_description P.
 (*
 ==============================================
@@ -52,9 +53,8 @@ Definition ex2sig {A : Type} {P : A -> Prop}
 ==============================================
 *)
 
-(*=== Remastered SETS.v ===*)
-
-(* The type representing sets  (Ensemble = french for set) *)
+(* The type representing sets
+  (Ensemble = french for set) *)
 
 Inductive Ens : Type :=
     sup : forall A : Type, (A -> Ens) -> Ens.
@@ -3703,6 +3703,18 @@ Definition iota (F:class) : class
 
 Definition cIN (A B:class):Prop := exists x, hEQ x A /\ B x.
 
+Theorem cIN_sound_left (A1 A2 B:class) (H:cEQ A1 A2)
+ (K:cIN A1 B) : cIN A2 B.
+Proof.
+unfold cEQ, cIN in *|-*.
+destruct K as [x [P1 P2]].
+exists x. split.
++ eapply hEQ_sound_right.
+  exact H.
+  exact P1.
++ exact P2.
+Defined.
+
 (* http://us.metamath.org/mpegif/df-op.html *)
 Definition cOrdPair (A B:class):class.
 Proof.
@@ -3711,7 +3723,87 @@ unshelve eapply Build_class'.
   cIN x (cPair (cSing A) (cPair A B))
  ).
 + simpl.
-Admitted.
+  intros a b aeqb [P1 [P2 P3]].
+  repeat split; try assumption.
+  eapply cIN_sound_left.
+  - apply EQ2cEQ.
+    exact aeqb.
+  - exact P3.
+Defined.
+
+Lemma two_sidedC (P:class->class) :
+(forall (B1 B2 : class) (H : cEQ B1 B2),
+forall z : Ens, (P B1) z -> (P B2) z)
+->
+forall (B1 B2 : class) (H : cEQ B1 B2), cEQ (P B1) (P B2)
+.
+Proof.
+intros.
+split; apply H.
++ assumption.
++ apply cEQ_sym. assumption.
+Defined.
+
+Theorem cPair_sound_right (A B1 B2:class) (H:cEQ B1 B2) :
+ cEQ (cPair A B1) (cPair A B2).
+Proof.
+revert B1 B2 H.
+apply (two_sidedC _ ).
+intros.
+  simpl in *|-*.
+  destruct H0 as [M|M].
+  - left. exact M.
+  - right.
+    eapply (hEQ_sound_right).
+    * exact H.
+    * exact M.
+Defined.
+
+Theorem cIN_sound_right2 (Z B1 B2 : class)
+(H : cEQ B1 B2) (K : cIN Z B1) : cIN Z B2.
+Proof.
+(*revert B1 B2 H K.
+apply (two_sidedC _ ).*)
+unfold cIN in *|-*.
+destruct K as [x [P1 P2]].
+exists x. split.
++ exact P1.
++ assert (Hx:=H x).
+  apply proj1 in Hx.
+  apply Hx.
+  exact P2.
+Defined.
+
+Theorem cOrdPair_sound_right (A B1 B2:class) (H:cEQ B1 B2):
+ cEQ (cOrdPair A B1) (cOrdPair A B2).
+Proof.
+revert B1 B2 H.
+apply (two_sidedC _ ).
+intros.
+simpl in *|-*.
+destruct H0, H1. (*hack instead of repeat destruct H0.*)
+repeat split.
++ assumption.
++ eapply cIN_sound_left.
+  exact H.
+  exact H1.
++ eapply cIN_sound_right2. 
+2 : exact H2.
+apply cPair_sound_right.
+apply cPair_sound_right.
+exact H.
+Defined.
+
+(*  Show Proof.
+IN_sound_left
+
+eapply cIN_sound_right. (*TODO!*)
+unfold cEQ.
+
+unfold cOrdPair.
+fold cPair.
+apply cPair_sound_right.
+Admitted.*)
 
 (* http://us.metamath.org/mpegif/df-fv.html *)
 Definition cAT (F:class) (A:class) : class.
@@ -3720,7 +3812,12 @@ apply iota.
 unshelve eapply Build_class'.
 + intro x. exact (cIN (cOrdPair A x) F).
 + simpl.
-Admitted.
+  intros a b aeqb.
+  apply cIN_sound_left.
+  apply cOrdPair_sound_right.
+  apply EQ2cEQ.
+  exact aeqb.
+Defined.
 
 Definition recs_cl (F:class) : class.
 Proof.
