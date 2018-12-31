@@ -2015,9 +2015,6 @@ unfold cEQ.
 eapply (axExt_right a b aeqb).
 Defined.
 
-(* Heterogeneous equality *)
-Definition hEQ (e:Ens) (c:class) :=
- forall z, IN z e <-> c z.
 
 Theorem eqv_rtran (T:Type) (A B C : T->Prop)
 (H1:forall z : T, A z <-> B z)
@@ -2033,26 +2030,7 @@ intro z. split; intro K.
   assumption.
 Defined.
 
-Theorem hEQ_sound_left (e1 e2:Ens) (p:EQ e1 e2) (c:class)
-: (hEQ e1 c) -> (hEQ e2 c).
-Proof.
-intro H.
-unfold hEQ in H|-*.
-assert (j:=axExt_right e1 e2 p).
-apply (eqv_rtran Ens _ _ _ H j).
-Defined.
-
-Theorem hEQ_sound_right (e:Ens) (c1 c2:class) (p:cEQ c1 c2)
-: (hEQ e c1) -> (hEQ e c2).
-Proof.
-intro H.
-unfold hEQ in H|-*.
-unfold cEQ in p.
-symmetry in H.
-apply (eqv_rtran Ens _ _ _ p H).
-Defined.
-
-Theorem stoc_sound (e:Ens) : hEQ e (stoc e).
+Theorem stoc_sound (e:Ens) : cEQ e (stoc e).
 Proof.
 intro z.
 simpl in *|-*.
@@ -2062,8 +2040,6 @@ Defined.
 Lemma sound2rewr (s:class) : forall w1 w2 : Ens, s w1 -> EQ w1 w2 -> s w2.
 Proof.
 intros w1 w2 H1 H2.
-(** rewrite <- (sound s).  
-exact H1. exact H2.**)
 eapply (sound s). exact H2. exact H1.
 Defined.
 
@@ -2128,15 +2104,15 @@ unshelve eapply Build_class'.
 Defined.
 
 (* Unionclass extends unionset *)
-Theorem UCextendsUS (e:Ens) (c:class) (p:hEQ e c)
-: hEQ (Union e) (cUnion c).
+Theorem UCextendsUS (e:Ens) (c:class) (p:cEQ e c)
+: cEQ (Union e) (cUnion c).
 Proof.
 intro z; split; intro H.
 + apply Union_IN in H as [y [H1 H2]].
   simpl in * |- *.
   exists y.
   split.
-  - unfold hEQ in p.
+  - unfold cEQ in p.
     apply (proj1 (p y)).
     assumption.
   - exact H2.
@@ -2144,7 +2120,7 @@ intro z; split; intro H.
   destruct H as [w [P1 P2]].
   eapply IN_Union.
   2 : { exact P2. }
-  unfold hEQ in p.
+  unfold cEQ in p.
   apply (proj2 (p w)).
   exact P1.
 Defined.
@@ -2175,21 +2151,21 @@ intros. constructor.
 Defined.
 
 (* Powerclass of set is a powerset of set. *)
-Theorem PCextendsPS (e:Ens) (c:class) (p:hEQ e c)
-: hEQ (Power e) (cPower c).
+Theorem PCextendsPS (e:Ens) (c:class) (p:cEQ e c)
+: cEQ (Power e) (cPower c).
 Proof.
 intro z. split; intro H.
 + simpl in * |- *.
   intros w winz.
   apply IN_Power_INC in H.
-  unfold hEQ in p.
+  unfold cEQ in p.
   apply (proj1 (p w)) in H.
   exact H.
   exact winz.
 + simpl in * |- *.
   apply INC_IN_Power.
   intros w winz.
-  unfold hEQ in p.
+  unfold cEQ in p.
   apply (proj2 (p w)).
   exact (H w winz).
 Defined.
@@ -2309,17 +2285,6 @@ unshelve eapply Build_class'.
   firstorder.
   - eapply (sound). exact H. exact H0.
   - eapply (sound). exact H. exact H1.
-Defined.
-
-Definition cPair : class -> class -> class.
-Proof.
-intros A B.
-unshelve eapply Build_class'.
-+ intro e. exact ((hEQ e A)\/(hEQ e B)).
-+ intros a b aeqb.
-  simpl. intros [H|H].
-  - left. eapply hEQ_sound_left. exact aeqb. exact H.
-  - right. eapply hEQ_sound_left. exact aeqb. exact H.
 Defined.
 
 (* Transitive closure *)
@@ -3305,16 +3270,36 @@ exact thm_collection.
 Defined.
 
 
-
-(* =====================================
-            Metamath definitions
-   ===================================== *)
+(* ===================================== *)
+(*    START OF THE METAMATH SECTION      *)
+(* ===================================== *)
 
 Lemma cEQ_sym A B : cEQ A B -> cEQ B A.
 Proof. intros H w. split.
 exact (proj2 (H w)).
 exact (proj1 (H w)).
 Defined.
+
+Lemma cEQ_sound_left (A1 A2 B: class) (H : cEQ A1 A2)
+(K : cEQ A1 B) : cEQ A2 B.
+Proof.
+unfold cEQ in K|-*.
+intro z.
+split; intro q.
++ apply K. apply H. exact q.
++ apply H. apply K. exact q.
+Defined.
+
+Lemma cEQ_sound_right (A B1 B2: class) (H : cEQ B1 B2)
+(K : cEQ A B1) : cEQ A B2.
+Proof.
+unfold cEQ in K|-*.
+intro z.
+split; intro q.
++ apply H. apply K. exact q.
++ apply K. apply H. exact q.
+Defined.
+
 
 Lemma two_sided3 (D:class->class) :
 (forall A B : class, cEQ A B -> forall z : Ens, (D A) z -> (D B) z)
@@ -3326,7 +3311,7 @@ intros. intro q. split.
 + apply H. apply cEQ_sym. exact H0.
 Defined.
 
-Definition cIN (A B:class):Prop := exists x, hEQ x A /\ B x.
+Definition cIN (A B:class):Prop := exists x:Ens, cEQ x A /\ B x.
 
 Theorem cIN_sound_left (A1 A2 B:class) (H:cEQ A1 A2)
  (K:cIN A1 B) : cIN A2 B.
@@ -3334,10 +3319,23 @@ Proof.
 unfold cEQ, cIN in *|-*.
 destruct K as [x [P1 P2]].
 exists x. split.
-+ eapply hEQ_sound_right.
++ eapply cEQ_sound_right.
   exact H.
   exact P1.
 + exact P2.
+Defined.
+
+Coercion EQ2cEQ : EQ >-> cEQ .
+
+Definition cPair : class -> class -> class.
+Proof.
+intros A B.
+unshelve eapply Build_class'.
++ intro e. exact ((cEQ e A)\/(cEQ e B)).
++ intros a b aeqb.
+  simpl. intros [H|H].
+  - left. eapply cEQ_sound_left. exact aeqb. exact H.
+  - right. eapply cEQ_sound_left. exact aeqb. exact H.
 Defined.
 
 Definition cSing (A:class) : class := cPair A A.
@@ -3381,7 +3379,7 @@ intros.
   destruct H0 as [M|M].
   - left. exact M.
   - right.
-    eapply (hEQ_sound_right).
+    eapply (cEQ_sound_right).
     * exact H.
     * exact M.
 Defined.
@@ -3395,7 +3393,7 @@ intros.
   simpl in *|-*.
   destruct H0 as [M|M].
   - left.
-    eapply (hEQ_sound_right).
+    eapply (cEQ_sound_right).
     2 : exact M.
     exact H.
   - right.
@@ -3620,25 +3618,6 @@ Arguments EQ _ _ : simpl nomatch.
 
 (* TODO: EQ_sound_left *)
 
-Lemma cEQ_sound_left (A1 A2 B: class) (H : cEQ A1 A2)
-(K : cEQ A1 B) : cEQ A2 B.
-Proof.
-unfold cEQ in K|-*.
-intro z.
-split; intro q.
-+ apply K. apply H. exact q.
-+ apply H. apply K. exact q.
-Defined.
-
-Lemma cEQ_sound_right (A B1 B2: class) (H : cEQ B1 B2)
-(K : cEQ A B1) : cEQ A B2.
-Proof.
-unfold cEQ in K|-*.
-intro z.
-split; intro q.
-+ apply H. apply K. exact q.
-+ apply K. apply H. exact q.
-Defined.
 
 (* http://us.metamath.org/mpegif/df-eprel.html *)
 Definition cEps : class.
@@ -3723,8 +3702,6 @@ exact (exists x y, cEQ e (cOrdPair x y) /\
   exact aeq.
 Defined.
 
-Coercion EQ2cEQ : EQ >-> cEQ .
-
 Definition cI : class.
 Proof.
 unshelve eapply Build_class'.
@@ -3782,14 +3759,14 @@ intros a b aeqb; intro H.
   destruct H as [H1 H2]. split.
   - intro Fz. assert (H1:=H1 Fz).
     destruct H1 as [L|L]; left.
-    * eapply hEQ_sound_right.
-      apply EQ2cEQ. exact aeqb. exact L.
-    * eapply hEQ_sound_right.
+    * eapply cEQ_sound_right.
+       exact aeqb. exact L.
+    * eapply cEQ_sound_right.
       apply EQ2cEQ. exact aeqb. exact L.
   - intros [zheqb|zheqb]; apply H2; left.
-    * eapply hEQ_sound_right. apply EQ2cEQ, EQ_sym.
+    * eapply cEQ_sound_right. apply EQ2cEQ, EQ_sym.
       exact aeqb. exact zheqb.
-    * eapply hEQ_sound_right. apply EQ2cEQ, EQ_sym.
+    * eapply cEQ_sound_right. apply EQ2cEQ, EQ_sym.
       exact aeqb. exact zheqb.
 (* TODO: reduce repetitions! *)
 Defined.
@@ -4104,6 +4081,9 @@ simpl in *|-*.*)
 (* http://us.metamath.org/mpegif/df-rdg.html *)
 (* Definition rec (F I:class) := recs F. *)
 
+(* ===================================== *)
+(*     END OF THE METAMATH SECTION       *)
+(* ===================================== *)
 
 (* ===================================== *)
 (* START OF THE WORKING BUT USELESS CODE *)
