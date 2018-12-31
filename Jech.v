@@ -4005,11 +4005,17 @@ Theorem recs_is_rel (F:class) : Rel (recs F).
 Proof.
 unfold recs.
 apply reluni.
-Abort.
+simpl.
+intros x H.
+destruct H as [A [OrdA [FnxA P]]].
+unfold Fn in FnxA.
+unfold Fun in FnxA.
+destruct FnxA as [[Q _] _].
+exact Q.
+Defined.
+
 (* http://us.metamath.org/mpegif/df-rdg.html *)
 (* Definition rec (F I:class) := recs F. *)
-
-
 
 
 (* ===================================== *)
