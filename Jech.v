@@ -3935,29 +3935,76 @@ Defined.
 (* transfinite recursion "functor". *)
 Definition recs (F:class) := cUnion (cAccept F).
 
+(* LEM implies proof irrelevance:
+   see proof_irrelevance in Classical_Prop.v *)
+
 (* http://us.metamath.org/mpegif/df-iun.html *)
-Definition iun (A:Ens->class) (B:Ens->class) : class.
+Definition iun (A:class) (B:Ens->class) : class. (*A:Ens->class*)
 Proof.
-Abort.
+unshelve eapply Build_class'.
++ intro y. exact (exists x, A x /\ (B x) y).
++ simpl. intros a b aeqb [x [P1 P2]].
+  exists x. split. exact P1.
+  eapply (sound (B x)). exact aeqb. exact P2.
+Defined.
+
+(* http://us.metamath.org/mpegif/uniiun.html *)
+Theorem uniiun (A:class): cEQ (cUnion A) (iun A (id)).
+Proof.
+intro z.
+simpl.
+split; intro q.
++ destruct q as [w [P1 P2]].
+  exists w. split. exact P1.
+  exact P2. (* compute. ? *)
++ destruct q as [w [P1 P2]].
+  exists w. split. exact P1.
+  exact P2.
+Defined.
+
+(* http://us.metamath.org/mpegif/reliun.html *)
+Theorem reliun (A:class) (B:Ens->class) :
+ Rel (iun A B) <-> (forall x, A x -> Rel (B x)).
+Proof.
+split; intro H.
++ intros x Ax.
+  unfold Rel in H|-*.
+  intros z Bx.
+  apply (H z).
+  simpl.
+  exists x. split; assumption.
++ unfold Rel in H|-*.
+  intros z Bx.
+  simpl in Bx.
+  destruct Bx as [x [Ax Bxz]].
+  eapply H.
+  exact Ax.
+  exact Bxz.
+Defined.
 (* TODO: define "-->" - functions which respect extensional equality. *)
 
 (* http://us.metamath.org/mpegif/reluni.html *)
 Theorem reluni (A:class) : (Rel (cUnion A)) <-> (forall x, A x -> Rel x).
 Proof.
-split; intro H.
-+ unfold Rel in H.
-  intros x Ax.
-  assert (Q:=H x).
-simpl in *|-*.
-unfold Rel.
-unfold recs.
-Abort.
+split; intro H1.
++ eapply Rel_sound in H1.
+  2 : apply uniiun.
+  unfold id in H1.
+  apply reliun.
+  exact H1.
++ eapply Rel_sound.
+  apply cEQ_sym.
+  apply uniiun.
+  unfold id.
+  apply reliun.
+  exact H1.
+Defined.
 
 (* http://us.metamath.org/mpegif/tfr1.html *)
 Theorem recs_is_rel (F:class) : Rel (recs F).
 Proof.
 unfold recs.
-Rel
+apply reluni.
 Abort.
 (* http://us.metamath.org/mpegif/df-rdg.html *)
 (* Definition rec (F I:class) := recs F. *)
