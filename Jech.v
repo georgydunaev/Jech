@@ -3316,10 +3316,11 @@ exact classic.
 exact thm_collection.
 Defined.
 
-Definition cINC (A B:class) : Prop := forall x:Ens, A x -> B x.
 
-(* http://us.metamath.org/mpegif/df-tr.html *)
-Definition Tr (A:class) : Prop := cINC (cUnion A) A.
+
+(* =====================================
+            Metamath definitions
+   ===================================== *)
 
 Lemma cEQ_sym A B : cEQ A B -> cEQ B A.
 Proof. intros H w. split.
@@ -3336,6 +3337,109 @@ intros. intro q. split.
 + apply H. exact H0.
 + apply H. apply cEQ_sym. exact H0.
 Defined.
+
+Definition cIN (A B:class):Prop := exists x, hEQ x A /\ B x.
+
+Theorem cIN_sound_left (A1 A2 B:class) (H:cEQ A1 A2)
+ (K:cIN A1 B) : cIN A2 B.
+Proof.
+unfold cEQ, cIN in *|-*.
+destruct K as [x [P1 P2]].
+exists x. split.
++ eapply hEQ_sound_right.
+  exact H.
+  exact P1.
++ exact P2.
+Defined.
+
+Definition cSing (A:class) : class := cPair A A.
+
+(* http://us.metamath.org/mpegif/df-op.html *)
+Definition cOrdPair (A B:class):class.
+Proof.
+unshelve eapply Build_class'.
++ intro x. exact (cIN A cV /\ cIN B cV /\
+  cIN x (cPair (cSing A) (cPair A B))
+ ).
++ simpl.
+  intros a b aeqb [P1 [P2 P3]].
+  repeat split; try assumption.
+  eapply cIN_sound_left.
+  - apply EQ2cEQ.
+    exact aeqb.
+  - exact P3.
+Defined.
+
+Lemma two_sidedC (P:class->class) :
+(forall (B1 B2 : class) (H : cEQ B1 B2),
+forall z : Ens, (P B1) z -> (P B2) z)
+->
+forall (B1 B2 : class) (H : cEQ B1 B2), cEQ (P B1) (P B2)
+.
+Proof.
+intros.
+split; apply H.
++ assumption.
++ apply cEQ_sym. assumption.
+Defined.
+
+Theorem cPair_sound_right (A B1 B2:class) (H:cEQ B1 B2) :
+ cEQ (cPair A B1) (cPair A B2).
+Proof.
+revert B1 B2 H.
+apply (two_sidedC _ ).
+intros.
+  simpl in *|-*.
+  destruct H0 as [M|M].
+  - left. exact M.
+  - right.
+    eapply (hEQ_sound_right).
+    * exact H.
+    * exact M.
+Defined.
+
+Theorem cIN_sound_right2 (Z B1 B2 : class)
+(H : cEQ B1 B2) (K : cIN Z B1) : cIN Z B2.
+Proof.
+(*revert B1 B2 H K.
+apply (two_sidedC _ ).*)
+unfold cIN in *|-*.
+destruct K as [x [P1 P2]].
+exists x. split.
++ exact P1.
++ assert (Hx:=H x).
+  apply proj1 in Hx.
+  apply Hx.
+  exact P2.
+Defined.
+
+Theorem cOrdPair_sound_right (A B1 B2:class) (H:cEQ B1 B2):
+ cEQ (cOrdPair A B1) (cOrdPair A B2).
+Proof.
+revert B1 B2 H.
+apply (two_sidedC _ ).
+intros.
+simpl in *|-*.
+destruct H0, H1. (*hack instead of repeat destruct H0.*)
+repeat split.
++ assumption.
++ eapply cIN_sound_left.
+  exact H.
+  exact H1.
++ eapply cIN_sound_right2. 
+2 : exact H2.
+apply cPair_sound_right.
+apply cPair_sound_right.
+exact H.
+Defined.
+
+
+
+
+Definition cINC (A B:class) : Prop := forall x:Ens, A x -> B x.
+
+(* http://us.metamath.org/mpegif/df-tr.html *)
+Definition Tr (A:class) : Prop := cINC (cUnion A) A.
 
 Theorem cUnion_sound : forall (A B : class) (aeqb : cEQ A B),
  cEQ (cUnion A) (cUnion B).
@@ -3593,8 +3697,6 @@ Defined.
 (* http://us.metamath.org/mpegif/df-fn.html *)
 Definition Fn (A B:class): Prop := (Fun A)/\(cEQ (cdom A) B).
 
-Definition cSing (A:class) : class := cPair A A.
-
 (* here we use "F:class" instead of "ph:wff" *)
 Definition iota_cl (F:class) : class.
 Proof.
@@ -3629,98 +3731,7 @@ Defined.
 Definition iota (F:class) : class
  := cUnion (iota_cl F).
 
-Definition cIN (A B:class):Prop := exists x, hEQ x A /\ B x.
 
-Theorem cIN_sound_left (A1 A2 B:class) (H:cEQ A1 A2)
- (K:cIN A1 B) : cIN A2 B.
-Proof.
-unfold cEQ, cIN in *|-*.
-destruct K as [x [P1 P2]].
-exists x. split.
-+ eapply hEQ_sound_right.
-  exact H.
-  exact P1.
-+ exact P2.
-Defined.
-
-(* http://us.metamath.org/mpegif/df-op.html *)
-Definition cOrdPair (A B:class):class.
-Proof.
-unshelve eapply Build_class'.
-+ intro x. exact (cIN A cV /\ cIN B cV /\
-  cIN x (cPair (cSing A) (cPair A B))
- ).
-+ simpl.
-  intros a b aeqb [P1 [P2 P3]].
-  repeat split; try assumption.
-  eapply cIN_sound_left.
-  - apply EQ2cEQ.
-    exact aeqb.
-  - exact P3.
-Defined.
-
-Lemma two_sidedC (P:class->class) :
-(forall (B1 B2 : class) (H : cEQ B1 B2),
-forall z : Ens, (P B1) z -> (P B2) z)
-->
-forall (B1 B2 : class) (H : cEQ B1 B2), cEQ (P B1) (P B2)
-.
-Proof.
-intros.
-split; apply H.
-+ assumption.
-+ apply cEQ_sym. assumption.
-Defined.
-
-Theorem cPair_sound_right (A B1 B2:class) (H:cEQ B1 B2) :
- cEQ (cPair A B1) (cPair A B2).
-Proof.
-revert B1 B2 H.
-apply (two_sidedC _ ).
-intros.
-  simpl in *|-*.
-  destruct H0 as [M|M].
-  - left. exact M.
-  - right.
-    eapply (hEQ_sound_right).
-    * exact H.
-    * exact M.
-Defined.
-
-Theorem cIN_sound_right2 (Z B1 B2 : class)
-(H : cEQ B1 B2) (K : cIN Z B1) : cIN Z B2.
-Proof.
-(*revert B1 B2 H K.
-apply (two_sidedC _ ).*)
-unfold cIN in *|-*.
-destruct K as [x [P1 P2]].
-exists x. split.
-+ exact P1.
-+ assert (Hx:=H x).
-  apply proj1 in Hx.
-  apply Hx.
-  exact P2.
-Defined.
-
-Theorem cOrdPair_sound_right (A B1 B2:class) (H:cEQ B1 B2):
- cEQ (cOrdPair A B1) (cOrdPair A B2).
-Proof.
-revert B1 B2 H.
-apply (two_sidedC _ ).
-intros.
-simpl in *|-*.
-destruct H0, H1. (*hack instead of repeat destruct H0.*)
-repeat split.
-+ assumption.
-+ eapply cIN_sound_left.
-  exact H.
-  exact H1.
-+ eapply cIN_sound_right2. 
-2 : exact H2.
-apply cPair_sound_right.
-apply cPair_sound_right.
-exact H.
-Defined.
 
 (*  Show Proof.
 IN_sound_left
@@ -4013,6 +4024,26 @@ unfold Fun in FnxA.
 destruct FnxA as [[Q _] _].
 exact Q.
 Defined.
+
+Theorem recs_is_fun (F:class) : Fun (recs F).
+Proof.
+unfold Fun. split. exact (recs_is_rel F).
+intros q H.
+destruct H as [x [y [eqxop [z [P1 P2]]]]].
+simpl.
+exists y.
+eapply EQ_sound_left.
+apply EQ_sym. exact eqxop.
+eapply OrdPair_sound_left.
+(*
+Lemma invR_op : (invR C) (OrdPair x y) -> C (OrdPair x y).
+OrdPair should be replaced with cOrdPair
+*)
+
+simpl in P1.
+(*unfold compos in H.
+cbv beta in H|-*.
+simpl in *|-*.*)
 
 (* http://us.metamath.org/mpegif/df-rdg.html *)
 (* Definition rec (F I:class) := recs F. *)
