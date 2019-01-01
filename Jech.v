@@ -297,10 +297,10 @@ Defined.*)
 
 (* Pair *)
 
-Definition Paire (A B:Ens) : Ens
+Definition Pair (A B:Ens) : Ens
  := sup bool (fun b : bool => if b then A else B).
 
-(*Definition Paire : forall E E' : Ens, Ens.
+(*Definition Pair : forall E E' : Ens, Ens.
 Proof.
 intros.
 apply (sup bool).
@@ -311,10 +311,10 @@ Show Proof.
 Defined.*)
 
 (* The pair construction is extensional *)
-Theorem Paire_sound_left :
- forall A A' B : Ens, EQ A A' -> EQ (Paire A B) (Paire A' B).
+Theorem Pair_sound_left :
+ forall A A' B : Ens, EQ A A' -> EQ (Pair A B) (Pair A' B).
 Proof.
-unfold Paire in |- *.
+unfold Pair in |- *.
 simpl in |- *.
 intros A A' B AeqA'; 
 split; (intros [|]; 
@@ -322,10 +322,10 @@ split; (intros [|];
 ).
 Defined.
 
-Theorem Paire_sound_right :
- forall A B B' : Ens, EQ B B' -> EQ (Paire A B) (Paire A B').
+Theorem Pair_sound_right :
+ forall A B B' : Ens, EQ B B' -> EQ (Pair A B) (Pair A B').
 Proof.
-unfold Paire in |- *; simpl in |- *; intros; split.
+unfold Pair in |- *; simpl in |- *; intros; split.
 + simple induction x.
   exists true; auto with zfc.
   exists false; auto with zfc.
@@ -334,33 +334,33 @@ unfold Paire in |- *; simpl in |- *; intros; split.
   exists false; auto with zfc.
 Defined.
 
-Hint Resolve Paire_sound_right Paire_sound_left: zfc.
+Hint Resolve Pair_sound_right Pair_sound_left: zfc.
 
 (* The axioms of the pair *)
-Theorem IN_Paire_left : forall E E' : Ens, IN E (Paire E E').
+Theorem IN_Pair_left : forall E E' : Ens, IN E (Pair E E').
 Proof.
-unfold Paire in |- *. simpl in |- *. exists true. simpl in |- *.
+unfold Pair in |- *. simpl in |- *. exists true. simpl in |- *.
 auto with zfc.
 Defined.
 
-Theorem IN_Paire_right : forall E E' : Ens, IN E' (Paire E E').
+Theorem IN_Pair_right : forall E E' : Ens, IN E' (Pair E E').
 Proof.
-unfold Paire in |- *. simpl in |- *. exists false. simpl in |- *.
+unfold Pair in |- *. simpl in |- *. exists false. simpl in |- *.
 exact (EQ_refl E').
 Defined.
 
-Theorem Paire_IN :
- forall E E' A : Ens, IN A (Paire E E') -> EQ A E \/ EQ A E'.
+Theorem Pair_IN :
+ forall E E' A : Ens, IN A (Pair E E') -> EQ A E \/ EQ A E'.
 Proof.
-unfold Paire in |- *; simpl in |- *.
+unfold Pair in |- *; simpl in |- *.
 intros E E' A [b P].
 destruct b; auto with zfc.
 Defined.
 
-Hint Resolve IN_Paire_left IN_Paire_right nothing_IN_Vide: zfc.
+Hint Resolve IN_Pair_left IN_Pair_right nothing_IN_Vide: zfc.
 
 (* The singleton set  *)
-Definition Sing (E : Ens) := Paire E E.
+Definition Sing (E : Ens) := Pair E E.
 
 (* The axioms  *)
 Theorem IN_Sing : forall E : Ens, IN E (Sing E).
@@ -372,14 +372,14 @@ Theorem IN_Sing_EQ : forall E E' : Ens, IN E (Sing E') -> EQ E E'.
 Proof.
 unfold Sing in |- *. 
 intros E E' H.
-apply Paire_IN in H as [H|H]; assumption.
+apply Pair_IN in H as [H|H]; assumption.
 Defined.
 
 Hint Resolve IN_Sing IN_Sing_EQ: zfc.
 
 Theorem Sing_sound : forall A A' : Ens, EQ A A' -> EQ (Sing A) (Sing A').
 Proof.
-unfold Sing in |- *; intros. apply EQ_tran with (Paire A A').
+unfold Sing in |- *; intros. apply EQ_tran with (Pair A A').
  auto with zfc.
  auto with zfc.
 Defined.
@@ -697,7 +697,7 @@ Defined.
 
 (*=== Omega.v ===*)
 
-Definition Class_succ (E : Ens) := Union (Paire E (Sing E)).
+Definition Class_succ (E : Ens) := Union (Pair E (Sing E)).
 
 Definition Nat : nat -> Ens.
 Proof.
@@ -711,7 +711,7 @@ Definition Omega : Ens := sup nat Nat.
 Theorem IN_Class_succ : forall E : Ens, IN E (Class_succ E).
 Proof.
 intros E; unfold Class_succ in |- *; unfold Sing in |- *;
- apply IN_Union with (Paire E E); auto with zfc.
+ apply IN_Union with (Pair E E); auto with zfc.
 Defined.
 
 Theorem INC_Class_succ : forall E : Ens, INC E (Class_succ E).
@@ -728,9 +728,9 @@ Theorem IN_Class_succ_or :
 Proof.
 intros E E' i.
 unfold Class_succ in i.
-elim (Union_IN (Paire E (Sing E)) E' i).
+elim (Union_IN (Pair E (Sing E)) E' i).
 intros E1; simple induction 1; intros i1 i2.
-elim (Paire_IN E (Sing E) E1 i1).
+elim (Pair_IN E (Sing E) E1 i1).
 intros; right; apply IN_sound_right with E1; auto with zfc.
 intros; left; cut (IN E' (Sing E)).
 auto with zfc.
@@ -847,17 +847,17 @@ Theorem axPair : forall a b : Ens, exists w:Ens,
    forall z, (IN z w <-> EQ z a \/ EQ z b).
 Proof.
 intros a b.
-exists (Paire a b).
+exists (Pair a b).
 intro z.
 split.
-+ apply Paire_IN.
++ apply Pair_IN.
 + intros [H|H].
   - eapply IN_sound_left.
     apply EQ_sym; exact H.
-    apply IN_Paire_left.
+    apply IN_Pair_left.
   - eapply IN_sound_left.
     apply EQ_sym in H; exact H.
-    apply IN_Paire_right.
+    apply IN_Pair_right.
 Defined.
 
 Theorem axUnion : forall X : Ens, exists Y:Ens,
@@ -1090,11 +1090,11 @@ Theorem Class_succ_sound X Y (H: EQ X Y) :
 EQ (Class_succ X) (Class_succ Y).
 Proof.
 unfold Class_succ.
-assert (L1: EQ (Paire X (Sing X)) (Paire Y (Sing Y))).
+assert (L1: EQ (Pair X (Sing X)) (Pair Y (Sing Y))).
 2 : apply Union_sound in L1; exact L1.
-apply EQ_tran with (E2:=Paire Y (Sing X)).
-+ apply Paire_sound_left; exact H.
-+ apply Paire_sound_right. apply Sing_sound. exact H.
+apply EQ_tran with (E2:=Pair Y (Sing X)).
++ apply Pair_sound_left; exact H.
++ apply Pair_sound_right. apply Sing_sound. exact H.
 Defined.
 
 Theorem axInf : exists X, (IN Vide X /\ 
@@ -1126,17 +1126,17 @@ Definition sOmega : Ens := proj1_sig (ex2sig axInf).
 (* Traditional Product needs Kuratowski ordered pair *)
 
 (* Kuratowski construction *)
-Definition OrdPair (x y : Ens) := Paire (Sing x) (Paire x y).
+Definition OrdPair (x y : Ens) := Pair (Sing x) (Pair x y).
 
 Theorem OrdPair_sound_left (x1 x2 y : Ens) (H : EQ x1 x2)
  : EQ (OrdPair x1 y) (OrdPair x2 y).
 Proof.
 unfold OrdPair.
-apply EQ_tran with (E2:=Paire (Sing x1) (Paire x2 y)).
-+ eapply Paire_sound_right.
-  eapply Paire_sound_left.
+apply EQ_tran with (E2:=Pair (Sing x1) (Pair x2 y)).
++ eapply Pair_sound_right.
+  eapply Pair_sound_left.
   assumption.
-+ eapply Paire_sound_left.
++ eapply Pair_sound_left.
   eapply Sing_sound.
   assumption.
 Defined.
@@ -1145,43 +1145,43 @@ Theorem OrdPair_sound_right (x y1 y2 : Ens) (H : EQ y1 y2)
  : EQ (OrdPair x y1) (OrdPair x y2).
 Proof.
 unfold OrdPair.
-eapply Paire_sound_right.
-eapply Paire_sound_right.
+eapply Pair_sound_right.
+eapply Pair_sound_right.
 assumption.
 Defined.
 
-Lemma SingEqPair x y1 y2 (J: EQ (Sing x) (Paire y1 y2)) :
+Lemma SingEqPair x y1 y2 (J: EQ (Sing x) (Pair y1 y2)) :
 EQ x y1 /\ EQ x y2.
 Proof.
 apply EQ_sym in J.
-pose (i1:=IN_Paire_left y1 y2).
+pose (i1:=IN_Pair_left y1 y2).
 apply IN_sound_right with (1:=J) in i1.
 apply IN_Sing_EQ, EQ_sym in i1.
-pose (i2:=IN_Paire_right y1 y2).
+pose (i2:=IN_Pair_right y1 y2).
 apply IN_sound_right with (1:=J) in i2.
 apply IN_Sing_EQ, EQ_sym in i2.
 split; assumption.
 Defined.
 
-Lemma Paire_sound (a b c d:Ens) (L:EQ a c) (R:EQ b d) 
- : EQ (Paire a b) (Paire c d).
+Lemma Pair_sound (a b c d:Ens) (L:EQ a c) (R:EQ b d) 
+ : EQ (Pair a b) (Pair c d).
 Proof.
-  apply EQ_tran with (E2:= Paire a d).
-  apply Paire_sound_right, R.
-  apply Paire_sound_left, L.
+  apply EQ_tran with (E2:= Pair a d).
+  apply Pair_sound_right, R.
+  apply Pair_sound_left, L.
 Defined.
 
-Lemma Paire_EQ_cases a b c d (H:EQ (Paire a b) (Paire c d)) : 
+Lemma Pair_EQ_cases a b c d (H:EQ (Pair a b) (Pair c d)) : 
 (EQ a c \/ EQ a d)/\(EQ b c \/ EQ b d).
 Proof.
 rewrite axExt in H.
 split.
 + destruct (H a) as [W1 _].
-  assert (E := W1 (IN_Paire_left a b)).
-  apply Paire_IN. assumption.
+  assert (E := W1 (IN_Pair_left a b)).
+  apply Pair_IN. assumption.
 + destruct (H b) as [W1 _].
-  assert (E := W1 (IN_Paire_right a b)).
-  apply Paire_IN. assumption.
+  assert (E := W1 (IN_Pair_right a b)).
+  apply Pair_IN. assumption.
 Defined.
 
 Theorem OrdPair_inj : forall a b c d : Ens, 
@@ -1189,7 +1189,7 @@ Theorem OrdPair_inj : forall a b c d : Ens,
 Proof. 
 unfold OrdPair in |- *. intros.
 pose (H1:=H).
-apply Paire_EQ_cases in H1 as [K1 K2].
+apply Pair_EQ_cases in H1 as [K1 K2].
 split.
 + destruct K1 as [A|B].
    apply EQ_Sing_EQ. assumption.
@@ -1199,10 +1199,10 @@ split.
 - (*split. apply EQ_Sing_EQ. assumption.*)
   apply EQ_sym in C.
   apply SingEqPair in C as [J1 J2].
-  assert(i: EQ (Paire (Sing a) (Paire a b))
+  assert(i: EQ (Pair (Sing a) (Pair a b))
                 (Sing (Sing a) )).
-   apply Paire_sound_right.
-   apply Paire_sound_right.
+   apply Pair_sound_right.
+   apply Pair_sound_right.
    apply EQ_sym in J2.
    eapply EQ_tran with (E2:=c); assumption.
   apply EQ_sym, EQ_tran with (2:=H) in i.
@@ -1211,15 +1211,15 @@ split.
   eapply EQ_tran. apply EQ_sym. exact J2.
   eapply EQ_tran. apply EQ_sym. exact U1.
   exact U2.
-- pose (i:=IN_Paire_right c d).
+- pose (i:=IN_Pair_right c d).
   eapply IN_sound_right in i.
   2 : { apply EQ_sym, D. }
-  apply Paire_IN in i as [X1|X2].
+  apply Pair_IN in i as [X1|X2].
   2 : { apply EQ_sym, X2. }
-  pose (y:=IN_Paire_right a b).
+  pose (y:=IN_Pair_right a b).
   eapply IN_sound_right in y.
   2 : { apply D. }
-  apply Paire_IN in y as [Y1|Y2].
+  apply Pair_IN in y as [Y1|Y2].
    apply EQ_Sing_EQ in A.
    apply EQ_tran with (E2:=c). assumption.
    apply EQ_sym, EQ_tran with (E2:=a); assumption.
@@ -1229,12 +1229,12 @@ split.
   apply EQ_tran with (E2:=c). apply EQ_sym; exact F2.
   apply EQ_tran with (E2:=a). apply EQ_sym; exact P1.
   exact P2.
-- pose (i:=IN_Paire_right c d).
+- pose (i:=IN_Pair_right c d).
   eapply IN_sound_right in i.
   2 : { apply EQ_sym, D. }
-  apply Paire_IN in i as [X1|X2].
+  apply Pair_IN in i as [X1|X2].
   2 : { apply EQ_sym, X2. }
-  assert (v:EQ (Sing a) (Paire a b)).
+  assert (v:EQ (Sing a) (Pair a b)).
    apply EQ_sym in D.
    apply EQ_tran with (1:=B). assumption.
   apply SingEqPair in v as [U1 U2].
@@ -1459,7 +1459,7 @@ Comp
  (inRan R)
 .
 
-Definition field (R:Ens) : Ens := Union (Paire (dom R) (ran R)).
+Definition field (R:Ens) : Ens := Union (Pair (dom R) (ran R)).
 
 Definition isFunction (X Y f:Ens) : Prop := (EQ (dom f) X)/\(INC (ran f) Y).
 
@@ -2373,11 +2373,11 @@ Comp
 Definition issubclass (a b:class):Prop := forall z, a z -> b z.
 
 Theorem pairisamemofpow (r1 r2 R:Ens) (H1 : IN r1 R) (H2 : IN r2 R)
- : IN (Paire r1 r2) (Power R).
+ : IN (Pair r1 r2) (Power R).
 Proof.
 apply INC_IN_Power.
 intros z H.
-apply Paire_IN in H as [H|H];
+apply Pair_IN in H as [H|H];
  apply EQ_sym in H;
  apply IN_sound_left with (1:=H);
  assumption.
@@ -2390,7 +2390,7 @@ Proof. firstorder. Defined. *)
 Theorem prodissc: forall (X1 X2:Ens),
  issubclass
  (cProduct X1 X2)
- (Power (Power (Union (Paire X1 X2))))
+ (Power (Power (Union (Pair X1 X2))))
 .
 Proof.
 intros X1 X2 a H.
@@ -2398,7 +2398,7 @@ pose (H1 := H).
 destruct H1 as [x1 [x2 [A [B1 B2]]]].
 simpl in B1, B2.
 
-pose (Q:=Power (Power (Union (Paire X1 X2)))).
+pose (Q:=Power (Power (Union (Pair X1 X2)))).
 fold Q.
 change _ with (IN a Q).
 apply INC_IN_Power.
@@ -2406,21 +2406,21 @@ intros s1 U1.
 apply INC_IN_Power.
 intros s2 U2.
 apply IN_sound_right with (1:=A) in U1.
-apply Paire_IN in U1 as [V1|V2].
+apply Pair_IN in U1 as [V1|V2].
 + apply IN_Union with (E':=X1).
-  apply IN_Paire_left.
+  apply IN_Pair_left.
   apply IN_sound_right with (1:=V1) in U2.
   apply IN_Sing_EQ, EQ_sym in U2.
   apply IN_sound_left with (1:=U2), B1.
 + apply IN_sound_right with (1:=V2) in U2.
-  apply Paire_IN in U2 as [c1|c2].
+  apply Pair_IN in U2 as [c1|c2].
   - apply IN_Union with (E':=X1).
-    apply IN_Paire_left.
+    apply IN_Pair_left.
     apply EQ_sym in c1.
     eapply IN_sound_left with (1:=c1).
     exact B1.
   - apply IN_Union with (E':=X2).
-    apply IN_Paire_right.
+    apply IN_Pair_right.
     apply EQ_sym in c2.
     eapply IN_sound_left with (1:=c2).
     exact B2.
@@ -2492,7 +2492,7 @@ Defined.
 (* Cartesian product as an operation on sets *)
 Definition CProduct (x y:Ens): Ens.
 Proof.
-exact (Compr (Power (Power (Union (Paire x y)))) (cProduct x y)).
+exact (Compr (Power (Power (Union (Pair x y)))) (cProduct x y)).
 (* pose (w:=(cpss x y)). unfold ias in w.
    fails when destruct w. *)
 Defined.
@@ -2872,30 +2872,30 @@ intro z. split; intro q.
   auto with zfc.
   intros E H.
   apply IN_Sing_EQ in q.
-  apply Paire_IN in H as [H|H].
+  apply Pair_IN in H as [H|H].
   - apply (IN_sound_left A).
     auto with zfc.
     apply (IN_sound_right _ (Sing A)).
     auto with zfc.
     auto with zfc.
-  - apply (IN_sound_right _ (Paire A B)).
+  - apply (IN_sound_right _ (Pair A B)).
     auto with zfc.
     apply (IN_sound_left A).
     auto with zfc.
     auto with zfc.
 Defined.
 
-Theorem UnionOP A B : EQ (Union (OrdPair A B)) (Paire A B).
+Theorem UnionOP A B : EQ (Union (OrdPair A B)) (Pair A B).
 Proof.
 apply axExt_left.
 intro z. split; intro q.
 + apply Union_IN in q as [E [q0 q1]].
-  apply Paire_IN in q0 as [q2|q2].
+  apply Pair_IN in q0 as [q2|q2].
   - apply IN_sound_right with (1:=q2) in q1.
     apply IN_Sing_EQ in q1.
     eapply IN_sound_left.
     1 : apply EQ_sym, q1.
-    apply IN_Paire_left.
+    apply IN_Pair_left.
   - eapply IN_sound_right. exact q2. exact q1.
 + eapply IN_Union.
   2 : exact q.
@@ -2935,8 +2935,8 @@ eapply (Pi2_sound_lem1 _ w1); assumption.
 unfold Pi2_P in q4.
 apply Union_IN in q3 as [E1 [q5 q6]].
 assert (q7:=contrap q4); clear q4.
-Search Paire.
-apply Paire_IN in q5 as [q8|q8].
+Search Pair.
+apply Pair_IN in q5 as [q8|q8].
 - eapply IN_sound_right in q6. 2 : exact q8.
   assert (q9:IN w (Inter (OrdPair A B))).
   { eapply IN_sound_right.
@@ -2952,7 +2952,7 @@ apply Paire_IN in q5 as [q8|q8].
   eapply IN_sound_right with (1:=q6).
   exact q2.
 - eapply IN_sound_right in q6. 2 : exact q8.
-  apply Paire_IN in q6 as [q6|q6].
+  apply Pair_IN in q6 as [q6|q6].
   2 : {eapply IN_sound_right. exact q6. exact q2. }
   (* the next is a copy *)
     assert (q9:IN w (Inter (OrdPair A B))).
@@ -2974,8 +2974,8 @@ apply Paire_IN in q5 as [q8|q8].
   apply IN_P_Comp.
   - apply Pi2_sound_lem1.
   - eapply IN_Union.
-    2 : apply IN_Paire_right.
-    apply IN_Paire_right.
+    2 : apply IN_Pair_right.
+    apply IN_Pair_right.
   - unfold Pi2_P.
     intros q1 q2; apply q1; clear q1. (*apply anticontrap.*)
     eapply EQ_tran.
@@ -2983,7 +2983,7 @@ apply Paire_IN in q5 as [q8|q8].
     apply EQ_sym.
     eapply EQ_tran.
     apply InterOP.
-    apply Paire_sound. apply EQ_refl.
+    apply Pair_sound. apply EQ_refl.
     eapply IN_sound_right in q2.
     2 : apply InterOP.
     apply IN_Sing_EQ in q2.
@@ -3968,7 +3968,7 @@ exact Q.
 Defined.
 
 (* http://us.metamath.org/mpegif/zfpair2.html *)
-Lemma Pair_extends (x y:Ens): cEQ (Paire x y) (cPair x y).
+Lemma Pair_extends (x y:Ens): cEQ (Pair x y) (cPair x y).
 Proof.
 intro w. split; simpl; intro H.
 + destruct H as [[|] J].
@@ -3979,19 +3979,56 @@ intro w. split; simpl; intro H.
   - exists false. apply axExtC. exact H.
 Defined.
 
-Lemma Pair_exists_2 (x y:Ens): exists a:Ens, cEQ a (cPair x y). 
+Lemma Pair_exists (x y:Ens): exists a:Ens, cEQ a (cPair x y). 
 Proof.
-exists (Paire x y). apply Pair_extends.
+exists (Pair x y). apply Pair_extends.
 Defined.
 
 (* http://us.metamath.org/mpegif/prex.html *)
-Lemma Pair_exists (A B:class): exists a:Ens, cEQ a (cPair A B).
+Lemma cPair_exists (A B:class): exists a:Ens, cEQ a (cPair A B).
 Proof.
 destruct (classic (exists a : Ens, cEQ a A) ) as [[a ae]|],
          (classic (exists b : Ens, cEQ b B) ) as [[b be]|].
-+ exists (Paire a b).
-  Search Power.
-Admitted.
++ exists (Pair a b).
+  unshelve eapply cEQ_sound_right.
+  exact (cPair a b).
+  2 : apply Pair_extends.
+  eapply cPair_sound.
+  exact ae.
+  exact be.
++ exists (Sing a).
+  unshelve eapply cEQ_sound_right.
+  exact (cSing a).
+  2 : apply Pair_extends.
+  intro w. split; intro q.
+  - simpl in *|-*.
+    left. destruct q.
+eapply cEQ_sound_right. exact ae. exact H0.
+eapply cEQ_sound_right. exact ae. exact H0.
+  - simpl in *|-*.
+    destruct q. 
+left. eapply cEQ_sound_right. apply cEQ_sym. exact ae. exact H0.
+apply (ex_intro (fun w:Ens=>cEQ w B)) in H0. destruct (H H0).
++ exists (Sing b).
+  unshelve eapply cEQ_sound_right.
+  exact (cSing b).
+  2 : apply Pair_extends.
+  intro w. split; intro q.
+  - simpl in *|-*.
+    right. destruct q.
+eapply cEQ_sound_right. exact be. exact H0.
+eapply cEQ_sound_right. exact be. exact H0.
+  - simpl in *|-*.
+    destruct q.
+apply (ex_intro (fun w:Ens=>cEQ w _)) in H0. destruct (H H0).
+left. eapply cEQ_sound_right. apply cEQ_sym. exact be. exact H0.
++ exists Vide.
+  intro w. split; intro q.
+  - destruct q as [[]].
+  - destruct q.
+    apply (ex_intro (fun w:Ens=>cEQ w _)) in H1. destruct (H H1).
+    apply (ex_intro (fun w:Ens=>cEQ w _)) in H1. destruct (H0 H1).
+Defined.
 
 Theorem recs_is_fun (F:class) : Fun (recs F).
 Proof.
@@ -4004,7 +4041,7 @@ Lemma invR_op C x y: cIN (cOrdPair x y) (invR C) -> cIN (cOrdPair y x) C.
 Proof.
 unfold cIN.
 intros [a [P1 P2]].
-destruct (Pair_exists x y) as [w P].
+destruct (cPair_exists x y) as [w P].
 exists w.
 split.
 try exists (cOrdPair y x).
