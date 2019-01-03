@@ -4030,23 +4030,81 @@ left. eapply cEQ_sound_right. apply cEQ_sym. exact be. exact H0.
     apply (ex_intro (fun w:Ens=>cEQ w _)) in H1. destruct (H0 H1).
 Defined.
 
-Theorem recs_is_fun (F:class) : Fun (recs F).
+Lemma EnsInV (e:Ens) : cV e.
 Proof.
-unfold Fun. split. exact (recs_is_rel F).
-intros q H.
-destruct H as [x [y [eqxop [z [P1 P2]]]]].
 simpl.
+trivial.
+Defined.
+
+Lemma eq_then_InV (A:class) (w:Ens) (p:cEQ w A): cIN A cV.
+Proof.
+unfold cIN.
+exists w. split. exact p. exact (EnsInV w).
+Defined.
+
+(*
+"Our df-op 3902 was chosen because it often
+ makes proofs shorter by eliminating unnecessary sethood hypotheses."
+http://us.metamath.org/mpegif/dfopif.html
+*)
+Lemma cOrdPair_exists (A B:class): exists a:Ens, cEQ a (cOrdPair A B).
+Proof.
+destruct (cPair_exists A A) as [w1 P1].
+destruct (cPair_exists A B) as [w2 P2].
+destruct (cPair_exists w1 w2) as [w P].
+destruct (classic (exists a : Ens, cEQ a A) ) as [[a ae]|],
+         (classic (exists b : Ens, cEQ b B) ) as [[b be]|].
+** exists w.
+eapply cEQ_sound_right.
+2 : exact P.
+intro z.
+simpl.
+split.
++ intros Q.
+  repeat split.
+  eapply eq_then_InV. exact ae.
+  eapply eq_then_InV. exact be.
+unfold cIN.
+  destruct Q as [L1|L2].
+  - exists w1. split. apply cEQ_sym. exact L1.
+    simpl. left. exact P1.
+  - exists w2. split. apply cEQ_sym. exact L2.
+    simpl. right. exact P2.
++
+(* DEVELOPMENT *)
+Admitted.
+(*  eapply Pair_extends.
+unfold cOrdPair.
+exists (Pair a b). *)
 
 Lemma invR_op C x y: cIN (cOrdPair x y) (invR C) -> cIN (cOrdPair y x) C.
 Proof.
 unfold cIN.
 intros [a [P1 P2]].
-destruct (cPair_exists x y) as [w P].
+destruct (cPair_exists y x) as [w P].
 exists w.
 split.
-try exists (cOrdPair y x).
++ eapply cEQ_sound_right.
+(*  eapply Pair_extends.
+  try exists (cOrdPair y x).
+  simpl. *)
+  2 : exact P.
+Admitted.
+
+Theorem recs_is_fun (F:class) : Fun (recs F).
+Proof.
+unfold Fun. split. exact (recs_is_rel F).
+intros q H.
+destruct H as [x [y [eqxop [z [P1 P2]]]]].
+apply invR_op in P1.
 simpl.
-Abort.
+assert (xias : ias x). admit.
+assert (yias : ias y). admit.
+unfold ias in xias,yias.
+destruct xias as [xs xexs].
+destruct yias as [ys yexs].
+exists ys.
+
 (*
 exists y.
 eapply EQ_sound_left.
@@ -4066,3 +4124,46 @@ simpl in *|-*.*)
 (*     END OF THE METAMATH SECTION       *)
 (* ===================================== *)
 
+
+Require Import ClassicalFacts.
+Module ExperimentsWithEnsembles.
+Axiom axPE:prop_extensionality.
+Axiom axPI : proof_irrelevance.
+Definition U := Ens.
+Definition Ensemble := class. (*U -> Prop.*)
+Definition In (A:Ensemble) (x:U) : Prop := A x.
+Definition Included (B C:Ensemble) : Prop := forall x:U, In B x -> In C x.
+Definition Same_set (B C:Ensemble) : Prop 
+:= Included B C /\ Included C B.
+Theorem Extensionality_Ensembles : forall A B:Ensemble, 
+Same_set A B -> A = B.
+Proof.
+intros.
+unfold Same_set,Included,In,U in H.
+unfold Ensemble in A, B.
+destruct A, B; simpl in *|-*.
+assert (p1:prty0=prty1).
+apply functional_extensionality.
+intro x.
+destruct H as [H1 H2].
++ apply axPE. split.
+  - apply H1.
+  - apply H2.
++ destruct p1. apply f_equal.
+eapply functional_extensionality_dep.
+intro x.
+apply functional_extensionality_dep.
+intro y.
+eapply functional_extensionality.
+intro p.
+eapply functional_extensionality.
+intro Hx.
+eapply axPI.
+Defined.
+(*Require Import Coq.Sets.Ensembles.
+Check Extensionality_Ensembles.
+Axiom Extensionality_Ensembles : forall A B:Ensemble, 
+Same_set A B -> A = B.
+*)
+End ExperimentsWithEnsembles.
+(* end of the tiny experiments with ensembles*)
