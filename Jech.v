@@ -1,3 +1,11 @@
+(*
+This library is a remake and extension of this library:
+https://github.com/coq-contribs/zfc
+I simplified proofs to get rid of unnecessary fixpoints and
+to increase readability. (IMHO, it is much easier to read
+Gallina's "match .. end" notation rather than discover 
+induction and recursion principles.)
+*)
 (* IST = "Introduction to Set Theory".(T.Jech, 2003)
     ST = "Set Theory".(K.Hrbacek, T.Jech)
  I2AST = "Introduction to Axiomatic Set Theory"(W.Zaring,G.Takeuti)
@@ -19,23 +27,27 @@ Part IV: Experiments with definions of a classes
 and other experiments.
 
 Part V: Translation of Metamath theorems.
+( transfinite recursion )
 
 *****************)
 
-(* IMPORTANT: during the development of the part II 
-all definitions must be considered as unsafe.
-Correctness is not bult-in due to apearing of
-the big amount of bureaucracy. See part IV.
+(* "presumption of unsoundness"
+during the development of the part II
+all definitions must be considered as unsafe before
+ checking the proof of soundness.
+See also part IV.
 *)
 
 (* AIMS:
  The first aim is to create a self-contained book 
 of the first-order logic and ZFC set theory.
  The second aim is to solve exercises from Jech's "Set theory".
+ The third aim is to re-use proofs from Metamath.
 *)
+
 (* TODO use constructible universe to avoid axSFC and LEM *)
-(* These notions should not be unfolded during 
-the proofs in Part II: Pair, Union, Powerset. *)
+(* (!) These notions (Pair, Union, Powerset) should not 
+be unfolded during the proofs in Part II. *)
 
 Require Import FunctionalExtensionality.
 Require Import Logic.Classical_Prop.
