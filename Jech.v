@@ -4179,3 +4179,134 @@ Same_set A B -> A = B.
 *)
 End ExperimentsWithEnsembles.
 (* end of the tiny experiments with ensembles*)
+
+
+(* BEGIN: Formulas for automatization of soundness proofs. *)
+Section Fo.
+Definition SetVars := nat.
+(*Context (x:SetVars).
+Check x+1.*)
+Inductive Fo :=
+ |In : SetVars -> SetVars -> Fo
+ |Bot :Fo
+ |Conj:Fo->Fo->Fo
+ |Disj:Fo->Fo->Fo
+ |Impl:Fo->Fo->Fo
+ |Fora(x:SetVars)(f:Fo): Fo
+ |Exis(x:SetVars)(f:Fo): Fo
+.
+
+Definition cng (val:SetVars -> Ens)
+ (xi:SetVars) (m:Ens) : SetVars -> Ens
+ :=
+ (fun r:SetVars =>
+ match Nat.eqb r xi with
+ | true => m
+ | false => (val r)
+ end).
+
+Fixpoint foI (val:SetVars->Ens) (f:Fo) : Prop :=
+match f with
+ | In x y => IN (val x) (val y)
+ | Bot => False
+ | Conj f1 f2 => (foI val f1) /\ (foI val f2)
+ | Disj f1 f2 => (foI val f1) \/ (foI val f2)
+ | Impl f1 f2 => (foI val f1) -> (foI val f2)
+ | Fora x f => (forall m:Ens, foI (cng val x m) f)
+ | Exis x f => (exists m:Ens, foI (cng val x m) f)
+end.
+
+(* Build class *)
+(*Definition BC (f:Fo) (val:SetVars->Ens) : class.
+Proof.
+unshelve eapply Build_class'.
+* intro e. exact (foI val f).
+* simpl. intros; trivial.
+simpl.
+Lemma foI_sound f (val:SetVars->Ens):
+forall a b : Ens, EQ a b -> foI val f -> foI val f.
+Proof.
+revert val.
+induction f;
+intros val a b aeqb H;
+   simpl in *|-*.
++*)
+
+Theorem ptws val1 val2 (K:forall v, EQ (val1 v) (val2 v) )
+ f : (foI val1 f) -> foI val2 f.
+Proof.
+revert val1 val2 K.
+induction f;
+intros val1 val2 K H;
+ simpl in *|-*.
+5 : { intro W.
+      eapply IHf2. exact K.
+      eapply H.
+      eapply IHf1.
+      { intro v. apply EQ_sym. apply K. }
+      exact W.
+    }
+5 : {
+  intro m.
+  eapply IHf.
+  2 : apply H.
+  intro v.
+  instantiate (1 := m).
+  unfold cng.
+  destruct (Nat.eqb v x).
+  apply EQ_refl.
+  apply K.
+  }
+5 : { destruct H as [m H].
+      exists m.
+  eapply IHf.
+  2 : apply H.
+  intro v.
+  unfold cng.
+  destruct (Nat.eqb v x).
+  apply EQ_refl.
+  apply K.
+}
+  + eapply IN_sound_left. apply K.
+    eapply IN_sound_right. apply K.
+    exact H.
+  + exact H.
+  + destruct H as [H1 H2]. split.
+    - eapply IHf1. 2 : exact H1. exact K.
+    - eapply IHf2. 2 : exact H2. exact K.
+  + destruct H as [H1|H2].
+    - left. eapply IHf1. 2 : exact H1. exact K.
+    - right. eapply IHf2. 2 : exact H2.  exact K.
+Defined.
+
+(* Build a class: *)
+Definition BC (f:Fo) : class.
+Proof.
+unshelve eapply Build_class'.
+* intro e. exact (foI (fun _ => e) f).
+* simpl.
+intros.
+eapply ptws.
+2 : exact H0.
+simpl.
+intros _.
+exact H.
+Defined.
+
+Check BC (Impl Bot Bot).  (* _V *)
+Theorem all_in_V (x:Ens) : BC (Impl Bot Bot) x.
+Proof.
+simpl. trivial.
+Defined.
+
+(* TODO: Need to enrich the language.
+cPair
+cEQ_sound_left
+Check BC (Impl Bot Bot).  (* _V *)
+Theorem all_in_V (A B:class): c INC (BC (Conj 1 )).
+Proof.
+simpl. trivial.
+Defined. *)
+
+End Fo.
+(* END: Formulas for automatization of soundness proofs. *)
