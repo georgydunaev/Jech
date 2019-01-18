@@ -1873,16 +1873,16 @@ Abort.
 *)
 
 (* 'class' is the type of well-defined classes. *)
-Record class := Build_class' {
+Record class := Build_class {
  prty :> Ens->Prop;
  sound : forall (a b : Ens), EQ a b -> (prty a -> prty b);
 }.
 
-Definition Build_class : forall Vprty : Ens -> Prop,
+Definition Build_class' : forall Vprty : Ens -> Prop,
        (forall a b : Ens, EQ a b -> Vprty a <-> Vprty b) -> class.
 Proof.
 intros.
-unshelve eapply Build_class'.
+unshelve eapply Build_class.
 + exact Vprty.
 + intros a b aeqb.
   apply (H a b aeqb).
@@ -1925,7 +1925,7 @@ Defined.
 (* the class of transitive sets *)
 Definition cTr : class.
 Proof.
-unshelve eapply Build_class'.
+unshelve eapply Build_class.
 + exact pTr.
 + apply pTr_sound.
 Defined.
@@ -1945,7 +1945,7 @@ Check two_sided.
 (* Class of all sets *)
 Definition cV : class.
 Proof.
-unshelve eapply Build_class'.
+unshelve eapply Build_class.
 + intro z. exact True.
 + simpl. intros a b H1 H2. exact H2.
 Defined.
@@ -1953,7 +1953,7 @@ Defined.
 (* Empty class *)
 Definition cE : class.
 Proof.
-unshelve eapply Build_class'.
+unshelve eapply Build_class.
 + intro z. exact False.
 + simpl. intros a b H1 H2. exact H2.
 Defined.
@@ -1984,7 +1984,7 @@ Defined.
 
 Definition cInter (c:class) : class.
 Proof.
-unshelve eapply Build_class'.
+unshelve eapply Build_class.
 { intro e. exact (forall z:Ens, c z -> IN e z). }
 { simpl. intros a b aeqb czainz z cz.
   eapply IN_sound_left.
@@ -2011,7 +2011,7 @@ Defined.
 Definition stoc : Ens -> class.
 Proof.
 intro x.
-unshelve eapply Build_class'.
+unshelve eapply Build_class.
 + intro y. exact (IN y x).
 + (*intros a b aeqb.
   apply two_sided.*)
@@ -2092,7 +2092,7 @@ Defined.
 
 Definition cInd : class.
 Proof.
-unshelve eapply Build_class'.
+unshelve eapply Build_class.
 + exact Ind.
 + intros a b aeqb [Q0 Q1]. split.
   * eapply IN_sound_right. exact aeqb. exact Q0.
@@ -2105,7 +2105,7 @@ Defined.
 
 Definition cUnion (c:class) : class.
 Proof.
-unshelve eapply Build_class'.
+unshelve eapply Build_class.
 { intro e. exact (exists z:Ens, c z /\ IN e z). }
 { simpl. intros a b aeqb [z [cz ainz]].
   exists z. split.
@@ -2140,7 +2140,7 @@ Defined.
 (* Class of all subsets *)
 Definition cPower (c:class) : class.
 Proof.
-unshelve eapply Build_class'.
+unshelve eapply Build_class.
 { intro e.
   exact (forall w, IN w e -> c w).
 }
@@ -2280,7 +2280,7 @@ End sec_ex2sig.
 
 Definition ktoc (k:class -> Prop) (H:iac k) : class.
 Proof.
-unshelve eapply Build_class'.
+unshelve eapply Build_class.
 { intro e.
   exact (exists c:class, k c  /\ k c ).
 }
@@ -2310,7 +2310,7 @@ Defined.
 Definition cComp : class -> class -> class.
 Proof.
 intros A B.
-unshelve eapply Build_class'.
+unshelve eapply Build_class.
 + intro e. exact (A e /\ B e).
 + simpl. intros.
   (* apply EQ_sym in H. *)
@@ -2401,7 +2401,7 @@ intro z. split.
 (* Product of classes *)
 Definition cProduct (X Y : class) : class.
 Proof.
-unshelve eapply Build_class'.
+unshelve eapply Build_class.
 intro z.
 exact (exists (x y:Ens), (EQ z (OrdPair x y)) /\ X x /\ Y y).
 (*apply two_sided.*)
@@ -2500,7 +2500,7 @@ Defined.
 
 Definition cDom (R:class) : class.
 Proof.
-unshelve eapply Build_class'.
+unshelve eapply Build_class.
 intro u.
 exact (exists v, R (OrdPair u v)).
 (*apply two_sided.*)
@@ -3295,7 +3295,7 @@ Coercion EQ2cEQ : EQ >-> cEQ .
 Definition cPair : class -> class -> class.
 Proof.
 intros A B.
-unshelve eapply Build_class'.
+unshelve eapply Build_class.
 + intro e. exact ((cEQ e A)\/(cEQ e B)).
 + intros a b aeqb.
   simpl. intros [H|H].
@@ -3308,7 +3308,7 @@ Definition cSing (A:class) : class := cPair A A.
 (* http://us.metamath.org/mpegif/df-op.html *)
 Definition cOrdPair (A B:class):class.
 Proof.
-unshelve eapply Build_class'.
+unshelve eapply Build_class.
 + intro x. exact (cIN A cV /\ cIN B cV /\
   cIN x (cPair (cSing A) (cPair A B))
  ).
@@ -3598,7 +3598,7 @@ Arguments EQ _ _ : simpl nomatch.
 (* http://us.metamath.org/mpegif/df-eprel.html *)
 Definition cEps : class.
 Proof.
-unshelve eapply Build_class'.
+unshelve eapply Build_class.
 + intro p. exact (exists x y:Ens, cEQ p (cOrdPair x y) /\ IN x y).
 + intros a b aeqb.
   simpl. intros [x [y [aeqxy xiny]]].
@@ -3631,7 +3631,7 @@ Defined.
 (* ordinal numbers *)
 Definition On : class.
 Proof.
-unshelve eapply Build_class'.
+unshelve eapply Build_class.
 + intro x. exact (cOrd x).
 + simpl. exact cOrd_esound.
 Defined.
@@ -3650,7 +3650,7 @@ Defined.
 (* http://us.metamath.org/mpegif/df-cnv.html *)
 Definition invR (A:class) : class.
 Proof.
-unshelve eapply Build_class'.
+unshelve eapply Build_class.
 + intro e.
   exact (exists x y:Ens, cEQ e (cOrdPair x y) /\ cIN (cOrdPair y x) A).
 + intros a b aeqb. simpl.
@@ -3666,7 +3666,7 @@ Defined.
 (* composition *)
 Definition compos (A B:class):class.
 Proof.
-unshelve eapply Build_class'.
+unshelve eapply Build_class.
 + intro e.
 exact (exists x y, cEQ e (cOrdPair x y) /\
  exists z, cIN (cOrdPair x z) B /\ cIN (cOrdPair z y) A
@@ -3680,7 +3680,7 @@ Defined.
 
 Definition cI : class.
 Proof.
-unshelve eapply Build_class'.
+unshelve eapply Build_class.
 + intro e. exact (exists x:Ens, cEQ e (cOrdPair x x)).
 + simpl. intros a b aeqb [x p].
   exists x. eapply cEQ_sound_left. exact aeqb.
@@ -3702,7 +3702,7 @@ Check Q1 Q2. *)
 (* http://us.metamath.org/mpegif/df-dm.html *)
 Definition cdom (A:class) : class.
 Proof.
-unshelve eapply Build_class'.
+unshelve eapply Build_class.
 + intro e. exact (exists y, cIN (cOrdPair e y) A).
 + simpl. intros a b aeqb [y Aop].
   exists y.
@@ -3720,7 +3720,7 @@ Definition Fn (A B:class): Prop := (Fun A)/\(cEQ (cdom A) B).
 (* here we use "F:class" instead of "ph:wff" *)
 Definition iota_cl (F:class) : class.
 Proof.
-unshelve eapply Build_class'.
+unshelve eapply Build_class.
 + intro y. exact (cEQ F (cSing y)).
 + simpl.
 (*
@@ -3768,7 +3768,7 @@ Admitted.*)
 Definition cAT (F:class) (A:class) : class.
 Proof.
 apply iota.
-unshelve eapply Build_class'.
+unshelve eapply Build_class.
 + intro x. exact (cIN (cOrdPair A x) F).
 + simpl.
   intros a b aeqb.
@@ -3927,7 +3927,7 @@ Defined.
 (* Constructing the class of an acceptable functions. *)
 Definition cAccept (F:class) : class.
 Proof.
-unshelve eapply Build_class'.
+unshelve eapply Build_class.
 + intro f.
   refine (exists x:Ens, On f /\ (Fn f x /\ forall y:Ens, IN y x
     -> cEQ (cAT f y) (cAT F y)
@@ -3958,7 +3958,7 @@ Definition recs (F:class) := cUnion (cAccept F).
 (* http://us.metamath.org/mpegif/df-iun.html *)
 Definition iun (A:class) (B:Ens->class) : class. (*A:Ens->class*)
 Proof.
-unshelve eapply Build_class'.
+unshelve eapply Build_class.
 + intro y. exact (exists x, A x /\ (B x) y).
 + simpl. intros a b aeqb [x [P1 P2]].
   exists x. split. exact P1.
@@ -4322,7 +4322,7 @@ Defined.
 (* Build a class: *)
 Definition BC (f:Fo) : class.
 Proof.
-unshelve eapply Build_class'.
+unshelve eapply Build_class.
 * intro e. exact (foI (fun _ => e) f).
 * simpl.
 intros.
