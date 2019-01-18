@@ -14,17 +14,17 @@ induction and recursion principles.)
 (*** Contents ***
 
 Part I: Large isolated part of "/coq-contribs/zfc/" library and
-proofs of some axioms of zfc. We are not going to directly use
-these definitions.
+proofs of some axioms of zfc (see "axChoice" theorem).
 
 Part II: Development of the classic ZFC theory with
  exercises from Jech's "Set theory". (try to avoid classes)
 and "Introduction t set theory" books.
 
-Part III: Development of formulas and derivations.
+Part III(empty): Development of formulas and derivations.
+Here I'd like to implement well-known theorems about
+1st-order logic.
 
-Part IV: Experiments with definions of a classes
-and other experiments.
+Part IV: Experiments with classes and many theorem about them.
 
 Part V: Translation of Metamath theorems.
 ( transfinite recursion )
@@ -53,10 +53,10 @@ of the first-order logic and ZFC set theory.
 (*Exercises from Jech: (search theses through the text)
   snis   :
   ex_1_2, ex_1_2', ex_1_3'' : ex.1.2
-  ex_1_3 :
-  ex_1_4 :
-  ex_1_5 :
-  ex_1_6 :
+  ex_1_3 : ex.1.3
+  ex_1_4 : ex.1.4
+  ex_1_5 : ex.1.5
+  ex_1_6 : ex.1.6
 *)
 
 (* TODO try to use constructible universe to avoid
