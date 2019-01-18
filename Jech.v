@@ -6,8 +6,8 @@ to increase readability. (IMHO, it is much easier to read
 Gallina's "match .. end" notation rather than discover 
 induction and recursion principles.)
 *)
-(* IST = "Introduction to Set Theory".(T.Jech, 2003)
-    ST = "Set Theory".(K.Hrbacek, T.Jech)
+(* IST = "Introduction to Set Theory".(K.Hrbacek, T.Jech)
+    ST = "Set Theory".(T.Jech, 2003)
  I2AST = "Introduction to Axiomatic Set Theory"(W.Zaring,G.Takeuti)
    AST = "Axiomatic Set Theory"(W.Zaring,G.Takeuti)
 *)
@@ -29,6 +29,11 @@ and other experiments.
 Part V: Translation of Metamath theorems.
 ( transfinite recursion )
 
+APPENDIX:
+* tiny experiments with ensembles
+* Formulas for automatization of soundness proofs.
+* trash section
+
 *****************)
 
 (* "presumption of unsoundness"
@@ -45,9 +50,20 @@ of the first-order logic and ZFC set theory.
  The third aim is to re-use proofs from Metamath.
 *)
 
-(* TODO use constructible universe to avoid axSFC and LEM *)
+(*Exercises from Jech: (search theses through the text)
+  snis   :
+  ex_1_2, ex_1_2', ex_1_3'' : ex.1.2
+  ex_1_3 :
+  ex_1_4 :
+  ex_1_5 :
+  ex_1_6 :
+*)
+
+(* TODO try to use constructible universe to avoid
+ axSFC and LEM *)
 (* (!) These notions (Pair, Union, Powerset) should not 
 be unfolded during the proofs in Part II. *)
+(* Is it possible not to use classes? *)
 
 Require Import FunctionalExtensionality.
 Require Import Logic.Classical_Prop.
@@ -4137,6 +4153,8 @@ simpl in *|-*.*)
 (* ===================================== *)
 
 
+
+(** BEGINning of the tiny experiments with ensembles **)
 Require Import ClassicalFacts.
 Module ExperimentsWithEnsembles.
 Axiom axPE:prop_extensionality.
@@ -4178,23 +4196,13 @@ Axiom Extensionality_Ensembles : forall A B:Ensemble,
 Same_set A B -> A = B.
 *)
 End ExperimentsWithEnsembles.
-(* end of the tiny experiments with ensembles*)
+(** END of the tiny experiments with ensembles **)
 
 
-(* BEGIN: Formulas for automatization of soundness proofs. *)
+
+(** BEGIN: Formulas for automatization of soundness proofs. **)
 Section Fo.
 Definition SetVars := nat.
-(*Context (x:SetVars).
-Check x+1.*)
-Inductive Fo :=
- |In : SetVars -> SetVars -> Fo
- |Bot :Fo
- |Conj:Fo->Fo->Fo
- |Disj:Fo->Fo->Fo
- |Impl:Fo->Fo->Fo
- |Fora(x:SetVars)(f:Fo): Fo
- |Exis(x:SetVars)(f:Fo): Fo
-.
 
 Definition cng (val:SetVars -> Ens)
  (xi:SetVars) (m:Ens) : SetVars -> Ens
@@ -4204,6 +4212,16 @@ Definition cng (val:SetVars -> Ens)
  | true => m
  | false => (val r)
  end).
+
+Inductive Fo :=
+ |In : SetVars -> SetVars -> Fo
+ |Bot :Fo
+ |Conj:Fo->Fo->Fo
+ |Disj:Fo->Fo->Fo
+ |Impl:Fo->Fo->Fo
+ |Fora(x:SetVars)(f:Fo): Fo
+ |Exis(x:SetVars)(f:Fo): Fo
+.
 
 Fixpoint foI (val:SetVars->Ens) (f:Fo) : Prop :=
 match f with
@@ -4216,22 +4234,8 @@ match f with
  | Exis x f => (exists m:Ens, foI (cng val x m) f)
 end.
 
-(* Build class *)
-(*Definition BC (f:Fo) (val:SetVars->Ens) : class.
-Proof.
-unshelve eapply Build_class'.
-* intro e. exact (foI val f).
-* simpl. intros; trivial.
-simpl.
-Lemma foI_sound f (val:SetVars->Ens):
-forall a b : Ens, EQ a b -> foI val f -> foI val f.
-Proof.
-revert val.
-induction f;
-intros val a b aeqb H;
-   simpl in *|-*.
-+*)
-
+(* foI respects the pointwise
+ extensional equality of valuations: *)
 Theorem ptws val1 val2 (K:forall v, EQ (val1 v) (val2 v) )
  f : (foI val1 f) -> foI val2 f.
 Proof.
@@ -4293,11 +4297,90 @@ intros _.
 exact H.
 Defined.
 
-Check BC (Impl Bot Bot).  (* _V *)
+(*Check BC (Impl Bot Bot).  (* _V *)*)
 Theorem all_in_V (x:Ens) : BC (Impl Bot Bot) x.
 Proof.
 simpl. trivial.
 Defined.
+(* \forall x, x \in y <->  (x=\varempty) *)
+Definition Iff (f1 f2:Fo) := (Conj (Impl f1 f2) (Impl f2 f1)).
+
+(*Definition Subs (x y:SetVars) : Fo
+ := (Fora 9 (Impl (In 9 x) (In 9 y))).*)
+
+(*Definition Eqs (x y:SetVars) : Fo
+ := Conj (Subs x y) (Subs y x).*)
+
+Definition Neg q := (Impl q Bot).
+
+(* Let's define a singletone *)
+Definition isEmpty (x:SetVars)
+: Fo := (Fora 1 (Neg (In 1 x))).
+
+Theorem Vide_isEmpty1 : (BC (isEmpty 7)) (Vide).
+Proof.
+simpl.
+intros.
+destruct H as [[]].
+Defined.
+
+Theorem Vide_isEmpty2 : (BC (isEmpty 1)) (Vide).
+Proof.
+simpl.
+intros.
+assert (K:IN m m). exact H.
+eapply snis.
+exact K.
+Defined.
+
+Theorem Vide_isEmpty3 n : (BC (isEmpty n)) (Vide).
+Proof.
+simpl.
+intros.
+unfold cng in H.
+change (Nat.eqb 1 1) with true in H.
+destruct (Nat.eqb n 1).
++ simpl in H.
+  eapply snis.
+  exact H.
++ eapply nothing_IN_Vide, H.
+Defined.
+
+Lemma no_choose A (b:bool) (c:A) : (if b then c else c) = c.
+Proof. destruct b;reflexivity. Defined.
+
+Theorem isEmpty_EQ_Sing_Vide
+ : cEQ (BC (isEmpty 7)) (Sing Vide).
+Proof.
+intros x.
+split; intros H.
++
+simpl in *|-*.
+exists true.
+apply empty_set_EQ_Vide.
+intros.
+unshelve eapply H.
+exact E'.
+exact H0.
++
+simpl in *|-*.
+intros.
+assert (W: IN m x).
+apply H0.
+destruct H.
+rewrite (no_choose _ x0 Vide) in H.
+eapply IN_sound_right in W.
+2 : exact H.
+eapply nothing_IN_Vide, W.
+Defined.
+
+(* Definition isOne (x:SetVars)
+: Fo := (Fora 1 (Neg (In 1 x))).*) 
+
+(*
+Definition pair (BC (Fora 1 (In 1 2))) : .
+Definition subclass (BC (Fora 1 (In 1 2))) : .
+*)
 
 (* TODO: Need to enrich the language.
 cPair
@@ -4309,4 +4392,20 @@ simpl. trivial.
 Defined. *)
 
 End Fo.
-(* END: Formulas for automatization of soundness proofs. *)
+(** END: Formulas for automatization of soundness proofs. **)
+
+
+
+
+
+(** TRASH SECTION **)
+(*
+Check 0.
+Add LoadPath "/home/user/0my/GITHUB/VerifiedMathFoundations/library".
+(*From VerifiedMathFoundations.library*)
+Require Export PredicateCalculus.
+Module PredicateCalculusClasses.
+
+End PredicateCalculusClasses.
+*)
+(** END OF TRASH SECTION-**)
