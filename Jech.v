@@ -4550,10 +4550,53 @@ Defined.
 
 Record nClass :=
 {
-level : nat;
-nprty : nPrty level;
-nsound: nSound nprty;
+ level  : nat;
+ nprty  : nPrty level;
+ nsound : nSound nprty;
 }.
+
+Definition lift {n:nat} (x:nPrty n) : nPrty (S n).
+Proof.
+simpl.
+induction n;simpl in *|-*.
++ exact (fun y : Ens => IN y x). (* stoc *)
++ intro A.
+  exact (exists w:nPrty n, @nEQ (S n) (IHn w) A /\ x w).
+Defined.
+
+Coercion lift : nPrty >-> nPrty.
+
+(* TODO: change here "stoc" to "lift" *)
+Example in_lift (a b:Ens) : IN a b <-> b a.
+Proof.
+reflexivity.
+Defined.
+
+(* generalization of EQ2cEQ *)
+Definition lift_EQ {n:nat} (x y:nPrty n) (H:nEQ x y)
+ : nEQ (lift x) (lift y).
+Proof.
+simpl.
+intro q. split; intro w.
++ (* unfold lift in *|-*. *)
+Abort.
+(*Coercion lift_EQ : nEQ >-> nEQ. *)
+
+Definition nIN {n:nat} (a b : nPrty n) : Prop := lift b a.
+
+(* Here the motivation of the previous definition: *)
+ Definition IN' a b : Prop := stoc b a.
+ Theorem thm0 a b : IN a b <-> IN' a b.
+ Proof.
+ unfold IN', stoc.
+ simpl.
+ reflexivity.
+ Defined.
+
+(*
+Definition nINC {n:nat} (a b : nPrty n) : Prop := lift b a.
+pTr
+*)
 
 (*
 Inductive nclass :=
@@ -4564,7 +4607,6 @@ with nSound (level:nat) (P:nPrty level):=
 .
 *)
 
-Definition nEQ n 
 (** END    nclass generalization **)
 
 
