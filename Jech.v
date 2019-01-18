@@ -1663,9 +1663,10 @@ Proof.
   }
 Defined.
 
-Definition isTrans := (fun x:Ens => forall z, IN z x -> INC z x).
+(* transitivity of a set *)
+Definition sTr (T:Ens) : Prop := forall z, IN z T -> INC z T.
 
-Theorem sutra E (H:isTrans E): isTrans (Class_succ E).
+Theorem sutra E (H:sTr E): sTr (Class_succ E).
 Proof.
 intros w K.
 apply IN_Class_succ_or in K as [L|R].
@@ -1680,7 +1681,7 @@ apply IN_Class_succ_or in K as [L|R].
 Defined.
 
 Theorem ex_1_4 (X:Ens) (H: Ind X) 
- : Ind (Comp X isTrans).
+ : Ind (Comp X sTr).
 Proof.
 destruct H as [Ha Hb].
 split.
@@ -1700,10 +1701,10 @@ split.
   exact H0. exact H1.
 Defined.
 
-Theorem isTrans_sound (w1 w2:Ens) (eqw1w2 : EQ w1 w2) (H1 : isTrans w1)
- : isTrans w2.
+Theorem isTrans_sound (w1 w2:Ens) (eqw1w2 : EQ w1 w2) (H1 : sTr w1)
+ : sTr w2.
 Proof.
-unfold isTrans in * |- *.
+unfold sTr in * |- *.
 intros z zinw2.
 eapply INC_sound_right.
 exact eqw1w2.
@@ -1715,7 +1716,7 @@ exact zinw2.
 Defined.
 
 Lemma ex_1_5_lem1 : forall w1 w2 : Ens,
-isTrans w1 /\ ~ IN w1 w1 -> EQ w1 w2 -> isTrans w2 /\ ~ IN w2 w2.
+sTr w1 /\ ~ IN w1 w1 -> EQ w1 w2 -> sTr w2 /\ ~ IN w2 w2.
 Proof.
 intros w1 w2 [H1 H2] eqw1w2.
 split.
@@ -1732,15 +1733,15 @@ split.
   exact w2inw2.
 Defined.
 
-Theorem isTrans_Vide : isTrans Vide.
+Theorem isTrans_Vide : sTr Vide.
 Proof.
-unfold isTrans.
+unfold sTr.
 intros z zinvide.
 destruct (nothing_IN_Vide z zinvide).
 Defined.
 
 Theorem ex_1_5 (X:Ens) (H: Ind X) 
- : Ind (Comp X (fun x => (isTrans x)/\~(IN x x))).
+ : Ind (Comp X (fun x => (sTr x)/\~(IN x x))).
 Proof.
 destruct H as [Ha Hb].
 split.
@@ -1797,14 +1798,13 @@ Definition Inhab z := exists x, IN x z.
 
 Definition Epsmin t z := forall s, IN s z -> ~IN s t.
 
+Definition prop_1_6 (x:Ens) := (sTr x)/\
+ (forall z,
+  Inhab z /\ INC z x -> exists t, IN t z /\ (Epsmin t z)
+ ).
+
 Lemma ex_1_6_lem1 : forall w1 w2 : Ens,
-isTrans w1 /\
-(forall z : Ens,
- Inhab z /\ INC z w1 -> exists t : Ens, IN t z /\ Epsmin t z) ->
-EQ w1 w2 ->
-isTrans w2 /\
-(forall z : Ens,
- Inhab z /\ INC z w2 -> exists t : Ens, IN t z /\ Epsmin t z)
+ prop_1_6 w1 -> EQ w1 w2 -> prop_1_6 w2
 .
 Proof.
 intros w1 w2 [H1 H2] eqw1w2.
@@ -1822,8 +1822,7 @@ split.
 Defined.
 
 Theorem ex_1_6 (X:Ens) (H: Ind X) 
- : Ind (Comp X (fun x => (isTrans x)/\(
-forall z, Inhab z /\ INC z x -> exists t, IN t z /\ (Epsmin t z) ))).
+ : Ind (Comp X prop_1_6 ).
 Proof.
 pose (H1:=H).
 destruct H1 as [H1 H2].
@@ -1840,6 +1839,13 @@ split.
     apply IN_Comp_P in P1 as [P1' P1''].
     exact P1'.
     exact ex_1_5_lem1. }
+  intros z [K1 K2].
+  unfold Inhab in K1.
+  destruct K1 as [q L].
+  assert (Y:=K2 q L).
+  destruct (nothing_IN_Vide _ Y).
++ intros Y U.
+  simpl in U.
 Abort.
 
 (*============================================
@@ -2204,8 +2210,6 @@ intro z; split; intro H.
   - firstorder.
 Defined.
 
-Definition cOmega := cInter cInd.
-
 (* Omega is inductive set 
 TODO: redefine Omega using set-theoretic approach.
 *)
@@ -2225,9 +2229,11 @@ exists (S n).
 apply EQ_refl.
 Defined.
 
-Theorem nat_is_set: ias cOmega.
+Definition cNN := cInter cInd.
+
+Theorem nat_is_set: ias cNN.
 Proof.
-unfold cOmega.
+unfold cNN.
 unshelve eapply InterNonEmpty.
 exact Omega.
 try apply Omega_cInd.
@@ -3412,7 +3418,18 @@ Defined.
 Definition cINC (A B:class) : Prop := forall x:Ens, A x -> B x.
 
 (* http://us.metamath.org/mpegif/df-tr.html *)
-Definition Tr (A:class) : Prop := cINC (cUnion A) A.
+Definition cTr (A:class) : Prop := cINC (cUnion A) A.
+
+(* ex_1_4 (2)  DEPRECATED *)
+Theorem TrNN : cTr cNN.
+Proof.
+unfold cTr.
+intros a H.
+simpl in H.
+simpl.
+intros w Iw.
+destruct H as [z [Q1 Q2]].
+Abort.
 
 Theorem cUnion_sound : forall (A B : class) (aeqb : cEQ A B),
  cEQ (cUnion A) (cUnion B).
@@ -3426,9 +3443,9 @@ exists w. split. 2:exact P2.
 apply H. assumption.
 Defined.
 
-Theorem Tr_sound (A B : class) (aeqb : cEQ A B) : (Tr A) -> (Tr B).
+Theorem cTr_sound (A B : class) (aeqb : cEQ A B) : (cTr A) -> (cTr B).
 Proof.
-unfold Tr in *|-*.
+unfold cTr in *|-*.
 unfold cINC.
 intros.
 try eapply cUnion_sound in H0.
@@ -3573,21 +3590,21 @@ unshelve eapply Build_class'.
 Defined.
 
 (* http://us.metamath.org/mpegif/df-ord.html *)
-Definition Ord (A:class) : Prop := (Tr A /\ We cEps A).
+Definition cOrd (A:class) : Prop := (cTr A /\ We cEps A).
 
-Definition Ord_sound (A B:class) (AeqB:cEQ A B) (H:Ord A) : Ord B.
+Definition cOrd_sound (A B:class) (AeqB:cEQ A B) (H:cOrd A) : cOrd B.
 Proof.
-unfold Ord in *|-*.
+unfold cOrd in *|-*.
 destruct H as [TrA WeEA].
 split.
-+ eapply Tr_sound. exact AeqB. exact TrA.
++ eapply cTr_sound. exact AeqB. exact TrA.
 + eapply We_sound_right. exact AeqB. exact WeEA.
 Defined.
 
-Theorem Ord_esound : forall a b : Ens, EQ a b -> Ord a -> Ord b.
+Theorem cOrd_esound : forall a b : Ens, EQ a b -> cOrd a -> cOrd b.
 Proof.
 intros a b aeqb.
-apply Ord_sound.
+apply cOrd_sound.
 apply EQ2cEQ.
 assumption.
 Defined.
@@ -3596,8 +3613,8 @@ Defined.
 Definition On : class.
 Proof.
 unshelve eapply Build_class'.
-+ intro x. exact (Ord x).
-+ simpl. exact Ord_esound.
++ intro x. exact (cOrd x).
++ simpl. exact cOrd_esound.
 Defined.
 
 Definition Rel (A:class) : Prop := cINC A (cProduct cV cV).
