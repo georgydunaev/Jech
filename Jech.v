@@ -59,6 +59,13 @@ of the first-order logic and ZFC set theory.
   ex_1_6 : ex.1.6
 *)
 
+(*
+ p - PROPERTY
+ s - SET
+ c - CLASS
+ mc - CLASS from Metamath set.mm
+*)
+
 (* TODO try to use constructible universe to avoid
  axSFC and LEM *)
 (* (!) These notions (Pair, Union, Powerset) should not 
@@ -725,37 +732,37 @@ Defined.
 
 (*=== Omega.v ===*)
 
-Definition Class_succ (E : Ens) := Union (Pair E (Sing E)).
+Definition succ (E : Ens) := Union (Pair E (Sing E)).
 
 Definition Nat : nat -> Ens.
 Proof.
 simple induction 1; intros.
 exact Vide.
-exact (Class_succ X).
+exact (succ X).
 Defined.
 
 Definition Omega : Ens := sup nat Nat.
 
-Theorem IN_Class_succ : forall E : Ens, IN E (Class_succ E).
+Theorem IN_succ : forall E : Ens, IN E (succ E).
 Proof.
-intros E; unfold Class_succ in |- *; unfold Sing in |- *;
+intros E; unfold succ in |- *; unfold Sing in |- *;
  apply IN_Union with (Pair E E); auto with zfc.
 Defined.
 
-Theorem INC_Class_succ : forall E : Ens, INC E (Class_succ E).
+Theorem INC_succ : forall E : Ens, INC E (succ E).
 Proof.
-unfold INC in |- *; unfold Class_succ in |- *.
+unfold INC in |- *; unfold succ in |- *.
 intros.
 apply IN_Union with E; auto with zfc.
 Defined.
 
-Hint Resolve IN_Class_succ INC_Class_succ: zfc.
+Hint Resolve IN_succ INC_succ: zfc.
 
-Theorem IN_Class_succ_or :
- forall E E' : Ens, IN E' (Class_succ E) -> EQ E E' \/ IN E' E.
+Theorem IN_succ_or :
+ forall E E' : Ens, IN E' (succ E) -> EQ E E' \/ IN E' E.
 Proof.
 intros E E' i.
-unfold Class_succ in i.
+unfold succ in i.
 elim (Union_IN (Pair E (Sing E)) E' i).
 intros E1; simple induction 1; intros i1 i2.
 elim (Pair_IN E (Sing E) E1 i1).
@@ -801,8 +808,8 @@ simple induction n.
   simple induction 1.
   simple induction x.
 + intros.
-  change (IN E (Class_succ (Nat n0))) in H0.
-  elim (IN_Class_succ_or (Nat n0) E H0).
+  change (IN E (succ (Nat n0))) in H0.
+  elim (IN_succ_or (Nat n0) E H0).
   - intros; exists n0.
     auto with zfc.
   - intros.
@@ -818,7 +825,7 @@ apply INC_antisym; unfold INC in |- *.
   - auto with zfc.
   - apply IN_sound_left with (Nat n).
     auto with zfc.
-    change (IN (Nat n) (Class_succ (Nat n))) in |- *.
+    change (IN (Nat n) (succ (Nat n))) in |- *.
     auto with zfc.
 + intros.
   destruct (Union_IN Omega E H) as [e h].
@@ -843,7 +850,7 @@ elim n.
 auto with zfc.
 auto with zfc.
 intros.
-change (Ord (Class_succ (Nat n0))); Auto with zfc.
+change (Ord (succ (Nat n0))); Auto with zfc.
 apply EQ_sym; Auto with zfc.
 apply Omega_EQ_Union.
 
@@ -1114,10 +1121,10 @@ Defined.
 End TheoremsAboutClasses.
 
 (*Require Import ZFC.Ordinal_theory.*)
-Theorem Class_succ_sound X Y (H: EQ X Y) :
-EQ (Class_succ X) (Class_succ Y).
+Theorem succ_sound X Y (H: EQ X Y) :
+EQ (succ X) (succ Y).
 Proof.
-unfold Class_succ.
+unfold succ.
 assert (L1: EQ (Pair X (Sing X)) (Pair Y (Sing Y))).
 2 : apply Union_sound in L1; exact L1.
 apply EQ_tran with (E2:=Pair Y (Sing X)).
@@ -1126,7 +1133,7 @@ apply EQ_tran with (E2:=Pair Y (Sing X)).
 Defined.
 
 Theorem axInf : exists X, (IN Vide X /\ 
-forall Y, (IN Y X -> IN (Class_succ Y) X)
+forall Y, (IN Y X -> IN (succ Y) X)
 ).
 Proof.
 exists Omega.
@@ -1138,8 +1145,8 @@ split.
 + intros Y YinOm.
   apply IN_Omega_EXType in YinOm.
   destruct YinOm as [x H].
-  assert (as1: EQ (Class_succ (Nat x)) (Class_succ Y)).
-  apply Class_succ_sound. exact H.
+  assert (as1: EQ (succ (Nat x)) (succ Y)).
+  apply succ_sound. exact H.
   apply (IN_sound_left _ _ _ as1).
   (*Eval simpl in (Nat (S x)).*)
   apply (Nat_IN_Omega (S x)).
@@ -1604,7 +1611,7 @@ Defined.
 Definition SoS (X:Ens) : Ens := Comp X (fun x => INC x X).
 
 Definition Ind (X:Ens) : Prop := 
-(IN Vide X) /\ (forall Y:Ens, IN Y X -> IN (Class_succ Y) X).
+(IN Vide X) /\ (forall Y:Ens, IN Y X -> IN (succ Y) X).
 
 Lemma INC_Vide (X:Ens): INC Vide X.
 Proof.
@@ -1615,7 +1622,7 @@ Defined.
 (* it's for Comp ax *)
 Lemma ex_1_3_lem : 
 forall Y w1 w2 : Ens,
-IN (Class_succ Y) w1 -> EQ w1 w2 -> IN (Class_succ Y) w2.
+IN (succ Y) w1 -> EQ w1 w2 -> IN (succ Y) w2.
 Proof.
 intros Y w1 w2 H1 H2.
 eapply IN_sound_right with (E':=w1).
@@ -1640,14 +1647,14 @@ constructor. (*split.*)
 (*(E:=w1). exact H3. exact H2. }*)
   apply Comp_INC in H0.
   destruct H as [Ha Hb].
-  assert (xusxinX : IN (Class_succ x) X).
+  assert (xusxinX : IN (succ x) X).
    apply Hb. exact H0.
   apply IN_P_Comp.
   { intros. unshelve eapply INC_sound_left (*with (E:=w1)*).
 exact w1. exact H2. exact H. }
   exact xusxinX.
   intros M J.
-  apply IN_Class_succ_or in J as [L1|L2].
+  apply IN_succ_or in J as [L1|L2].
   - apply IN_sound_left with (E:=x); assumption.
   - apply H1. assumption.
 Defined.
@@ -1663,25 +1670,39 @@ Proof.
   }
 Defined.
 
-(* transitivity of a set *)
-Definition sTr (T:Ens) : Prop := forall z, IN z T -> INC z T.
+(* PROPERTY : transitivity of a set *)
+Definition pTr (T:Ens) : Prop := forall z, IN z T -> INC z T.
 
-Theorem sutra E (H:sTr E): sTr (Class_succ E).
+Theorem pTr_sound (w1 w2:Ens) (eqw1w2 : EQ w1 w2) (H1 : pTr w1)
+ : pTr w2.
+Proof.
+unfold pTr in * |- *.
+intros z zinw2.
+eapply INC_sound_right.
+exact eqw1w2.
+apply H1.
+eapply IN_sound_right.
+apply EQ_sym.
+exact eqw1w2.
+exact zinw2.
+Defined.
+
+Theorem sutra E (H:pTr E): pTr (succ E).
 Proof.
 intros w K.
-apply IN_Class_succ_or in K as [L|R].
+apply IN_succ_or in K as [L|R].
 + eapply INC_sound_left.
   exact L.
-  eapply INC_Class_succ.
+  eapply INC_succ.
 + apply H in R.
   intros q qinw. 
-  eapply INC_Class_succ.
+  eapply INC_succ.
   apply R.
   exact qinw.
 Defined.
 
 Theorem ex_1_4 (X:Ens) (H: Ind X) 
- : Ind (Comp X sTr).
+ : Ind (Comp X pTr).
 Proof.
 destruct H as [Ha Hb].
 split.
@@ -1701,26 +1722,12 @@ split.
   exact H0. exact H1.
 Defined.
 
-Theorem isTrans_sound (w1 w2:Ens) (eqw1w2 : EQ w1 w2) (H1 : sTr w1)
- : sTr w2.
-Proof.
-unfold sTr in * |- *.
-intros z zinw2.
-eapply INC_sound_right.
-exact eqw1w2.
-apply H1.
-eapply IN_sound_right.
-apply EQ_sym.
-exact eqw1w2.
-exact zinw2.
-Defined.
-
 Lemma ex_1_5_lem1 : forall w1 w2 : Ens,
-sTr w1 /\ ~ IN w1 w1 -> EQ w1 w2 -> sTr w2 /\ ~ IN w2 w2.
+pTr w1 /\ ~ IN w1 w1 -> EQ w1 w2 -> pTr w2 /\ ~ IN w2 w2.
 Proof.
 intros w1 w2 [H1 H2] eqw1w2.
 split.
-+ eapply isTrans_sound.
++ eapply pTr_sound.
   exact eqw1w2.
   exact H1.
 + intro w2inw2.
@@ -1733,15 +1740,15 @@ split.
   exact w2inw2.
 Defined.
 
-Theorem isTrans_Vide : sTr Vide.
+Theorem pTr_Vide : pTr Vide.
 Proof.
-unfold sTr.
+unfold pTr.
 intros z zinvide.
 destruct (nothing_IN_Vide z zinvide).
 Defined.
 
 Theorem ex_1_5 (X:Ens) (H: Ind X) 
- : Ind (Comp X (fun x => (sTr x)/\~(IN x x))).
+ : Ind (Comp X (fun x => (pTr x)/\~(IN x x))).
 Proof.
 destruct H as [Ha Hb].
 split.
@@ -1749,7 +1756,7 @@ split.
   exact ex_1_5_lem1.
   exact Ha.
   split.
-  * exact isTrans_Vide.
+  * exact pTr_Vide.
   * intro videinvide. destruct (nothing_IN_Vide Vide videinvide).
 + intros Y H.
   apply IN_Comp_P in H as H1.
@@ -1758,29 +1765,29 @@ split.
   clear H.
   apply Hb in H0.
    destruct H1 as [H1 H1'].
-  apply sutra in H1 as isTrans_succ_Y.
+  apply sutra in H1 as pTr_succ_Y.
   apply IN_P_Comp.
   exact ex_1_5_lem1. (*exact lem_ex_1_4.*)
   exact H0.
    split.
-  exact isTrans_succ_Y.
+  exact pTr_succ_Y.
    intro G.
-  apply IN_Class_succ_or in G as [G1|G2].
-  - pose (Q:=IN_Class_succ Y).
+  apply IN_succ_or in G as [G1|G2].
+  - pose (Q:=IN_succ Y).
     eapply IN_sound_right in Q.
     2 : { apply EQ_sym. exact G1. }
     exact (H1' Q).
   - apply H1 in G2.
-    pose (J:= IN_Class_succ Y).
+    pose (J:= IN_succ Y).
     apply G2 in J.
     exact (H1' J).
 Defined.
 
 (* useless lemma: *)
-Lemma lem2_l1 E Y (B:~EQ E Y): IN E (Class_succ Y) -> IN E Y.
+Lemma lem2_l1 E Y (B:~EQ E Y): IN E (succ Y) -> IN E Y.
 Proof.
 intro r.
-apply IN_Class_succ_or in r as [G1|G2].
+apply IN_succ_or in r as [G1|G2].
 2 :  exact G2.
 apply EQ_sym in G1.
 destruct (B G1).
@@ -1790,7 +1797,7 @@ Defined.
 Theorem : forall x:Ens, IN x NN -> ~ IN x x.
 Abort.
 
-Theorem : forall x:Ens, IN x NN -> ~ EQ x (Class_succ x).
+Theorem : forall x:Ens, IN x NN -> ~ EQ x (succ x).
 Abort.
 *)
 
@@ -1798,7 +1805,7 @@ Definition Inhab z := exists x, IN x z.
 
 Definition Epsmin t z := forall s, IN s z -> ~IN s t.
 
-Definition prop_1_6 (x:Ens) := (sTr x)/\
+Definition prop_1_6 (x:Ens) := (pTr x)/\
  (forall z,
   Inhab z /\ INC z x -> exists t, IN t z /\ (Epsmin t z)
  ).
@@ -1809,7 +1816,7 @@ Lemma ex_1_6_lem1 : forall w1 w2 : Ens,
 Proof.
 intros w1 w2 [H1 H2] eqw1w2.
 split.
-+ eapply isTrans_sound.
++ eapply pTr_sound.
   exact eqw1w2.
   exact H1.
 + intros z [inhz inczw2].
@@ -1832,7 +1839,7 @@ split.
   assumption.
   split.
 (* Тут можно двумя способами, либо повторить код: *)
-(*  apply isTrans_Vide. *)
+(*  apply pTr_Vide. *)
 (* Либо вытащить : *)
   { pose (W := ex_1_5 X H).
     destruct W as [P1 P2].
@@ -1913,6 +1920,14 @@ intro z.
 unfold cEQ in w.
 rewrite <- w.
 apply eqv.
+Defined.
+
+(* the class of transitive sets *)
+Definition cTr : class.
+Proof.
+unshelve eapply Build_class'.
++ exact pTr.
++ apply pTr_sound.
 Defined.
 
 (*Lemma sousym (K:Ens->Prop)
@@ -2221,8 +2236,8 @@ constructor.
 apply IN_Omega_EXType in H.
 destruct H as [n p].
 unshelve eapply IN_sound_left.
-exact (Class_succ (Nat n)).
-try apply Class_succ_sound. 
+exact (succ (Nat n)).
+try apply succ_sound. 
 exact p.
 simpl.
 exists (S n).
@@ -2236,8 +2251,12 @@ Proof.
 unfold cNN.
 unshelve eapply InterNonEmpty.
 exact Omega.
-try apply Omega_cInd.
+apply Omega_cInd.
 Defined.
+
+Definition sNN := Omega. (*?*)
+
+
 
 (* Equality of conglomerates *)
 Definition EQK (k1 k2 : class -> Prop)
@@ -3060,7 +3079,7 @@ Theorem rec_thm (a A g:Ens) (H1:IN a A)
    IN f (functions Omega A) /\
    (EQ (AT f Vide) a) /\
    forall n:Ens, IN n Omega ->
-    EQ (AT f (Class_succ n)) (AT g
+    EQ (AT f (succ n)) (AT g
      (OrdPair (AT f n) n)
     )
   )).
@@ -3418,10 +3437,10 @@ Defined.
 Definition cINC (A B:class) : Prop := forall x:Ens, A x -> B x.
 
 (* http://us.metamath.org/mpegif/df-tr.html *)
-Definition cTr (A:class) : Prop := cINC (cUnion A) A.
+Definition mcTr (A:class) : Prop := cINC (cUnion A) A.
 
 (* ex_1_4 (2)  DEPRECATED *)
-Theorem TrNN : cTr cNN.
+Theorem TrNN : mcTr cNN.
 Proof.
 unfold cTr.
 intros a H.
@@ -3443,11 +3462,11 @@ exists w. split. 2:exact P2.
 apply H. assumption.
 Defined.
 
-Theorem cTr_sound (A B : class) (aeqb : cEQ A B) : (cTr A) -> (cTr B).
+Theorem mcTr_sound (A B : class) (aeqb : cEQ A B) : (mcTr A) -> (mcTr B).
 Proof.
 unfold cTr in *|-*.
 unfold cINC.
-intros.
+intros H z H0.
 try eapply cUnion_sound in H0.
 2 : exact aeqb.
 apply aeqb.
@@ -3590,14 +3609,14 @@ unshelve eapply Build_class'.
 Defined.
 
 (* http://us.metamath.org/mpegif/df-ord.html *)
-Definition cOrd (A:class) : Prop := (cTr A /\ We cEps A).
+Definition cOrd (A:class) : Prop := (mcTr A /\ We cEps A).
 
 Definition cOrd_sound (A B:class) (AeqB:cEQ A B) (H:cOrd A) : cOrd B.
 Proof.
 unfold cOrd in *|-*.
 destruct H as [TrA WeEA].
 split.
-+ eapply cTr_sound. exact AeqB. exact TrA.
++ eapply mcTr_sound. exact AeqB. exact TrA.
 + eapply We_sound_right. exact AeqB. exact WeEA.
 Defined.
 
