@@ -155,6 +155,20 @@ destruct H as [A2B B2A]; split.
 Defined.
 
 Hint Resolve EQ_sym EQ_refl : zfc.
+
+Theorem EQ_sound_left (c a b : Ens) (aeqb : EQ a b)
+ (H : EQ a c) : EQ b c.
+Proof.
+apply EQ_sym in aeqb.
+eapply EQ_tran.
+exact aeqb.
+exact H.
+Defined.
+
+Definition EQ_sound_right (a b c : Ens) (aeqb : EQ b c)
+ (H : EQ a b) : EQ a c 
+:= EQ_tran _ _ _ H aeqb.
+
 (*Definition EQ_INC := INC_refl.*)
 
 (* Membership is extentional (i.e. is stable w.r.t. EQ)   *)
@@ -3686,15 +3700,6 @@ Defined.
 
 Definition Rel (A:class) : Prop := cINC A (cProduct cV cV).
 
-Theorem EQ_sound_left (a b c : Ens) (aeqb : EQ a b) 
- (H : EQ a c) : EQ b c.
-Proof.
-apply EQ_sym in aeqb.
-eapply EQ_tran.
-exact aeqb.
-exact H.
-Defined.
-
 (* http://us.metamath.org/mpegif/df-cnv.html *)
 Definition invR (A:class) : class.
 Proof.
@@ -4477,7 +4482,7 @@ match n with
 | S n => (nPrty n)->Prop
 end.
 
-Definition nEQ (n:nat) (p1 p2:nPrty n) : Prop.
+Definition nEQ {n:nat} (p1 p2:nPrty n) : Prop.
 Proof.
 destruct n.
 simpl in *|-.
@@ -4485,7 +4490,7 @@ exact (EQ p1 p2).
 exact (forall q:nPrty n, p1 q <-> p2 q).
 Abort.
 
-Definition nEQ (n:nat) : nPrty n -> nPrty n -> Prop :=
+Definition nEQ {n:nat} : nPrty n -> nPrty n -> Prop :=
  match n with
  | 0   => fun x y: nPrty 0 => EQ x y
  | S m => fun A B : nPrty (S m) =>
@@ -4497,18 +4502,18 @@ Proof.
 destruct n.
 exact True.
 rename n into m.
-exact (forall p1 p2: nPrty m, nEQ m p1 p2 -> P p1 -> P p2).
+exact (forall p1 p2: nPrty m, nEQ p1 p2 -> P p1 -> P p2).
 Show Proof.
 Abort.
 
-Definition nSound (n : nat) : nPrty n -> Prop
+Definition nSound {n : nat} : nPrty n -> Prop
 := match n return (nPrty n -> Prop) with
    | 0   => fun _ : nPrty 0     => True
    | S m => fun P : nPrty (S m) =>
-       forall p1 p2 : nPrty m, nEQ m p1 p2 -> P p1 -> P p2
+       forall p1 p2 : nPrty m, nEQ p1 p2 -> P p1 -> P p2
    end.
 
-Theorem nSound_sound (n:nat) : nSound (S n) (nSound n).
+Theorem nSound_sound {n:nat} : @nSound (S n) nSound.
 Proof.
 simpl.
 induction n.
@@ -4520,11 +4525,34 @@ induction n.
   exact H2.
 Defined.
 
+Theorem nEQ_sound_left {n:nat}
+(q p1 p2:nPrty n) (e:nEQ p1 p2) (H:nEQ p1 q) : nEQ p2 q.
+Proof.
+simpl.
+induction n.
++ simpl in *|-*. eapply EQ_sound_left.
+  exact e. exact H.
++ intro z. split; intro w.
+  - apply H. apply e. exact w.
+  - apply e. apply H. exact w.
+Defined.
+
+Theorem nEQ_sound_right {n:nat}
+(p q1 q2:nPrty n) (e:nEQ q1 q2) (H:nEQ p q1) : nEQ p q2.
+Proof.
+induction n.
++ simpl in *|-*. eapply EQ_sound_right.
+  exact e. exact H.
++ intro z. split; intro w.
+  - apply e. apply H. exact w.
+  - apply H. apply e. exact w.
+Defined.
+
 Record nClass :=
 {
 level : nat;
 nprty : nPrty level;
-nsound: nSound level nprty;
+nsound: nSound nprty;
 }.
 
 (*
