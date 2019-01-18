@@ -63,6 +63,7 @@ of the first-order logic and ZFC set theory.
  p - PROPERTY
  s - SET
  c - CLASS
+ k - CONGLOMERATE
  mc - CLASS from Metamath set.mm
 *)
 
@@ -1670,7 +1671,7 @@ Proof.
   }
 Defined.
 
-(* PROPERTY : transitivity of a set *)
+(* PROPERTY ON SET : transitivity of a set *)
 Definition pTr (T:Ens) : Prop := forall z, IN z T -> INC z T.
 
 Theorem pTr_sound (w1 w2:Ens) (eqw1w2 : EQ w1 w2) (H1 : pTr w1)
@@ -1928,6 +1929,25 @@ Proof.
 unshelve eapply Build_class.
 + exact pTr.
 + apply pTr_sound.
+Defined.
+
+Definition cINC (A B:class) : Prop := forall x:Ens, A x -> B x.
+
+Lemma cINC_sound_left (A1 A2 B:class) (H:cEQ A1 A2) (K:cINC A1 B) : cINC A2 B.
+Proof.
+intros z P.
+apply K.
+apply H.
+exact P.
+Defined.
+
+Lemma cINC_sound_right (A B1 B2:class) (H:cEQ B1 B2) 
+(K:cINC A B1) : cINC A B2.
+Proof.
+intros z P.
+apply H.
+apply K.
+exact P.
 Defined.
 
 (*Lemma sousym (K:Ens->Prop)
@@ -2581,7 +2601,7 @@ Proof.
 intros m; reflexivity.
 Defined.
 
-Lemma cEQ_symm (x y:class): cEQ x y -> cEQ y x.
+Lemma cEQ_sym (x y:class): cEQ x y -> cEQ y x.
 Proof.
 intros H m. symmetry. apply H.
 Defined.
@@ -2592,6 +2612,103 @@ intros H1 H2 m.
 transitivity (y m).
 apply H1. apply H2.
 Defined.
+
+Lemma cEQ_sym' A B : cEQ A B -> cEQ B A.
+Proof. intros H w. split.
+exact (proj2 (H w)).
+exact (proj1 (H w)).
+Defined.
+
+Lemma cEQ_sound_left (A1 A2 B: class) (H : cEQ A1 A2)
+(K : cEQ A1 B) : cEQ A2 B.
+Proof.
+unfold cEQ in K|-*.
+intro z.
+split; intro q.
++ apply K. apply H. exact q.
++ apply H. apply K. exact q.
+Defined.
+
+Lemma cEQ_sound_right (A B1 B2: class) (H : cEQ B1 B2)
+(K : cEQ A B1) : cEQ A B2.
+Proof.
+unfold cEQ in K|-*.
+intro z.
+split; intro q.
++ apply H. apply K. exact q.
++ apply K. apply H. exact q.
+Defined.
+
+
+Lemma two_sided3 (D:class->class) :
+(forall A B : class, cEQ A B -> forall z : Ens, (D A) z -> (D B) z)
+->
+(forall A B : class, cEQ A B -> cEQ (D A) (D B)).
+Proof.
+intros. intro q. split.
++ apply H. exact H0.
++ apply H. apply cEQ_sym. exact H0.
+Defined.
+
+Definition cIN (A B:class):Prop := exists x:Ens, cEQ x A /\ B x.
+
+(* PROPERTY ON CLASS : transitivity1 *)
+Definition cpTr1 (T : class) : Prop
+ := forall z : Ens, T z -> cINC z T.
+Definition cpTr1_sound (T1 T2 : class)
+ (p:cEQ T1 T2) (H:cpTr1 T1): cpTr1 T2.
+Proof.
+unfold cpTr1 in *|-*.
+intros.
+eapply cINC_sound_right. exact p.
+eapply H.
+eapply p.
+exact H0.
+Defined.
+
+Record congl := Build_congl {
+ cprty :> class->Prop;
+ csound : forall (a b : class), cEQ a b -> (cprty a -> cprty b);
+}.
+
+Definition kTr1 : congl := Build_congl cpTr1 cpTr1_sound.
+
+(* PROPERTY ON CLASS : transitivity2 *)
+Definition cpTr2 (T : class) : Prop
+ := forall z : Ens, cIN z T -> cINC z T.
+
+(* PROPERTY ON CLASS : transitivity3 *)
+Definition cpTr3 (T : class) : Prop
+ := forall z : class, cIN z T -> cINC z T.
+
+Theorem cIN_sound_left (A1 A2 B:class) (H:cEQ A1 A2)
+ (K:cIN A1 B) : cIN A2 B.
+Proof.
+unfold cEQ, cIN in *|-*.
+destruct K as [x [P1 P2]].
+exists x. split.
++ eapply cEQ_sound_right.
+  exact H.
+  exact P1.
++ exact P2.
+Defined.
+
+Theorem cIN_sound_right (Z B1 B2 : class)
+(H : cEQ B1 B2) (K : cIN Z B1) : cIN Z B2.
+Proof.
+(*revert B1 B2 H K.
+apply (two_sidedC _ ).*)
+unfold cIN in *|-*.
+destruct K as [x [P1 P2]].
+exists x. split.
++ exact P1.
++ assert (Hx:=H x).
+  apply proj1 in Hx.
+  apply Hx.
+  exact P2.
+Defined.
+
+Coercion EQ2cEQ : EQ >-> cEQ .
 
 
 Theorem UPeI (X:Ens): EQ (Union (Power X)) X.
@@ -3239,58 +3356,6 @@ Defined.
 (*    START OF THE METAMATH SECTION      *)
 (* ===================================== *)
 
-Lemma cEQ_sym A B : cEQ A B -> cEQ B A.
-Proof. intros H w. split.
-exact (proj2 (H w)).
-exact (proj1 (H w)).
-Defined.
-
-Lemma cEQ_sound_left (A1 A2 B: class) (H : cEQ A1 A2)
-(K : cEQ A1 B) : cEQ A2 B.
-Proof.
-unfold cEQ in K|-*.
-intro z.
-split; intro q.
-+ apply K. apply H. exact q.
-+ apply H. apply K. exact q.
-Defined.
-
-Lemma cEQ_sound_right (A B1 B2: class) (H : cEQ B1 B2)
-(K : cEQ A B1) : cEQ A B2.
-Proof.
-unfold cEQ in K|-*.
-intro z.
-split; intro q.
-+ apply H. apply K. exact q.
-+ apply K. apply H. exact q.
-Defined.
-
-
-Lemma two_sided3 (D:class->class) :
-(forall A B : class, cEQ A B -> forall z : Ens, (D A) z -> (D B) z)
-->
-(forall A B : class, cEQ A B -> cEQ (D A) (D B)).
-Proof.
-intros. intro q. split.
-+ apply H. exact H0.
-+ apply H. apply cEQ_sym. exact H0.
-Defined.
-
-Definition cIN (A B:class):Prop := exists x:Ens, cEQ x A /\ B x.
-
-Theorem cIN_sound_left (A1 A2 B:class) (H:cEQ A1 A2)
- (K:cIN A1 B) : cIN A2 B.
-Proof.
-unfold cEQ, cIN in *|-*.
-destruct K as [x [P1 P2]].
-exists x. split.
-+ eapply cEQ_sound_right.
-  exact H.
-  exact P1.
-+ exact P2.
-Defined.
-
-Coercion EQ2cEQ : EQ >-> cEQ .
 
 Definition cPair : class -> class -> class.
 Proof.
@@ -3373,21 +3438,6 @@ eapply cEQ_tran.
 + eapply cPair_sound_right. exact HB.
 Defined.
 
-Theorem cIN_sound_right (Z B1 B2 : class)
-(H : cEQ B1 B2) (K : cIN Z B1) : cIN Z B2.
-Proof.
-(*revert B1 B2 H K.
-apply (two_sidedC _ ).*)
-unfold cIN in *|-*.
-destruct K as [x [P1 P2]].
-exists x. split.
-+ exact P1.
-+ assert (Hx:=H x).
-  apply proj1 in Hx.
-  apply Hx.
-  exact P2.
-Defined.
-
 Theorem cOrdPair_sound_right (A B1 B2:class) (H:cEQ B1 B2):
  cEQ (cOrdPair A B1) (cOrdPair A B2).
 Proof.
@@ -3434,15 +3484,13 @@ repeat split.
   eapply cPair_sound_left. exact H.
 Defined.
 
-Definition cINC (A B:class) : Prop := forall x:Ens, A x -> B x.
-
 (* http://us.metamath.org/mpegif/df-tr.html *)
 Definition mcTr (A:class) : Prop := cINC (cUnion A) A.
 
 (* ex_1_4 (2)  DEPRECATED *)
 Theorem TrNN : mcTr cNN.
 Proof.
-unfold cTr.
+unfold mcTr.
 intros a H.
 simpl in H.
 simpl.
@@ -3786,14 +3834,6 @@ Proof.
 intros.
 apply (sound c a b H).
 exact H0.
-Defined.
-
-Lemma cINC_sound_left (A1 A2 B:class) (H:cEQ A1 A2) (K:cINC A1 B) : cINC A2 B.
-Proof.
-intros z P.
-apply K.
-apply H.
-exact P.
 Defined.
 
 Lemma Rel_sound (A1 A2:class) (H:cEQ A1 A2) (K:Rel A1) : Rel A2.
@@ -4430,8 +4470,70 @@ Defined. *)
 End Fo.
 (** END: Formulas for automatization of soundness proofs. **)
 
+(** BEGIN  nclass generalization **)
+Fixpoint nPrty (n:nat) : Type :=
+match n with
+| 0 => Ens
+| S n => (nPrty n)->Prop
+end.
 
+Definition nEQ (n:nat) (p1 p2:nPrty n) : Prop.
+Proof.
+destruct n.
+simpl in *|-.
+exact (EQ p1 p2).
+exact (forall q:nPrty n, p1 q <-> p2 q).
+Abort.
 
+Definition nEQ (n:nat) : nPrty n -> nPrty n -> Prop :=
+ match n with
+ | 0   => fun x y: nPrty 0 => EQ x y
+ | S m => fun A B : nPrty (S m) =>
+     forall q : nPrty m, A q <-> B q
+ end.
+
+Fixpoint nSound (n:nat) (P:nPrty n) {struct n} : Prop.
+Proof.
+destruct n.
+exact True.
+rename n into m.
+exact (forall p1 p2: nPrty m, nEQ m p1 p2 -> P p1 -> P p2).
+Show Proof.
+Abort.
+
+Definition nSound (n : nat) : nPrty n -> Prop
+:= match n return (nPrty n -> Prop) with
+   | 0   => fun _ : nPrty 0     => True
+   | S m => fun P : nPrty (S m) =>
+       forall p1 p2 : nPrty m, nEQ m p1 p2 -> P p1 -> P p2
+   end.
+
+Theorem thm (n:nat) : nSound (S n) (nSound n).
+Proof.
+simpl.
+induction n.
++ simpl. trivial.
++ simpl. intros.
+Abort.
+
+Record nClass :=
+{
+level : nat;
+nprty : nPrty level;
+nsound: nSound level nprty;
+}.
+
+(*
+Inductive nclass :=
+| constru (level:nat)
+  (P:nPrty level) (S:nSound level P) : nclass
+with nSound (level:nat) (P:nPrty level):=
+| g: nSound level P
+.
+*)
+
+Definition nEQ n 
+(** END    nclass generalization **)
 
 
 (** TRASH SECTION **)
