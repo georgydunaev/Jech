@@ -4508,13 +4508,17 @@ Definition nSound (n : nat) : nPrty n -> Prop
        forall p1 p2 : nPrty m, nEQ m p1 p2 -> P p1 -> P p2
    end.
 
-Theorem thm (n:nat) : nSound (S n) (nSound n).
+Theorem nSound_sound (n:nat) : nSound (S n) (nSound n).
 Proof.
 simpl.
 induction n.
 + simpl. trivial.
 + simpl. intros.
-Abort.
+  apply H.
+  apply (H0 _ _ H1).
+  apply H.
+  exact H2.
+Defined.
 
 Record nClass :=
 {
