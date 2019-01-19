@@ -2053,7 +2053,8 @@ unshelve eapply Build_class.
   eapply IN_sound_left. exact H. exact H0.
 Defined.
 
-Coercion stoc : Ens >-> class.
+Section stoc_sec.
+Local Coercion stoc : Ens >-> class.
 
 Theorem EQ2cEQ (a b : Ens) (aeqb : EQ a b) : cEQ a b.
 Proof.
@@ -4233,7 +4234,7 @@ simpl in *|-*.*)
 (*     END OF THE METAMATH SECTION       *)
 (* ===================================== *)
 
-
+End stoc_sec.
 
 (** BEGINning of the tiny experiments with ensembles **)
 Require Import ClassicalFacts.
@@ -4277,6 +4278,7 @@ Axiom Extensionality_Ensembles : forall A B:Ensemble,
 Same_set A B -> A = B.
 *)
 End ExperimentsWithEnsembles.
+
 (** END of the tiny experiments with ensembles **)
 
 
@@ -4431,7 +4433,7 @@ Lemma no_choose A (b:bool) (c:A) : (if b then c else c) = c.
 Proof. destruct b;reflexivity. Defined.
 
 Theorem isEmpty_EQ_Sing_Vide
- : cEQ (BC (isEmpty 7)) (Sing Vide).
+ : cEQ (BC (isEmpty 7)) (stoc (Sing Vide)).
 Proof.
 intros x.
 split; intros H.
@@ -4555,7 +4557,7 @@ Record nClass :=
  nsound : nSound nprty;
 }.
 
-Definition lift {n:nat} (x:nPrty n) : nPrty (S n).
+Definition plift {n:nat} (x:nPrty n) : nPrty (S n).
 Proof.
 simpl.
 induction n;simpl in *|-*.
@@ -4564,17 +4566,40 @@ induction n;simpl in *|-*.
   exact (exists w:nPrty n, @nEQ (S n) (IHn w) A /\ x w).
 Defined.
 
-Coercion lift : nPrty >-> nPrty.
+(* generalized stoc without soundness *)
+Coercion plift : nPrty >-> nPrty.
+Definition coe : Ens -> nPrty 0 := id .
+Coercion coe : Ens >-> nPrty.
 
 (* TODO: change here "stoc" to "lift" *)
-Example in_lift (a b:Ens) : IN a b <-> b a.
+Example in_plift (a b:Ens) : IN a b <-> plift b a.
 Proof.
 reflexivity.
 Defined.
 
+Definition lift (x:nClass) : nClass.
+Proof.
+destruct x.
+unshelve eapply Build_nClass.
++ exact (S level0).
++ exact (plift nprty0).
++ induction level0; simpl in *|-*.
+  - Check IN_sound_left.
+    intros p1 p2.
+    apply IN_sound_left.
+  - intros. destruct H0 as [x [J1 J2]].
+    (* firstorder. *)
+    exists x.
+    split.
+    2 : exact J2.
+    intro q. split; intro w.
+    * apply H, J1, w.
+    * apply J1, H, w.
+Defined.
+
 (* generalization of EQ2cEQ *)
 Definition lift_EQ {n:nat} (x y:nPrty n) (H:nEQ x y)
- : nEQ (lift x) (lift y).
+ : nEQ (plift x) (plift y).
 Proof.
 simpl.
 intro q. split; intro w.
@@ -4582,7 +4607,7 @@ intro q. split; intro w.
 Abort.
 (*Coercion lift_EQ : nEQ >-> nEQ. *)
 
-Definition nIN {n:nat} (a b : nPrty n) : Prop := lift b a.
+Definition nIN {n:nat} (a b : nPrty n) : Prop := plift b a.
 
 (* Here the motivation of the previous definition: *)
  Definition IN' a b : Prop := stoc b a.
@@ -4592,6 +4617,8 @@ Definition nIN {n:nat} (a b : nPrty n) : Prop := lift b a.
  simpl.
  reflexivity.
  Defined.
+
+(* nPairv *)
 
 (*
 Definition nINC {n:nat} (a b : nPrty n) : Prop := lift b a.
