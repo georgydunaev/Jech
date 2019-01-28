@@ -172,6 +172,9 @@ Definition EQ_sound_right (a b c : Ens) (aeqb : EQ b c)
 
 (*Definition EQ_INC := INC_refl.*)
 
+Definition SoundPred (P:Ens->Prop)
+:= (forall w1 w2 : Ens, EQ w1 w2 -> P w1 -> P w2).
+
 (* Membership is extentional (i.e. is stable w.r.t. EQ)   *)
 Theorem IN_sound_left :
  forall E E' E'' : Ens, EQ E E' -> IN E E'' -> IN E' E''.
@@ -478,18 +481,18 @@ Defined.
 
 Theorem IN_Comp_P :
  forall (E A : Ens) (P : Ens -> Prop),
- (forall w1 w2 : Ens, P w1 -> EQ w1 w2 -> P w2) -> IN A (Comp E P) -> P A.
+ (SoundPred P) -> IN A (Comp E P) -> P A.
 Proof.
 intros E A P H H0.
 destruct E,H0,x as [a p].
-apply H with (1:=p).
+apply H with (2:=p).
 apply EQ_sym. assumption.
 Defined.
 
 (* I2AST p.13, thm 4.12, (<-) *)
 Theorem IN_P_Comp :
  forall (E A : Ens) (P : Ens -> Prop),
- (forall w1 w2 : Ens, P w1 -> EQ w1 w2 -> P w2) ->
+ (SoundPred P) ->
  IN A E -> P A -> IN A (Comp E P).
 Proof.
 intros.
@@ -498,7 +501,7 @@ simpl in *|-*.
 destruct H0 as [a p].
 unshelve eapply ex_intro.
 exists a.
-apply H with (1:=H1).
+apply H with (2:=H1).
 exact p.
 simpl.
 exact p.
@@ -1102,12 +1105,13 @@ Defined.
    sree is a witness of the soundness of class' definition *)
 Section TheoremsAboutClasses.
 Context (s:Ens->Prop)
-        (sree : forall (w1 w2:Ens), EQ w1 w2 -> s w1 <-> s w2).
-
+        (sree : SoundPred s).
+(*
 Theorem rewr (w1 w2:Ens) (J:s w1) (H : EQ w1 w2) : s w2.
 Proof.
 rewrite <- (sree w1 w2); assumption.
 Defined.
+*)
 
 (* subclass of a set is a set *)
 Theorem scosias1 (m:Ens) 
@@ -1124,13 +1128,13 @@ split.
   pose(y:=sc w u).
   unfold esiacf in * |- *.
   apply IN_P_Comp.
-  * intros w1 w2 K H.
-    apply (rewr _ _  K H).
+  * apply sree.
+(* intros w1 w2 K H.    apply (rewr _ _  K H).*)
   * exact y.
   * exact u.
 + intro u.
   apply (IN_Comp_P m).
-  exact rewr.
+  exact sree.
   exact u.
 Defined.
 
@@ -1326,7 +1330,7 @@ split.
 Defined.
 
 Theorem Comp_sound_left (P:Ens->Prop)
-(P_sound:forall w1 w2 : Ens, P w1 -> EQ w1 w2 -> P w2)
+(P_sound:(SoundPred P))
  (X Y:Ens) (H:EQ X Y) : EQ (Comp X P) (Comp Y P).
 Proof.
 apply axExt.
@@ -1345,21 +1349,19 @@ Defined.
 
 Theorem cEQ_pres_soundness (P R:Ens->Prop)
 (H:forall w1 w2 : Ens, EQ w1 w2 -> P w1 <-> R w2)
-(P_sound:forall w1 w2 : Ens, P w1 -> EQ w1 w2 -> P w2)
-:forall w1 w2 : Ens, R w1 -> EQ w1 w2 -> R w2.
+(P_sound: SoundPred P)
+: SoundPred R.
 Proof.
+unfold SoundPred in *|-*.
 intros.
-apply (proj1 (H w1 w2 H1)).
-apply EQ_sym in H1.
+apply (proj1 (H w1 w2 H0)).
+apply EQ_sym in H0.
 apply (P_sound w2 w1).
-apply (proj2 (H w2 w1 H1)).
 exact H0.
+apply (proj2 (H w2 w1 H0)).
 exact H1.
 Defined.
 
-Definition SoundPred (P:Ens->Prop)
-:= (forall w1 w2 : Ens, P w1 -> EQ w1 w2 -> P w2).
- 
 Definition SoundCongl (A:(Ens->Prop)->Prop) :=
 forall P R:Ens->Prop, SoundPred P  ->
 (forall w : Ens, P w <-> R w)-> (A P -> A R).
@@ -1369,23 +1371,25 @@ Theorem cEQ_works (P R:Ens->Prop)
 (A:(Ens->Prop)->Prop)
 (A_sound: True)
 (H:forall w : Ens, P w <-> R w)
-(P_sound:forall w1 w2 : Ens, P w1 -> EQ w1 w2 -> P w2)
+(P_sound:(SoundPred P))
 : (A P) <-> (A R).
 Proof.
 split; intro J.
 Abort.
 
+
 Theorem pred_sou (P R:Ens->Prop)
 (H:forall w : Ens, P w <-> R w)
-(P_sound:forall w1 w2 : Ens, P w1 -> EQ w1 w2 -> P w2)
-: forall w1 w2 : Ens, R w1 -> EQ w1 w2 -> R w2.
+(P_sound:(SoundPred P))
+: (SoundPred R).
 Proof.
+unfold SoundPred.
 intros.
 apply (proj1 (H w2)).
 apply (P_sound w1 w2).
-2 : exact H1.
-apply (proj2 (H w1)).
 exact H0.
+apply (proj2 (H w1)).
+exact H1.
 Defined.
 
 Section cngl_sec.
@@ -1400,7 +1404,7 @@ Abort.
 End cngl_sec.
 
 Theorem Comp_sound_right (P R:Ens->Prop)
-(P_sound:forall w1 w2 : Ens, P w1 -> EQ w1 w2 -> P w2)
+(P_sound:(SoundPred P))
 (H:forall w : Ens, P w <-> R w)
  (X:Ens) : EQ (Comp X P) (Comp X R).
 Proof.
@@ -1409,7 +1413,8 @@ intro z.
 (*revert P R H. simpl.*)
  split; intro q. (*TODO: REDUCE PROOF BY REMOVING SPLIT *)
 + apply IN_P_Comp.
-  - apply (pred_sou P R H P_sound).
+  - (*eapply cEQ_pres_soundness. exact H.*)
+    apply (pred_sou P R H P_sound).
   - apply (Comp_INC X P z q).
   - apply (proj1 (H z)).
     apply (IN_Comp_P X); assumption.
@@ -1423,7 +1428,7 @@ intro z.
 Defined.
 
 Theorem Comp_sound (P R:Ens->Prop)
-(P_sound:forall w1 w2 : Ens, P w1 -> EQ w1 w2 -> P w2)
+(P_sound:(SoundPred P))
 (PeqvR:forall w : Ens, P w <-> R w)
  (X Y:Ens) (H:EQ X Y) : EQ (Comp X P) (Comp Y R).
 Proof.
@@ -1440,10 +1445,11 @@ Theorem Inter_sound (X Y:Ens) (H:EQ X Y): EQ (Inter X) (Inter Y).
 Proof.
 unfold Inter.
 apply Comp_sound.
-+ intros.
++ unfold SoundPred.
+  intros.
   eapply IN_sound_left.
-  exact H1.
-  exact (H0 a H2).
+  exact H0.
+  exact (H1 a H2).
 + intro w. split.
   - intros. apply H0.
     eapply IN_sound_right.
@@ -1464,6 +1470,7 @@ unfold Inter in |- *.
 intros E E' i.
 change ((fun e : Ens => forall a : Ens, IN a E -> IN e a) E') in |- *.
 apply (IN_Comp_P (Union E) E').
+unfold SoundPred.
 intros.
 apply IN_sound_left with w1; auto with zfc.
 assumption.
@@ -1476,6 +1483,7 @@ Proof.
 unfold Inter in |- *.
 intros.
 apply IN_P_Comp.
+unfold SoundPred.
 intros; apply IN_sound_left with w1; auto with zfc.
 + apply IN_Union with (E' := E''); auto with zfc.
 + auto.
@@ -1564,12 +1572,14 @@ apply snis in H.
 exact H.
 Defined.
 
+Definition XNotInX (X:Ens) : Prop := ~ IN X X.
 (* it's for Comp ax *)
-Lemma ex_1_2_lem : forall w1 w2 : Ens, ~ IN w1 w1 -> EQ w1 w2 -> ~ IN w2 w2.
+Lemma ex_1_2_lem : SoundPred XNotInX.
+(*forall w1 w2 : Ens, ~ IN w1 w1 -> EQ w1 w2 -> ~ IN w2 w2*)
 Proof.
 intros w1 w2 H1 H2 Y.
-  apply H1.
-  apply EQ_sym in H2.
+  apply H2.
+  apply EQ_sym in H1.
   apply IN_sound_left with (E':=w1) in Y.
   apply IN_sound_right with (E'':=w1) in Y.
   exact Y. assumption. assumption.
@@ -1588,7 +1598,8 @@ destruct (classic (IN S S)).
 2 : { 
 assert (R:IN S S).
 apply IN_P_Comp.
-- apply ex_1_2_lem.
+-
+ apply ex_1_2_lem.
 - exact Q.
 - exact H0.
 - exact (H0 R).
@@ -1652,22 +1663,24 @@ Proof.
 unfold SoS, Ind in * |- *.
 constructor. (*split.*)
 + apply IN_P_Comp.
-  - intros w1 w2 INC_w1_X EQ_w1_w2.
+  - intros w1 w2 EQ_w1_w2 INC_w1_X.
     eapply INC_sound_left. exact EQ_w1_w2. exact INC_w1_X.
   - firstorder.
   - exact (INC_Vide X).
 + intros x H0.
   pose (H1:=H0).
   unshelve eapply IN_Comp_P with (E:=X) in H1.
-2 : { intros. apply INC_sound_left with (1:=H3). exact H2. }
+2 : { unfold SoundPred. intros.
+ apply INC_sound_left with (1:=H2). exact H3. }
 (*(E:=w1). exact H3. exact H2. }*)
   apply Comp_INC in H0.
   destruct H as [Ha Hb].
   assert (xusxinX : IN (succ x) X).
    apply Hb. exact H0.
   apply IN_P_Comp.
-  { intros. unshelve eapply INC_sound_left (*with (E:=w1)*).
-exact w1. exact H2. exact H. }
+  { unfold SoundPred. intros.
+ unshelve eapply INC_sound_left (*with (E:=w1)*).
+ exact w1. exact H. exact H2. }
   exact xusxinX.
   intros M J.
   apply IN_succ_or in J as [L1|L2].
@@ -1675,23 +1688,25 @@ exact w1. exact H2. exact H. }
   - apply H1. assumption.
 Defined.
 
-Lemma ex_1_4_lem : forall w1 w2 : Ens,
-(forall z : Ens, IN z w1 -> INC z w1) ->
-EQ w1 w2 -> forall z : Ens, IN z w2 -> INC z w2.
+Lemma ex_1_4_lem :
+SoundPred (fun w1 => forall z : Ens, IN z w1 -> INC z w1) (* ->
+EQ w1 w2 -> forall z : Ens, IN z w2 -> INC z w2*).
 Proof.
-  { intros.
-    eapply INC_sound_right. exact H0.
-    apply H.
-    eapply IN_sound_right. apply EQ_sym. exact H0. exact H1.
+  { unfold SoundPred; intros.
+    eapply INC_sound_right. exact H.
+    apply H0.
+    eapply IN_sound_right. apply EQ_sym. exact H. exact H1.
   }
 Defined.
 
 (* PROPERTY ON SET : transitivity of a set *)
 Definition pTr (T:Ens) : Prop := forall z, IN z T -> INC z T.
 
-Theorem pTr_sound (w1 w2:Ens) (eqw1w2 : EQ w1 w2) (H1 : pTr w1)
- : pTr w2.
+Theorem pTr_sound : SoundPred pTr.
+(*(w1 w2:Ens) (eqw1w2 : EQ w1 w2) (H1 : pTr w1)
+ : pTr w2.*)
 Proof.
+unfold SoundPred; intros w1 w2 eqw1w2 H1.
 unfold pTr in * |- *.
 intros z zinw2.
 eapply INC_sound_right.
@@ -1738,10 +1753,11 @@ split.
   exact H0. exact H1.
 Defined.
 
-Lemma ex_1_5_lem1 : forall w1 w2 : Ens,
-pTr w1 /\ ~ IN w1 w1 -> EQ w1 w2 -> pTr w2 /\ ~ IN w2 w2.
+Lemma ex_1_5_lem1 : SoundPred (fun w=> pTr w /\ ~ IN w w).
+(*forall w1 w2 : Ens,
+pTr w1 /\ ~ IN w1 w1 -> EQ w1 w2 -> pTr w2 /\ ~ IN w2 w2.*)
 Proof.
-intros w1 w2 [H1 H2] eqw1w2.
+intros w1 w2 eqw1w2 [H1 H2].
 split.
 + eapply pTr_sound.
   exact eqw1w2.
@@ -1826,11 +1842,9 @@ Definition prop_1_6 (x:Ens) := (pTr x)/\
   Inhab z /\ INC z x -> exists t, IN t z /\ (Epsmin t z)
  ).
 
-Lemma ex_1_6_lem1 : forall w1 w2 : Ens,
- prop_1_6 w1 -> EQ w1 w2 -> prop_1_6 w2
-.
+Lemma ex_1_6_lem1 : SoundPred prop_1_6.
 Proof.
-intros w1 w2 [H1 H2] eqw1w2.
+intros w1 w2 eqw1w2 [H1 H2].
 split.
 + eapply pTr_sound.
   exact eqw1w2.
@@ -1891,7 +1905,8 @@ Abort.
 (* 'class' is the type of well-defined classes. *)
 Record class := Build_class {
  prty :> Ens->Prop;
- sound : forall (a b : Ens), EQ a b -> (prty a -> prty b);
+ sound : SoundPred prty;
+(*forall (a b : Ens), EQ a b -> (prty a -> prty b);*)
 }.
 
 Definition Build_class' : forall Vprty : Ens -> Prop,
@@ -2003,15 +2018,13 @@ split.
 + apply IN_Comp_P in e. exact e.
   intros.
   eapply K_sound.
-  exact H.
-  exact H0.
 Defined.
 
 Theorem Comp_elimC x y (K:class) : IN x (Comp y K) -> (IN x y /\ K x).
 Proof.
 apply Comp_elim.
 (** exact (sound_transf _ (sound K)). **)
-intros a b q aeqb.
+intros a b aeqb q.
 eapply (sound K).
 exact aeqb.
 exact q.
@@ -2093,10 +2106,10 @@ exact p.
 Show Proof.
 Defined.
 
-Lemma sound2rewr (s:class) : forall w1 w2 : Ens, s w1 -> EQ w1 w2 -> s w2.
+Lemma sound2rewr (s:class) : SoundPred s.
 Proof.
 intros w1 w2 H1 H2.
-eapply (sound s). exact H2. exact H1.
+eapply (sound s). exact H1. exact H2.
 Defined.
 
 (* subclass of a set is a set *)
@@ -2114,7 +2127,7 @@ split.
   pose(y:=sc w u).
   (*unfold esiacf in * |- *.*)
   apply IN_P_Comp.
-  * intros w1 w2 K H.
+  * intros w1 w2 H K.
     eapply (sound s). exact H. exact K.
     (** rewrite <- (sound s). exact K. exact H. **)
     (*apply (rewr _ _  K H).*)
@@ -2262,9 +2275,9 @@ intro z; split; intro H.
   apply IN_Comp_P in H'.
   - eapply Comp_INC in H.
     firstorder.
-  - apply schSepar_lem.
+  - unfold SoundPred. exact (sound c). (*unfold SoundPred. apply schSepar_lem.*)
 + apply IN_P_Comp.
-  - apply schSepar_lem.
+  - unfold SoundPred. apply (sound c). (*apply schSepar_lem*)
   - firstorder.
   - firstorder.
 Defined.
@@ -2354,7 +2367,7 @@ Proof.
 intros A B.
 unshelve eapply Build_class.
 + intro e. exact (A e /\ B e).
-+ simpl. intros.
++ simpl. intros. unfold SoundPred.
   (* apply EQ_sym in H. *)
   firstorder.
   - eapply (sound). exact H. exact H0.
@@ -2394,9 +2407,7 @@ assert (inhX:exists x':Ens, IN x' X).
 + exists x. unfold X.
 (* OR change X with (Comp t T). (*replace X with (Comp t T).*)*)
 apply IN_P_Comp.
-- intros. eapply (sound T). exact H0. exact H.
-  (*apply sound_transf.
-  exact (sound T).*)
+- exact (sound T).
 - unfold t.
   apply trcl_subs.
   apply IN_Sing.
@@ -2405,14 +2416,12 @@ apply IN_P_Comp.
   exists t0. split.
   unfold X in P1.
   - apply IN_Comp_P in P1. exact P1.
-    intros. eapply (sound T). exact H0. exact H.
-    (** apply sound_transf; exact (sound T). **)
+    exact (sound T).
   - intros [z [zinu Tz]]. apply P2.
     exists z. split. exact zinu.
     unfold X in P1 |-*.
     apply IN_P_Comp.
-    *  intros. eapply (sound T). exact H0. exact H.
-(** apply sound_transf; exact (sound T). **)
+    * exact (sound T).
     * assert (t0inct: INC t0 t).
       {intros q W.
        apply Comp_elim in P1 as [t0int Tt0].
@@ -2420,8 +2429,7 @@ apply IN_P_Comp.
        apply K.
        assumption.
        unfold SoundPred.
-intros. eapply (sound T). exact H0. exact H.
-       (** apply sound_transf; exact (sound T). **)
+       exact (sound T).
       }
       apply t0inct.
       exact zinu.
@@ -3019,18 +3027,20 @@ auto with zfc.
 apply (EQ_tran _ X2); auto with zfc.
 Defined.
 
-Theorem Pi2_sound_lem1 (X: Ens) : forall w1 w2 : Ens,
-Pi2_P X w1 -> EQ w1 w2 -> Pi2_P X w2.
+Theorem Pi2_sound_lem1 X : SoundPred (Pi2_P X).
+(*Theorem Pi2_sound_lem1 (X: Ens) : forall w1 w2 : Ens,
+Pi2_P X w1 -> EQ w1 w2 -> Pi2_P X w2.*)
 (*(~ EQ (Union X) (Inter X) -> ~ IN w1 (Inter X)) ->
 EQ w1 w2 -> ~ EQ (Union X) (Inter X) -> ~ IN w2 (Inter X).*)
 Proof.
  intros w1 w2 H0 H1 H2 H3.
   apply (IN_sound_left w2 w1) in H3.
   2 : auto with zfc.
-  apply H0; assumption.
+  apply H1; assumption.
 Defined.
 
-Theorem Pi2_sound_lem2 (X Y : Ens) (H : EQ X Y) :
+Theorem Pi2_sound_lem2 (*: SoundPred (Pi2_P X).*)
+(X Y : Ens) (H : EQ X Y) :
 forall w : Ens, (Pi2_P X w) <-> (Pi2_P Y w).
 (*(~ EQ (Union X) (Inter X) -> ~ IN w (Inter X)) <->
 (~ EQ (Union Y) (Inter Y) -> ~ IN w (Inter Y)).*)
@@ -3318,17 +3328,21 @@ apply
  (IN_Comp_P Y y
     (fun y0 : Ens => (exists x : Ens, IN x X /\ P x y0)));
  auto with zfc.
-intros w1 w2; simple induction 1; intros x; simple induction 1;
+unfold SoundPred.
+(*
+intros w1 w2; simple induction 1; intros x; simple induction 2;
  intros Ix Px e.
 exists x; split; auto with zfc.
 apply comp_r with w1; auto with zfc.
+*) admit.
 intros He.
 apply IN_P_Comp.
-
+(*
 intros w1 w2; simple induction 1; intros x; simple induction 1;
  intros Ix Px e.
 exists x; split; auto with zfc.
 apply comp_r with w1; auto with zfc.
+*) admit.
 apply HY; auto with zfc.
 auto with zfc.
 
@@ -3351,7 +3365,7 @@ elim (Hy'3 y Hx2).
 intros HP; exists (Comp Y (fun y : Ens => EQ y Vide -> False)).
 intros y; simple induction 1; intros x; simple induction 1; intros Hx1 Hx2.
 apply IN_P_Comp.
-intros w1 w2 Hw1 Hw Hw2; apply Hw1; apply EQ_tran with w2; auto with zfc.
+intros w1 w2 Hw Hw1 Hw2; apply Hw1; apply EQ_tran with w2; auto with zfc.
 elim (HY x).
 intros y'; simple induction 1; intros Hy'1 Hy'2.
 elim Hy'2; intros Hy'3.
@@ -3371,7 +3385,7 @@ intros x; elim (EM ((exists y : Ens, P x y))); intros Hx.
 elim Hx; intros x0 Hx0; exists x0; left; assumption.
 exists Vide; right; split; auto with zfc.
 intros y Hy; elim Hx; exists y; auto with zfc.
-Defined.
+Admitted.
 
 Theorem thm_replacement : replacement.
 Proof.
@@ -3981,7 +3995,7 @@ unshelve eapply Build_class.
   refine (exists x:Ens, On f /\ (Fn f x /\ forall y:Ens, IN y x
     -> cEQ (cAT f y) (cAT F y)
   )).
-+ intros.
++ unfold SoundPred; intros.
   cbv beta in H0|-*.
   destruct H0 as [x [P1 [P2 P3]]].
   exists x.
@@ -4375,7 +4389,7 @@ Proof.
 unshelve eapply Build_class.
 * intro e. exact (foI (fun _ => e) f).
 * simpl.
-intros.
+ unfold SoundPred; intros.
 eapply ptws.
 2 : exact H0.
 simpl.
@@ -4764,8 +4778,8 @@ apply D in H.
 unfold SoS in H.
 Search Comp.
 apply Comp_elim in H as [H1 H2].
-2 : { unfold SoundPred.
-intros. eapply INC_sound_left. exact H1. exact H0. }
+2 : { unfold SoundPred. (*eapply INC_sound_left.*)
+intros. eapply INC_sound_left. exact H0. exact H1. }
 exact H2.
 Defined.
 
