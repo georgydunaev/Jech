@@ -32,6 +32,7 @@ Part V: Translation of Metamath theorems.
 APPENDIX:
 * tiny experiments with ensembles
 * Formulas for automatization of soundness proofs.
+* n-classes for developing of 
 * trash section
 
 *****************)
@@ -2040,7 +2041,7 @@ simpl.
 intros g K.
 apply (K x H).
 Defined.
-
+Arguments IN _ _ : simpl nomatch.
 (* set to class *)
 Definition stoc : Ens -> class.
 Proof.
@@ -2076,12 +2077,20 @@ intro z. split; intro K.
   apply (proj2 (H1 z)).
   assumption.
 Defined.
-
+(*
 Theorem stoc_sound (e:Ens) : cEQ e (stoc e).
 Proof.
 intro z.
 simpl in *|-*.
 firstorder.
+Defined.
+*)
+Theorem stoc_sound (e1 e2:Ens) (p:EQ e1 e2): cEQ e1 e2.
+Proof.
+intro q.
+apply axExt.
+exact p.
+Show Proof.
 Defined.
 
 Lemma sound2rewr (s:class) : forall w1 w2 : Ens, s w1 -> EQ w1 w2 -> s w2.
@@ -2290,8 +2299,6 @@ apply Omega_cInd.
 Defined.
 
 Definition sNN := Omega. (*?*)
-
-
 
 (* Equality of conglomerates *)
 Definition EQK (k1 k2 : class -> Prop)
@@ -2691,6 +2698,13 @@ Definition kTr1 : congl := Build_congl cpTr1 cpTr1_sound.
 (* PROPERTY ON CLASS : transitivity2 *)
 Definition cpTr2 (T : class) : Prop
  := forall z : Ens, cIN z T -> cINC z T.
+
+Theorem qqq a : cpTr1 a <-> cpTr2 a.
+Proof.
+unfold cpTr1, cpTr2.
+simpl.
+try reflexivity.
+Abort.
 
 (* PROPERTY ON CLASS : transitivity3 *)
 Definition cpTr3 (T : class) : Prop
@@ -3501,17 +3515,6 @@ Defined.
 
 (* http://us.metamath.org/mpegif/df-tr.html *)
 Definition mcTr (A:class) : Prop := cINC (cUnion A) A.
-
-(* ex_1_4 (2)  DEPRECATED *)
-Theorem TrNN : mcTr cNN.
-Proof.
-unfold mcTr.
-intros a H.
-simpl in H.
-simpl.
-intros w Iw.
-destruct H as [z [Q1 Q2]].
-Abort.
 
 Theorem cUnion_sound : forall (A B : class) (aeqb : cEQ A B),
  cEQ (cUnion A) (cUnion B).
@@ -4568,7 +4571,7 @@ Defined.
 
 (* generalized stoc without soundness *)
 Coercion plift : nPrty >-> nPrty.
-Definition coe : Ens -> nPrty 0 := id .
+Definition coe : Ens -> nPrty 0 := id.
 Coercion coe : Ens >-> nPrty.
 
 (* TODO: change here "stoc" to "lift" *)
@@ -4584,8 +4587,7 @@ unshelve eapply Build_nClass.
 + exact (S level0).
 + exact (plift nprty0).
 + induction level0; simpl in *|-*.
-  - Check IN_sound_left.
-    intros p1 p2.
+  - intros p1 p2.
     apply IN_sound_left.
   - intros. destruct H0 as [x [J1 J2]].
     (* firstorder. *)
@@ -4617,8 +4619,23 @@ Definition nIN {n:nat} (a b : nPrty n) : Prop := plift b a.
  simpl.
  reflexivity.
  Defined.
+(* End of motivation *)
 
-(* nPairv *)
+Definition pPair {n:nat} (a b : nPrty n) : nPrty n.
+Proof.
+destruct n.
++ exact (Pair a b).
++ simpl in *|-*.
+  exact (fun e => nEQ (plift e) a \/ nEQ (plift e) b).
+Defined.
+
+Definition nPair (a b : nClass) : nClass.
+Proof.
+unshelve eapply Build_nClass.
++ exact (max (level a) (level b)).
++
+Abort.
+(* abstractions instead of real math... *)
 
 (*
 Definition nINC {n:nat} (a b : nPrty n) : Prop := lift b a.
@@ -4635,6 +4652,187 @@ with nSound (level:nat) (P:nPrty level):=
 *)
 
 (** END    nclass generalization **)
+
+(** BEGIN  Exercises from Jech: **)
+
+Definition pInd (X : class) :=
+X Vide /\ (forall Y : Ens, X Y -> X (succ Y)).
+
+Theorem pInd_cNN : pInd cNN.
+Proof.
+unfold pInd, cNN.
+split.
++ simpl. intros z H. unfold Ind in H.
+  destruct H as [l _]. exact l.
++ intros. simpl in *|-*. 
+  intros.
+  assert (Q:= H z H0).
+  apply H0. exact Q.
+Defined.
+
+Lemma cNNincOmega (x:Ens) : cNN x -> IN x Omega.
+Proof.
+apply (InterSS cInd Omega Omega_cInd).
+(* intro H.
+Search Omega.
+simpl in H.
+assert (oi:=Omega_cInd).
+simpl in oi.
+exact (H Omega oi). *)
+Defined.
+
+
+Arguments EQ _ _ : simpl nomatch.
+
+Lemma OmegainccNN (x:Ens) : IN x Omega -> cNN x.
+Proof.
+intro H.
+assert (oi:=Omega_cInd).
+simpl in oi.
+simpl.
+intros z Ind_z.
+simpl in H.
+destruct H as [y e].
+revert x e.
+induction y; intros x e.
++ simpl in e.
+  eapply IN_sound_left.
+  apply EQ_sym. exact e.
+  destruct Ind_z as [a _]. exact a.
++ simpl in e.
+  destruct Ind_z as [a b].
+  unfold Ind in oi.
+  eapply IN_sound_left.
+  apply EQ_sym. exact e.
+  apply b.
+  apply IHy.
+  apply EQ_refl.
+Defined.
+
+Theorem Omega_cEQ_cNN : cEQ (stoc Omega) cNN.
+Proof.
+intro x. split.
+ apply OmegainccNN.
+ apply cNNincOmega.
+Defined.
+
+Theorem Vide_in_Omega : IN Vide Omega.
+Proof.
+Transparent IN.
+unfold IN.
+unfold Omega.
+exists 0. apply EQ_refl.
+Defined.
+
+Theorem succ_in_Omega (Y:Ens)(H: IN Y Omega)
+ : IN (succ Y) Omega.
+Proof.
+unfold IN, Omega in H|-*.
+destruct H as [n K].
+exists (S n).
+change (Nat (S n)) with (succ (Nat n)).
+apply succ_sound.
+exact K.
+Defined.
+
+Theorem Ind_Omega : Ind Omega.
+Proof.
+unfold Ind.
+split.
+exact Vide_in_Omega.
+exact succ_in_Omega.
+Defined.
+
+Theorem Induction X : (Ind X) -> (INC Omega X).
+Proof.
+intro Y.
+unfold Ind in Y.
+assert (U:=InterSS cInd X Y).
+intros n H.
+apply U.
+apply Omega_cEQ_cNN.
+simpl.
+exact H.
+Defined.
+
+Theorem pTr_Omega: pTr Omega.
+Proof.
+unfold pTr.
+intros z H.
+assert (D:=Induction (SoS Omega) (ex_1_3 Omega Ind_Omega)).
+apply D in H.
+unfold SoS in H.
+Search Comp.
+apply Comp_elim in H as [H1 H2].
+2 : { unfold SoundPred.
+intros. eapply INC_sound_left. exact H1. exact H0. }
+exact H2.
+Defined.
+
+Arguments Omega : simpl nomatch.
+(* ex.1.3 part 2*)
+Theorem TrNN : cpTr1 cNN.
+Proof.
+unfold cpTr1.
+Search pTr.
+(* forall x:Ens, cNN x -> cINC (stoc x) cNN. *)
+intros x xNN.
+apply Omega_cEQ_cNN in xNN.
+rename xNN into u.
+Opaque IN.
+simpl in u.
+(*
+Transparent IN.
+unfold IN in u.
+*)
+(*
+replace ((stoc Omega) x) with (IN x Omega) in u.
+*)
+(* change ((stoc Omega) x) with (IN x Omega) in u. OK! *)
+eapply cINC_sound_right.
+exact  Omega_cEQ_cNN.
+intro z.
+(*
+change ((stoc x) z) with (IN z x).
+change ((stoc Omega) z) with (IN z Omega).
+*)
+simpl.
+revert x u z.
+apply pTr_Omega.
+Defined.
+Check InterSS cInd Omega Omega_cInd.
+Definition less := IN.
+Notation " x < y " := (less x y).
+Check Vide < Vide.
+
+(* Doesn't work!
+Arguments Comp  : simpl nomatch.
+Arguments stoc  : simpl nomatch.
+Arguments Omega : simpl nomatch.
+*)
+
+Theorem ex_1_3_part3_c (n:Ens) (H:IN n Omega)
+ : EQ n (Comp Omega (stoc n)).
+Proof.
+apply axExt.
+intro z. split; intro q.
+Search Comp.
+apply IN_P_Comp.
+Search stoc.
+Check stoc_sound.
+simpl.
+Abort.
+
+Theorem ex_1_3_part3_c (n:Ens) (H:IN n Omega)
+ : cEQ (stoc n) (cComp cNN (stoc n)).
+Proof.
+simpl.
+Abort.
+(*assert (ex_1_4  
+ pInd_cNN *)
+
+(* END *)
+
 
 
 (** TRASH SECTION **)
