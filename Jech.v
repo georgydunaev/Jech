@@ -176,7 +176,7 @@ Definition SoundPred (P:Ens->Prop)
 := (forall w1 w2 : Ens, EQ w1 w2 -> P w1 -> P w2).
 
 (* Membership is extentional (i.e. is stable w.r.t. EQ)   *)
-Theorem IN_sound_left :
+Theorem IN_sound_left' :
  forall E E' E'' : Ens, EQ E E' -> IN E E'' -> IN E' E''.
 Proof.
 intros A B C AeqB AinC.
@@ -188,6 +188,20 @@ apply EQ_tran with A.
 + apply EQ_sym. exact AeqB.
 + apply AeqFY.
 Defined.
+
+Theorem IN_sound_left :
+ forall E : Ens, SoundPred (fun y=>IN y E).
+Proof.
+intros C A B AeqB AinC.
+destruct C as [T F].
+simpl in * |- *.
+destruct AinC as [Y AeqFY].
+exists Y.
+apply EQ_tran with A.
++ apply EQ_sym. exact AeqB.
++ apply AeqFY.
+Defined.
+
 
 Theorem IN_sound_right :
  forall E E' E'' : Ens, EQ E' E'' -> IN E E' -> IN E E''.
@@ -973,10 +987,11 @@ Proof.
 intros.
 unfold regular_over.
 split; intros.
-+ apply IN_sound_left with (E':=a) in H1.
++ (*apply IN_sound_left with (E':=a) in H1.*)
+  eapply IN_sound_left in H1.
   apply H0. apply H1.
   apply EQ_sym. exact H.
-+ apply IN_sound_left with (E':=b) in H1.
++ eapply IN_sound_left in H1.
   apply H0. apply H1.
   exact H.
 Defined.
@@ -1016,7 +1031,7 @@ unfold WF.
   destruct B as [c [a1 a2]].
   exists c.
   split. exact a1.
-  apply IN_sound_left with (E:=b).
+  eapply IN_sound_left. (*with (E:=b).*)
   apply EQ_sym. exact H.
   exact a2.
 + intros A B.
@@ -1024,7 +1039,7 @@ unfold WF.
   destruct B as [c [a1 a2]].
   exists c.
   split. exact a1.
-  apply IN_sound_left with (E:=a).
+  eapply IN_sound_left. (* with (E:=a).*)
   exact H.
   exact a2.
 Defined.
@@ -1548,13 +1563,13 @@ Proof.
 apply (eps_ind (fun Y => ~(IN Y Y))).
 + intros a b aeqb.
   split;intros H K.
-  - eapply IN_sound_right with (E'':=a) in K.
-    eapply IN_sound_left with (E':=a) in K.
+  - eapply IN_sound_right (*with (E'':=a)*) in K.
+    eapply IN_sound_left (*with (E':=a)*) in K.
     exact (H K).
     apply EQ_sym; assumption.
     apply EQ_sym; assumption.
-  - eapply IN_sound_right with (E'':=b) in K.
-    eapply IN_sound_left with (E':=b) in K.
+  - eapply IN_sound_right (*with (E'':=b)*) in K.
+    eapply IN_sound_left (*with (E':=b) *) in K.
     exact (H K).
     assumption.
     assumption.
@@ -1580,8 +1595,8 @@ Proof.
 intros w1 w2 H1 H2 Y.
   apply H2.
   apply EQ_sym in H1.
-  apply IN_sound_left with (E':=w1) in Y.
-  apply IN_sound_right with (E'':=w1) in Y.
+  eapply IN_sound_left (*with (E':=w1)*) in Y.
+  eapply IN_sound_right (*with (E'':=w1)*) in Y.
   exact Y. assumption. assumption.
 Defined.
 
@@ -1684,7 +1699,7 @@ constructor. (*split.*)
   exact xusxinX.
   intros M J.
   apply IN_succ_or in J as [L1|L2].
-  - apply IN_sound_left with (E:=x); assumption.
+  - eapply IN_sound_left (*with (E:=x)*). exact L1. exact H0.
   - apply H1. assumption.
 Defined.
 
@@ -3034,7 +3049,7 @@ Pi2_P X w1 -> EQ w1 w2 -> Pi2_P X w2.*)
 EQ w1 w2 -> ~ EQ (Union X) (Inter X) -> ~ IN w2 (Inter X).*)
 Proof.
  intros w1 w2 H0 H1 H2 H3.
-  apply (IN_sound_left w2 w1) in H3.
+  eapply (IN_sound_left _ w2 w1) in H3.
   2 : auto with zfc.
   apply H1; assumption.
 Defined.
@@ -3082,14 +3097,14 @@ intro z. split; intro q.
   intros E H.
   apply IN_Sing_EQ in q.
   apply Pair_IN in H as [H|H].
-  - apply (IN_sound_left A).
+  - apply (IN_sound_left _ A).
     auto with zfc.
     apply (IN_sound_right _ (Sing A)).
     auto with zfc.
     auto with zfc.
   - apply (IN_sound_right _ (Pair A B)).
     auto with zfc.
-    apply (IN_sound_left A).
+    apply (IN_sound_left _ A).
     auto with zfc.
     auto with zfc.
 Defined.
