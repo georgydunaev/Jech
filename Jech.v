@@ -172,8 +172,8 @@ Definition EQ_sound_right (a b c : Ens) (aeqb : EQ b c)
 
 (*Definition EQ_INC := INC_refl.*)
 
-Definition SoundPred (P:Ens->Prop)
-:= (forall w1 w2 : Ens, EQ w1 w2 -> P w1 -> P w2).
+Definition SoundPred
+:= (fun (P:Ens->Prop)=>(forall w1 w2 : Ens, EQ w1 w2 -> P w1 -> P w2)).
 
 (* Membership is extentional (i.e. is stable w.r.t. EQ)   *)
 Theorem IN_sound_left' :
@@ -204,7 +204,8 @@ Defined.
 
 
 Theorem IN_sound_right :
- forall E E' E'' : Ens, EQ E' E'' -> IN E E' -> IN E E''.
+ forall E : Ens, SoundPred (IN E).
+(* forall E E' E'' : Ens, EQ E' E'' -> IN E E' -> IN E E''. *)
 Proof.
 intros A B C BeqC AinB.
 destruct B as [Y G].
@@ -1224,13 +1225,14 @@ Lemma SingEqPair x y1 y2 (J: EQ (Sing x) (Pair y1 y2)) :
 EQ x y1 /\ EQ x y2.
 Proof.
 apply EQ_sym in J.
-pose (i1:=IN_Pair_left y1 y2).
-apply IN_sound_right with (1:=J) in i1.
+assert(i1:=IN_Pair_left y1 y2).
+eapply IN_sound_right (*with (1:=J)*) in i1.
 apply IN_Sing_EQ, EQ_sym in i1.
-pose (i2:=IN_Pair_right y1 y2).
-apply IN_sound_right with (1:=J) in i2.
+assert(i2:=IN_Pair_right y1 y2).
+eapply IN_sound_right (*with (1:=J)*) in i2.
 apply IN_Sing_EQ, EQ_sym in i2.
-split; assumption.
+split. exact i1. exact i2.
+exact J. exact J.
 Defined.
 
 Lemma Pair_sound (a b c d:Ens) (L:EQ a c) (R:EQ b d) 
@@ -1667,7 +1669,7 @@ forall Y w1 w2 : Ens,
 IN (succ Y) w1 -> EQ w1 w2 -> IN (succ Y) w2.
 Proof.
 intros Y w1 w2 H1 H2.
-eapply IN_sound_right with (E':=w1).
+eapply IN_sound_right.
 exact H2.
 exact H1.
 Defined.
@@ -2523,14 +2525,15 @@ apply INC_IN_Power.
 intros s1 U1.
 apply INC_IN_Power.
 intros s2 U2.
-apply IN_sound_right with (1:=A) in U1.
+eapply IN_sound_right (*with (1:=A)*) in U1.
 apply Pair_IN in U1 as [V1|V2].
 + apply IN_Union with (E':=X1).
   apply IN_Pair_left.
-  apply IN_sound_right with (1:=V1) in U2.
+  eapply IN_sound_right (*with (1:=V1)*) in U2.
   apply IN_Sing_EQ, EQ_sym in U2.
   apply IN_sound_left with (1:=U2), B1.
-+ apply IN_sound_right with (1:=V2) in U2.
+  exact V1.
++ eapply IN_sound_right (*with (2:=V2)*) in U2. 2 : exact V2.
   apply Pair_IN in U2 as [c1|c2].
   - apply IN_Union with (E':=X1).
     apply IN_Pair_left.
@@ -2542,6 +2545,7 @@ apply Pair_IN in U1 as [V1|V2].
     apply EQ_sym in c2.
     eapply IN_sound_left with (1:=c2).
     exact B2.
++ exact A.
 Defined.
 
 
@@ -2625,7 +2629,8 @@ intro z; split; intro y.
 + apply Union_IN in y.
   destruct y as [w [K1 K2]].
   apply IN_Sing_EQ in K1.
-  apply IN_sound_right with (E':=w); assumption.
+  eapply IN_sound_right(* with (E':=w); assumption.*).
+  exact K1. exact K2.
 + unshelve eapply IN_Union.
   exact M.
   exact (IN_Sing M).
@@ -3115,11 +3120,12 @@ apply axExt_left.
 intro z. split; intro q.
 + apply Union_IN in q as [E [q0 q1]].
   apply Pair_IN in q0 as [q2|q2].
-  - apply IN_sound_right with (1:=q2) in q1.
+  - eapply IN_sound_right (*with (1:=q2)*) in q1.
     apply IN_Sing_EQ in q1.
     eapply IN_sound_left.
     1 : apply EQ_sym, q1.
     apply IN_Pair_left.
+    exact q2.
   - eapply IN_sound_right. exact q2. exact q1.
 + eapply IN_Union.
   2 : exact q.
@@ -4840,26 +4846,40 @@ Arguments stoc  : simpl nomatch.
 Arguments Omega : simpl nomatch.
 *)
 
-Theorem ex_1_3_part3_c (n:Ens) (H:IN n Omega)
+Theorem ex_1_3_part3 (n:Ens) (H:IN n Omega)
  : EQ n (Comp Omega (stoc n)).
 Proof.
 apply axExt.
 intro z. split; intro q.
-Search Comp.
-apply IN_P_Comp.
-Search stoc.
-Check stoc_sound.
-simpl.
-Abort.
++ Search Comp.
+  apply IN_P_Comp.
+  simpl.
+  apply IN_sound_left.
+  exact (pTr_Omega n H z q).
+  exact q.
++ Search Comp.
+  apply IN_Comp_P in q.
+  exact q.
+  apply IN_sound_left.
+Defined.
 
 Theorem ex_1_3_part3_c (n:Ens) (H:IN n Omega)
  : cEQ (stoc n) (cComp cNN (stoc n)).
 Proof.
-simpl.
-Abort.
+intro z. split; intro q.
++ Search Comp.
+  simpl.
+  split. 2 : exact q.
+  intros w K.
+  assert(J:=pTr_Omega n H z q).
+  exact (Induction w K z J).
++ simpl in *|-*.
+  destruct q as [_ q].
+  exact q.
+Defined.
+
 (*assert (ex_1_4  
  pInd_cNN *)
-
 (* END *)
 
 
