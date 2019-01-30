@@ -98,14 +98,11 @@ Inductive Ens : Type :=
 
 (* Extensional equality of sets *)
 Fixpoint EQ (E1 E2: Ens) {struct E2}: Prop :=
-  match E1 with
-   | sup A f =>
-       match E2 with
-       | sup B g =>
+  match E1, E2 with
+  | sup A f, sup B g =>
            (forall x : A, exists y : B, EQ (f x) (g y)) /\
            (forall y : B, exists x : A, EQ (f x) (g y))
-       end
-   end.
+  end.
 
 (* Membership on sets *)
 Definition IN (E1 E2 : Ens) : Prop :=
@@ -114,8 +111,8 @@ Definition IN (E1 E2 : Ens) : Prop :=
   end.
 
 (* INCLUSION *)
-Definition INC : Ens -> Ens -> Prop 
- := (fun E1 E2 : Ens => 
+Definition INC : Ens -> Ens -> Prop
+ := (fun E1 E2 : Ens =>
       forall E : Ens, IN E E1 -> IN E E2
     ).
 
@@ -125,6 +122,13 @@ Proof.
 destruct E as [A f].
 split; intros z; exists z; exact (EQ_refl (f z)).
 Defined.
+
+Definition EQ_refl' : forall (E : Ens), EQ E E
+ := Ens_ind _
+(fun A e H => conj
+ (fun z => ex_intro (fun x : A => EQ (e z) (e x)) _ (H z))
+ (fun z => ex_intro (fun x : A => EQ (e x) (e z)) _ (H z))
+).
 
 Fixpoint EQ_tran (E1 E2 E3 : Ens) {struct E2}:
  EQ E1 E2 -> EQ E2 E3 -> EQ E1 E3.
@@ -222,44 +226,41 @@ Theorem axExt_left : forall (x y : Ens),
   (forall z, IN z x <-> IN z y) -> EQ x y.
 Proof.
 intros x y K.
- induction x as [A f], y as [B g].
-  simpl in * |- *.
-  split.
-  - intro x.
-    apply K.
-    exists x.
-    apply EQ_refl.
-  - intro y.
-    assert (Q:exists y0 : B, EQ (g y) (g y0)).
-    * exists y.
-      apply EQ_refl.
-    * destruct (proj2 (K (g y)) Q).
-      exists x.
-      apply EQ_sym.
-      exact H0.
+destruct x as [A f], y as [B g].
+simpl in * |- *.
+split.
+- intro x.
+  apply K.
+  exists x.
+  apply EQ_refl.
+- intro y.
+  assert (Q: exists b : B, EQ (g y) (g b)).
+  { exists y. apply EQ_refl. }
+  destruct (proj2 (K (g y)) Q) as [x H].
+  exists x.
+  apply EQ_sym.
+  exact H.
 Defined.
 
 Theorem axExt_right : forall x y : Ens,
    EQ x y -> forall z, (IN z x <-> IN z y).
 Proof.
- intros.
-  split.
-  - apply IN_sound_right. exact H.
-  - apply IN_sound_right. apply EQ_sym. exact H.
+intros; split.
++ apply IN_sound_right. exact H.
++ apply IN_sound_right. apply EQ_sym, H.
 Defined.
 
 Theorem axExt : forall x y : Ens,
    EQ x y <-> forall z, (IN z x <-> IN z y).
 Proof.
-intros.
-split.
+intros; split.
 + apply axExt_right.
 + apply axExt_left.
 Defined.
 
-Theorem EQ_INC : forall E E' : Ens, EQ E E' -> INC E E'.
+Theorem EQ_INC : forall a b : Ens, EQ a b -> INC a b.
 Proof.
-intros E E' H z.
+intros a b H z.
 eapply axExt_right in H.
 destruct H as [H1 H2].
 exact H1.
@@ -267,32 +268,38 @@ Defined.
 
 Hint Resolve EQ_sym EQ_refl EQ_INC: zfc.
 
-(* easy lemma *)
-Theorem INC_antisym : forall E E' : Ens, INC E E' -> INC E' E -> EQ E E'.
+(* Inclusion is a sound, reflexive, antisymmetric and
+   transitive relation. *)
+
+Definition INC_refl : forall E : Ens, INC E E
+ := fun (E a : Ens) (H : IN a E) => H.
+(*Proof.
+unfold INC in |- *; auto with zfc.
+Defined.*)
+
+Theorem INC_antisym : forall a b : Ens,
+ INC a b -> INC b a -> EQ a b.
 Proof.
-intros E E' H1 H2.
+intros A B H1 H2.
 apply axExt_left.
-intro z. split. apply H1. apply H2.
+intro z. split.
++ apply H1.
++ apply H2.
 Defined.
+
+Theorem INC_tran : forall a b c : Ens, 
+ INC a b -> INC b c -> INC a c.
+Proof.
+unfold INC in |- *; auto with zfc.
+Defined.
+
 Hint Resolve INC_antisym: zfc.
 
-Theorem INC_EQ : forall E E' : Ens,
-  INC E E' -> INC E' E -> EQ E E'.
-Proof.
-intros E E' H1 H2.
-apply INC_antisym; assumption.
-Defined.
-
-(* Inclusion is reflexive, transitive, extentional *)
-Theorem INC_refl : forall E : Ens, INC E E.
-Proof.
-unfold INC in |- *; auto with zfc.
-Defined.
-
-Theorem INC_tran : forall E E' E'' : Ens, INC E E' -> INC E' E'' -> INC E E''.
-Proof.
-unfold INC in |- *; auto with zfc.
-Defined.
+(*
+Definition INC_EQ : forall a b : Ens,
+  INC a b -> INC b a -> EQ a b
+ := INC_antisym.
+*)
 
 Theorem INC_sound_left :
  forall A B C : Ens, EQ A B -> INC A C -> INC B C.
@@ -959,7 +966,7 @@ Defined.
 
 (* Epsilon induction. *)
 Theorem eps_ind (R:Ens->Prop)
-(Sou_R:forall a b, EQ a b -> (R a <-> R b))
+(Sou_R:forall a b, EQ a b -> (R a -> R b))
 : (forall x:Ens, (forall y, IN y x -> R y) -> R x)
 -> forall z, R z.
 Proof.
@@ -969,18 +976,22 @@ apply H.
 simpl.
 intros y q.
 destruct q as [a G].
-rewrite  (Sou_R y (e a)).
+(*rewrite  *)
+apply (Sou_R (e a) y).
+apply EQ_sym, G.
 apply H0.
-exact G.
 Defined.
 
 (* (regular_over x) means
 "Every set that contains x as an element is regular." *)
+(*
 Definition regular_over x := forall u : Ens, (IN x u -> exists y,
 IN y u /\ forall z, IN z u -> ~ IN z y).
-
+*)
+(*Definition Epsmin t z := forall s, IN s z -> ~IN s t.*)
 Definition epsmin a b := IN a b /\ forall c, IN c b -> ~ IN c a.
-
+Definition regular_over x := 
+forall u : Ens, (IN x u -> exists y, epsmin y u).
 (* Soundness of the definition of regular_over. *)
 Theorem regular_over_sound : forall a b : Ens, 
  EQ a b -> regular_over a <-> regular_over b.
@@ -1022,34 +1033,36 @@ exact ninc.
 Defined.
 
 (* Soundness of WF *)
-Theorem sou_WF : forall a b : Ens, EQ a b -> WF a <-> WF b.
+Theorem WF_sound : SoundPred WF.
+(*forall a b : Ens, EQ a b -> WF a -> WF b.*)
 Proof.
+unfold WF, SoundPred in *|-*.
 intros.
-unfold WF.
-* split.
-+ intros A B.
-  apply A.
+intro B.
+apply H0.
++ (*intros A B.*)
+  (*apply A.*)
   destruct B as [c [a1 a2]].
   exists c.
   split. exact a1.
   eapply IN_sound_left. (*with (E:=b).*)
   apply EQ_sym. exact H.
   exact a2.
-+ intros A B.
+(*+ intros A B.
   apply A.
   destruct B as [c [a1 a2]].
   exists c.
   split. exact a1.
   eapply IN_sound_left. (* with (E:=a).*)
   exact H.
-  exact a2.
+  exact a2.*)
 Defined.
 
 (* Induction. "Every set is well-founded." *)
 Theorem Zuhair_2 (y:Ens): WF y.
 Proof.
 apply eps_ind.
-- exact sou_WF.
+- exact WF_sound.
 - intros a. exact (Zuhair_1 a).
 Defined.
 
@@ -1564,17 +1577,17 @@ Theorem snis Y : ~(IN Y Y).
 Proof.
 apply (eps_ind (fun Y => ~(IN Y Y))).
 + intros a b aeqb.
-  split;intros H K.
-  - eapply IN_sound_right (*with (E'':=a)*) in K.
+  (*split;*)intros H K.
+    eapply IN_sound_right (*with (E'':=a)*) in K.
     eapply IN_sound_left (*with (E':=a)*) in K.
     exact (H K).
     apply EQ_sym; assumption.
     apply EQ_sym; assumption.
-  - eapply IN_sound_right (*with (E'':=b)*) in K.
+  (*- eapply IN_sound_right (*with (E'':=b)*) in K.
     eapply IN_sound_left (*with (E':=b) *) in K.
     exact (H K).
     assumption.
-    assumption.
+    assumption.*)
 + intros x H xinx.
   pose (Q:=H x xinx).
   exact (Q xinx).
@@ -1852,14 +1865,18 @@ Abort.
 
 Definition Inhab z := exists x, IN x z.
 
-Definition Epsmin t z := forall s, IN s z -> ~IN s t.
+
 
 Definition prop_1_6 (x:Ens) := (pTr x)/\
  (forall z,
-  Inhab z /\ INC z x -> exists t, IN t z /\ (Epsmin t z)
- ).
+  Inhab z /\ INC z x -> exists t, epsmin t z ).
+(*
+(*IN t z /\ (Epsmin.*)
+(*Search epsmin.*)
+regular_over
+*)
 
-Lemma ex_1_6_lem1 : SoundPred prop_1_6.
+Lemma ex_1_6_lem1 : SoundPred prop_1_6. (* prop_1_6. *)
 Proof.
 intros w1 w2 eqw1w2 [H1 H2].
 split.
@@ -1875,13 +1892,13 @@ split.
   firstorder.
 Defined.
 
-Theorem ex_1_6 (X:Ens) (H: Ind X) 
- : Ind (Comp X prop_1_6 ).
+Section ex_1_6.
+Context (X:Ens) (H: Ind X).
+Theorem ex_1_6_zero : IN Vide (Comp X prop_1_6).
 Proof.
 pose (H1:=H).
 destruct H1 as [H1 H2].
-split.
-+ apply IN_P_Comp.
+ apply IN_P_Comp.
   exact ex_1_6_lem1.
   assumption.
   split.
@@ -1898,10 +1915,37 @@ split.
   destruct K1 as [q L].
   assert (Y:=K2 q L).
   destruct (nothing_IN_Vide _ Y).
-+ intros Y U.
-  simpl in U.
-Abort.
+Defined.
 
+Theorem ex_1_6 : Ind (Comp X prop_1_6).
+Proof.
+split.
++ exact ex_1_6_zero.
++ destruct H as [H0 H1].
+  intros y U.
+Search Comp.
+  apply IN_Comp_P in U as U2.
+  2 : exact ex_1_6_lem1.
+  apply Comp_INC in U as U1.
+  clear U.
+  apply IN_P_Comp.
+  exact ex_1_6_lem1.
+  - apply H1, U1.
+  - destruct U2 as [J0 J1].
+    split.
+    * apply sutra, J0.
+    * intros z [K1 K2].
+      unfold epsmin.
+      (*exists (Sing y).*)
+(*
+epsmin = 
+fun a b : Ens =>
+IN a b /\ (forall c : Ens, IN c b -> ~ IN c a)
+try apply H1, U1.
+  simpl in U.
+Epsmin  *)
+Abort.
+End ex_1_6.
 (*============================================
                      Part III
 ==============================================*)
@@ -4867,8 +4911,7 @@ Theorem ex_1_3_part3_c (n:Ens) (H:IN n Omega)
  : cEQ (stoc n) (cComp cNN (stoc n)).
 Proof.
 intro z. split; intro q.
-+ Search Comp.
-  simpl.
++ simpl.
   split. 2 : exact q.
   intros w K.
   assert(J:=pTr_Omega n H z q).
@@ -4877,6 +4920,48 @@ intro z. split; intro q.
   destruct q as [_ q].
   exact q.
 Defined.
+
+Theorem ex_1_4_i (n:Ens) (H:IN n Omega)
+ : pTr n.
+Proof.
+assert (D:=(Induction _ (ex_1_4 Omega Ind_Omega))).
+assert (M:=D n H).
+apply IN_Comp_P in M.
+exact M.
+exact pTr_sound.
+Defined.
+
+Theorem ex_1_5_i (n:Ens) (H:IN n Omega)
+ : ~ IN n n.
+Proof.
+assert (D:=(Induction _ (ex_1_5 Omega Ind_Omega))).
+assert (M:=D n H).
+apply IN_Comp_P in M. destruct M as [_ M].
+exact M.
+exact ex_1_5_lem1.
+Defined.
+
+Theorem ex_1_5_ii (n:Ens) (H:IN n Omega)
+ : ~ (EQ n (succ n)).
+Proof.
+intro p.
+unfold succ in p.
+unshelve eapply axExt_right in p.
+exact n.
+eapply ex_1_5_i.
+exact H.
+destruct p as [p1 p2].
+apply p2.
+Search Union.
+eapply IN_Union.
+Search Sing.
+2 : apply IN_Sing.
+Search Pair.
+apply IN_Pair_right.
+Defined.
+
+(* ex_1_6 *)
+
 
 (*assert (ex_1_4  
  pInd_cNN *)
