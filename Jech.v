@@ -1875,6 +1875,7 @@ Definition prop_1_6 (x:Ens) := (pTr x)/\
 (*Search epsmin.*)
 regular_over
 *)
+Search regular_over.
 
 Lemma ex_1_6_lem1 : SoundPred prop_1_6. (* prop_1_6. *)
 Proof.
@@ -1891,6 +1892,59 @@ split.
   exists t.
   firstorder.
 Defined.
+
+Theorem Inhab_Sing y : Inhab (Sing y).
+Proof.
+exists y.
+apply IN_Sing.
+Defined.
+
+Lemma subunsi z w q :
+INC z (Union (Pair q (Sing w))) -> (INC z q \/ IN w z).
+Proof.
+intro Q.
+(*destruct (classic (EQ w z)) as [O1|O2].
+2 : {*)
+destruct (classic (IN w z)) as [O1|O2].
++ right. exact O1.
++ left. intros u uinz.
+  assert(G:=Q u uinz).
+  apply Union_IN in G as [k [K1 K2]].
+  apply Pair_IN in K1.
+  destruct K1 as [P1|P2].
+  - apply (IN_sound_right u _ _ P1 K2).
+  - apply (IN_sound_right u _ _ P2) in K2.
+    apply IN_Sing_EQ in K2.
+    exfalso.
+    apply O2.
+    eapply IN_sound_left.
+    exact K2. exact uinz.
+Defined.
+
+Lemma subunsi2 z w q :
+INC z (Union (Pair q (Sing w))) -> (INC z q 
+\/ (IN w z /\ exists q', INC q' q /\ EQ z (Union (Pair q' (Sing w))))
+).
+Proof.
+intro Q.
+destruct (classic (IN w z)) as [O1|O2].
++ right. split.
+  exact O1.
+  (* exists (SUBSTRUCT q' ) *)
+  admit.
++ left. intros u uinz.
+  assert(G:=Q u uinz).
+  apply Union_IN in G as [k [K1 K2]].
+  apply Pair_IN in K1.
+  destruct K1 as [P1|P2].
+  - apply (IN_sound_right u _ _ P1 K2).
+  - apply (IN_sound_right u _ _ P2) in K2.
+    apply IN_Sing_EQ in K2.
+    exfalso.
+    apply O2.
+    eapply IN_sound_left.
+    exact K2. exact uinz.
+Admitted.
 
 Section ex_1_6.
 Context (X:Ens) (H: Ind X).
@@ -1917,13 +1971,167 @@ destruct H1 as [H1 H2].
   destruct (nothing_IN_Vide _ Y).
 Defined.
 
+Section lemma_1_6.
+Definition PP y := forall z : Ens,
+     Inhab z /\ INC z y -> exists t : Ens, epsmin t z.
+Context (H0 : IN Vide X)
+(H1 : forall Y : Ens, IN Y X -> IN (succ Y) X)
+(y : Ens)
+(U1 : IN y X)
+(J0 : pTr y)
+(J1 : PP y).
+Lemma ex_1_6_lem2 : ~IN y y.
+Proof.
+intro F.
+assert (INC (Sing y) y).
+{ intros q W.
+  apply IN_Sing_EQ in W.
+  eapply IN_sound_left.
+  apply EQ_sym, W.
+  exact F. }
+assert(L:= J1 (Sing y) (conj (Inhab_Sing y) H2)).
+destruct L as [t [T1 T2]].
+eapply T2.
+apply IN_Sing.
+eapply IN_sound_right.
+apply IN_Sing_EQ in T1.
+apply EQ_sym, T1.
+exact F.
+Defined.
+
+Lemma ex_1_6_lem3 a (B:IN a y): ~IN y a.
+Proof.
+intro L.
+apply (ex_1_6_lem2 (J0 a B _ L)).
+Defined.
+
+(*Context .*)
+Lemma ex_1_6_lem4 (z : Ens) (K1 : Inhab z)
+(P : INC z y) m (N:epsmin m z)
+ : epsmin m (Union (Pair z (Sing y))).
+Proof.
+unfold epsmin in *|-*.
+destruct N as [N1 N2].
+split.
++ eapply IN_Union.
+  eapply IN_Pair_left.
+  exact N1.
++ intros c V W.
+  apply Union_IN in V as [x [V1 V2]].
+  apply Pair_IN in V1.
+  destruct V1 as [V1|V1].
+  - unshelve eapply (N2 c _ W).
+    eapply IN_sound_right. exact V1. exact V2.
+  - apply (IN_sound_right c x (Sing y) V1) in V2.
+    apply IN_Sing_EQ in V2.
+    apply (IN_sound_left _ _ _ V2) in W.
+    refine (ex_1_6_lem3 m _ W).
+    exact (P m N1).
+Defined.
+
+Theorem ex_1_6_lem5 : PP (Sing y).
+Proof.
+unfold PP.
+intros z [Hz Cz].
+exists y.
+unfold epsmin.
+destruct Hz as [w W].
+assert (G:=Cz _ W).
+apply IN_Sing_EQ in G.
+split.
++ eapply IN_sound_left. exact G. exact W.
++ intros c cinz ciny.
+assert (G2:=Cz _ cinz).
+apply IN_Sing_EQ in G2.
+apply ex_1_6_lem2.
+eapply IN_sound_left.
+exact G2.
+exact ciny.
+Defined.
+
+Theorem ex_1_6_lem6 : PP (Union (Pair y (Sing y))).
+Proof.
+unfold PP.
+intros z [Hz Cz].
+unfold PP in J1.
+apply subunsi2 in Cz.
+assert (U:= J1 z).
+destruct Cz as [O1|O2].
++ apply U.
+  split;assumption.
++ (* assert (M:= J1 (Sing y)). *)
+  clear U.
+  destruct O2 as [O2 [j [O3 O4]]].
+  unfold epsmin.
+  assert (M:= J1 j).
+destruct (classic (Inhab j)).
+2 : {
+  exists y.
+  split.
+  - exact O2.
+  - intros c cinz ciny.
+eapply IN_sound_right in cinz.
+2 : exact O4.
+apply Union_IN in cinz as [a [A1 A2]].
+apply Pair_IN in A1 as [K|K].
+unfold Inhab in H2.
+apply H2.
+exists c. eapply IN_sound_right. exact K. exact A2.
+eapply IN_sound_right in A2. 2:exact K.
+apply IN_Sing_EQ in A2.
+apply ex_1_6_lem2.
+eapply IN_sound_left. exact A2. exact ciny.
+}
+assert (M:=M (conj H2 O3)).
+destruct M as [t MI].
+exists t.
+unfold epsmin in MI.
+(*
+destruct (classic (Inhab y)).
+2 : {
+  exists y.
+  split.
+  - exact O2.
+  - intros c cinz ciny.
+unfold Inhab in H2.
+apply H2.
+exists c. exact ciny.
+}
+ exists ()
+
+(* z= {y} U z' *)
+
+unfold epsmin in M, U.
+  exists y.
+fold (epsmin y z).
+apply M.
+
+  split.
+  - exact O2.
+  - intros c cinz ciny.
+
+
+unfold epsmin in J1.
+
+destruct Hz as [w W].
+assert (G:=Cz _ W).
+apply Union_IN in G as [k [K1 K2]].
+apply Pair_IN in K1.
+split.
+
+destruct K1.
+apply K1.
+*)
+Admitted.
+
+End lemma_1_6.
+
 Theorem ex_1_6 : Ind (Comp X prop_1_6).
 Proof.
 split.
 + exact ex_1_6_zero.
 + destruct H as [H0 H1].
   intros y U.
-Search Comp.
   apply IN_Comp_P in U as U2.
   2 : exact ex_1_6_lem1.
   apply Comp_INC in U as U1.
