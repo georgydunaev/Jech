@@ -174,8 +174,6 @@ Definition EQ_sound_right (a b c : Ens) (aeqb : EQ b c)
  (H : EQ a b) : EQ a c 
 := EQ_tran _ _ _ H aeqb.
 
-(*Definition EQ_INC := INC_refl.*)
-
 Definition SoundPred
 := (fun (P:Ens->Prop)=>(forall w1 w2 : Ens, EQ w1 w2 -> P w1 -> P w2)).
 
@@ -209,7 +207,6 @@ Defined.
 
 Theorem IN_sound_right :
  forall E : Ens, SoundPred (IN E).
-(* forall E E' E'' : Ens, EQ E' E'' -> IN E E' -> IN E E''. *)
 Proof.
 intros A B C BeqC AinB.
 destruct B as [Y G].
@@ -287,7 +284,7 @@ intro z. split.
 + apply H2.
 Defined.
 
-Theorem INC_tran : forall a b c : Ens, 
+Theorem INC_tran : forall a b c : Ens,
  INC a b -> INC b c -> INC a c.
 Proof.
 unfold INC in |- *; auto with zfc.
@@ -326,7 +323,7 @@ Defined.
 (* Definitions of the empty set, pair, union, intersection, comprehension  *)
 (*  axiom and powerset, together with their properties                     *)
 
-(* The empty set  (vide = french for empty)   *)
+(* The empty set *)
 Definition Vide : Ens :=
   sup False (fun x : False => match x return Ens with
                               end).
@@ -375,16 +372,6 @@ Defined.*)
 
 Definition Pair (A B:Ens) : Ens
  := sup bool (fun b : bool => if b then A else B).
-
-(*Definition Pair : forall E E' : Ens, Ens.
-Proof.
-intros.
-apply (sup bool).
-simple induction 1.
-exact E.
-exact E'.
-Show Proof.
-Defined.*)
 
 (* The pair construction is extensional *)
 Theorem Pair_sound_left :
@@ -488,7 +475,16 @@ apply (sup (sig (fun x:A => P (f x)))).
 intros [x _].
 exact (f x).
 Defined.
-(*simple induction 1; intros x p. todo: swap args*)
+
+
+
+Definition CompR : Ens -> (Ens -> Prop) -> Ens.
+Proof.
+intros [A f] P.
+apply (sup (sig (fun x:A => P (f x)))).
+intros [x _].
+exact (f x).
+Defined.
 
 (* The comprehension/separation axioms *)
 Theorem Comp_INC : forall (E : Ens) (P : Ens -> Prop), INC (Comp E P) E.
@@ -531,6 +527,7 @@ Defined.
 
 (* Again, extentionality is not stated, but easy 
    only if P preserves EQ.
+   see CompR_sound
 *)
 
 (* Projections of a set: *)
@@ -1407,7 +1404,7 @@ Proof.
 split; intro J.
 Abort.
 
-
+(* Predicate which equivalent to sound predicate is also sound. *)
 Theorem pred_sou (P R:Ens->Prop)
 (H:forall w : Ens, P w <-> R w)
 (P_sound:(SoundPred P))
@@ -2178,6 +2175,7 @@ Record class := Build_class {
 (*forall (a b : Ens), EQ a b -> (prty a -> prty b);*)
 }.
 
+
 Definition Build_class' : forall Vprty : Ens -> Prop,
        (forall a b : Ens, EQ a b -> Vprty a <-> Vprty b) -> class.
 Proof.
@@ -2200,6 +2198,24 @@ Defined.
 
 
 Definition cEQ (A B:class) := forall z:Ens, (prty A) z <-> (prty B) z.
+
+(*
+Theorem Comp_sound X1 X2 P1 P2:
+(SoundPred P1)/\(SoundPred P2)->
+cEQ P1 P2 ->
+EQ X1 X2 ->
+EQ (Comp X1 P1) (Comp X2 P2).
+Proof.
+Abort.
+*)
+
+Theorem CompR_sound X1 X2 C1 C2:
+cEQ C1 C2 ->
+EQ X1 X2 ->
+EQ (CompR X1 C1) (CompR X2 C2).
+Proof.
+Abort.
+
 (*
 Definition cEQ (A B: Ens->Prop) := forall z:Ens, A z <-> B z.
 *)
