@@ -914,6 +914,20 @@ Transparent Alpha.
 
 (*=== AXIOMS ===*)
 
+Theorem axEq a b: EQ a b -> forall z, IN z a <-> IN z b.
+Proof.
+intros H z.
+split.
+* intro zina.
+  refine (IN_sound_right _ _ _ _ _).
+  apply H.
+  apply zina.
+* intro zina.
+  refine (IN_sound_right _ _ _ _ _).
+  apply EQ_sym, H.
+  apply zina.
+Defined.
+
 (* page 3 *)
 (* axExt see above *)
 Theorem axPair : forall a b : Ens, exists w:Ens,
