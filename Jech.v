@@ -5243,8 +5243,46 @@ exact (sup )
 
 Check unit.
 Check sum.
+
+
+Theorem lw (f : False -> Ens) : f = (fun x : False => match x return Ens with
+                                          end).
+Proof.
+apply @Coq.Logic.FunctionalExtensionality.functional_extensionality.
+intro x.
+destruct x.
+Defined.
+
+Check @Coq.Logic.FunctionalExtensionality.functional_extensionality.
+Theorem sup_false {f} : (sup False f) = Vide.
+Proof.
+unfold Vide.
+simpl.
+apply f_equal.
+refine (lw f).
+Defined.
+
+
+Theorem false_vide f: EQ Vide (sup False f).
+Proof.
+ apply axExt.
+ intros.
+ split.
+ + intro.
+   destruct H.
+   destruct x.
++  intro.
+   destruct H.
+   destruct x.
+Defined.
+
 (* binary union *)
 Definition bu A B := Union (Pair A B).
+
+
+
+(*Infix Notation "(A ’u.’ B)" := (bu A B).*)
+
 
 (*https://coq.inria.fr/doc/v8.13/refman/language/core/inductive.html#recursive-functions-fix*)
 Require Import Coq.Program.Wf.
@@ -5293,28 +5331,315 @@ Program Fixpoint OPair (a b: Ens) {struct b}: Ens :=
   end
 .
 
-
-Timeout 1 Theorem c1: EQ (OPair Zero Zero) Vide.
+Theorem c1: EQ (OPair Zero Zero) Vide.
 Proof.
  apply axExt.
  intros.
  split.
- intro.
- unfold OPair in H.
- (*unfold One,Zero,Sing,Pair,Vide,bu,pi1,Union,Pair,pi1 in H.*)
+ + intro.
+   destruct H.
+   destruct x.
+   destruct x.
+   destruct p.
+   destruct p.
+ + intro H.
+   destruct H.
+   destruct x.
+Defined.
+
+Theorem c1': EQ (OPair Zero Zero) Vide.
+Proof.
+ apply axExt.
+ intros.
+ split.
+ + intro.
+   unfold OPair in H.
+   compute in H.
+   repeat rewrite sup_false in H.
+   simpl in H.
+   destruct H.
+   destruct x.
+   destruct x.
+   destruct y.
+   destruct y.
+ + intro H.
+   destruct H.
+   destruct x.
+Defined.
+
+(* (*unfold One,Zero,Sing,Pair,Vide,bu,pi1,Union,Pair,pi1 in H.*)
  simpl in H.
  unfold OPair in H.
  simpl in H.
 
  simpl.
 Abort.
-
+*)
 
 (* Timeout 1 Compute (OPair Zero Zero). *)
 Timeout 1 Eval lazy in (OPair Zero Zero).
 Timeout 1 Eval lazy in (OPair Zero One).
 Timeout 1 Eval lazy in (OPair One Zero).
 Timeout 1 Eval lazy in (OPair One One).
+
+(*HERE!*)
+Check Ens_ind.
+Check Ens_rect.
+Check Ens_rect (fun _ => Ens).
+(*
+Ens_rect
+     : forall P : Ens -> Type,
+       (forall (A : Type) (e : A -> Ens), (forall a : A, P (e a)) -> P (sup A e)) ->
+       forall e : Ens, P e 
+
+G:V -> V
+ex! F:VxV->V
+G(x) = F(x,G|{y|y in x})
+*)
+
+Set Guard Checking.
+Reset OPair.
+Theorem OPair: Ens -> Ens -> Ens.
+Proof.
+intros a b.
+Check Ens_rect.
+Abort.
+
+Reset OPair.
+Fail Program Fixpoint OPair (a b: Ens) {measure (size a b)}: Ens :=
+  match a, b with
+  | sup A f, sup B g => bu (sup A (fun a1 => OPair Zero (f a1)) )
+                           (sup B (fun b1 => OPair  One (g b1)) )
+  end
+.
+
+Set Guard Checking.
+
+Definition OPair_Zero_Zero := Vide.
+
+(*Good! *)
+Program Fixpoint OPair_Zero (c : Ens) : Ens :=
+match c with
+| sup C h => (sup C (fun c1 => OPair_One (h c1)) )
+end
+with OPair_One (c: Ens) : Ens :=
+match c with
+| sup C h => bu (Sing Vide)
+                (sup C (fun c1 => OPair_One (h c1)) )
+end
+.
+Reset OPair_Zero.
+Reset OPair_One.
+Reset OPair_Zero_Zero.
+
+Definition img (f:Ens -> Ens) (c:Ens) : Ens := 
+match c with
+| sup C h => sup _ (fun d => f (h d))
+end.
+
+(* if pair starts with zero then ..., with one then ... *)
+
+Fail
+Program Fixpoint  OPair_Zero (c : Ens) : Ens := bu (img OPair_Zero Zero) (img OPair_One c)
+            with  OPair_One  (c : Ens) : Ens := bu (img OPair_Zero One ) (img OPair_One c)
+.
+(*
+Fail
+Program Fixpoint  OPair_Zero (c : Ens) : Ens := bu (img_OPair_Zero_on_Zero) (img OPair_One c)
+            with  OPair_One  (c : Ens) : Ens := bu (img_OPair_Zero_on_One ) (img OPair_One c)
+            and  img_OPair_Zero_on_Zero := Vide
+            and  img_OPair_Zero_on_One  := Sing Vide.
+Fail
+Definition OPair_Zero_Zero := Vide
+with OPair_Zero_One  := (Sing OPair_Zero_Zero).
+*)
+
+
+Infix "u" := bu (at level 60, right associativity).
+
+
+Definition img_OPair_Zero_on_Zero := Vide.      (* (img OPair_Zero Zero) === {(0,k)|k in 0}                        =  emptyset *)
+Definition        OPair_Zero_Zero := Vide.      (*      OPair Zero Zero  === (0,0) = {(0,j)|j in 0}u{(1,k)|k in 0} =  emptyset *)
+Definition img_OPair_Zero_on_One  := Sing Vide. (* (img OPair_Zero One)  === {(0,k)|k in 1} = {(0,0)}              = {emptyset}*)
+Definition        OPair_Zero_One  := Sing Vide. (*      OPair Zero One   === (0,1)={(0,k)|k in 0}u{(0,k)|k in 1} = {} u {(0,0)} = {0} = {emptyset} *)
+
+
+Program Fixpoint  OPair_Zero (c : Ens) : Ens :=               (img OPair_One c) (* = (img OPair_Zero   Zero) u (img OPair_One c) *)
+            with  OPair_One  (c : Ens) : Ens := (Sing Vide) u (img OPair_One c) (* = (img_OPair_Zero_on_One) u (img OPair_One c) *)
+.
+
+Definition OPair (a b: Ens) : Ens := (img OPair_Zero a) u (img OPair_One b).
+
+(* WIP *)
+Theorem th2 X : EQ (Zero u X) X.
+Proof.
+apply axExt.
+intros.
+split.
+intro.
++ destruct H.
+  destruct x.
+  destruct x.
+  - destruct p.
+  - unfold pi1,pi2 in *|-*.
+    destruct X.
+    destruct.
+    compute. 
+  unfold Zero, Vide, pi1 in *|-*.
+  destruct p.
+compute.
+repeat rewrite sup_false.
+
+destruct X.
+compute.
+
+unfold Zero, Vide.
+unfold bu, Pair, Union.
+compute.
+repeat rewrite sup_false.
+trivial.
+Defined.
+
+Theorem th2 : img OPair_Zero Zero = Zero.
+Proof.
+compute.
+repeat rewrite sup_false.
+trivial.
+Defined.
+
+Theorem th1 a b : (OPair a b) = ((img (OPair Zero) a) u (img (OPair One) b)).
+Proof.
+once unfold OPair.
+apply f_equal2.
++ apply f_equal2; trivial.
+  apply @Coq.Logic.FunctionalExtensionality.functional_extensionality.
+  rewrite th2.
+   intro.
+   unfold OPair_Zero.
+   compute.
+   unfold img, Zero, Vide.
+   repeat rewrite sup_false.
+   unfold Vide, bu, Pair, Union,Vide.
+   repeat rewrite sup_false.
+   compute.
+
+  Eval compute in (img OPair_Zero Zero).
+  unfold OPair_Zero.
+
+fold OPair.
+
+simpl.
+unfold One, Zero, Vide, img, bu.
+   repeat rewrite sup_false.
+destruct a.
+destruct b.
+unfold Union.
+
+unfold bu, Union, One, Zero, Vide, img, Pair.
+   repeat rewrite sup_false.
+
+
+unfold One, Zero, Vide, img, bu.
+   repeat rewrite sup_false.
+unfold One, Zero, Vide, img, bu.
+   repeat rewrite sup_false.
+unfold One, Zero, Vide, img, bu.
+   repeat rewrite sup_false.
+
+simpl.
+compute.
+
+Defined.
+
+
+
+
+Program Fixpoint  OPair_Zero (c : Ens) : Ens := (img OPair_Zero   Zero) u (img OPair_One c)
+            with  OPair_One  (c : Ens) : Ens := (img_OPair_Zero_on_One) u (img OPair_One c).
+
+Eval simpl in OPair_Zero Zero.
+
+Definition OPair (a b: Ens) : Ens := (img OPair_Zero a) u (img OPair_One b).
+
+
+Program Fixpoint  OPair_Zero (c : Ens) : Ens :=               (img OPair_One c)
+            with  OPair_One  (c : Ens) : Ens := (Sing Vide) u (img OPair_One c).
+
+Definition OPair (a b: Ens) : Ens := bu (img OPair_Zero a) (img OPair_One b).
+
+Program Fixpoint OPair_Zero (c : Ens) : Ens :=
+match c with
+| sup C h => (
+bu (OPair_Zero_Zero)
+   (sup C (fun c1 => OPair_One (h c1)))
+)
+end
+with OPair_One (c: Ens) : Ens :=
+match c with
+| sup C h => bu (Sing Vide)
+                (sup C (fun c1 => OPair_One (h c1)) )
+end
+.
+(sup C (fun c1 => OPair_One (h c1)) )
+
+  (*(sup  (fun a1 => OPair_Zero Zero) )
+
+  bu (sup A (fun a1 => OPair_Zero Zero) )
+     (sup B (fun b1 => OPair_One b1) )*)
+
+  (*bu (sup A (fun a1 => OPair_Zero One) )
+     (sup B (fun b1 => OPair_One c) )*)
+
+Program Fixpoint OPair (a b: Ens) {measure (size a b)}: Ens :=
+  match a, b with
+  | sup A f, sup B g => bu (sup A (fun a1 => OPair Zero (f a1)) )
+                           (sup B (fun b1 => OPair  One (g b1)) )
+  end
+
+(*
+Program Fixpoint OPair (p: Ens*Ens) : Ens :=
+  match p with
+  | (a,b) => (
+  match a, b with
+  | sup A f, sup B g => bu (sup A (fun a1 => OPair (Zero,(f a1))) )
+                           (sup B (fun b1 => OPair  (One,(g b1))) )
+  end
+  )
+  end
+.
+
+Program Fixpoint OPair (a b: Ens) {struct a*b}: Ens :=
+  match a, b with
+  | sup A f, sup B g => bu (sup A (fun a1 => OPair Zero (f a1)) )
+                           (sup B (fun b1 => OPair  One (g b1)) )
+  end
+.
+
+
+Set Guard Checking.
+Program Fixpoint OPair (a: Ens) {struct a}: Ens -> Ens :=
+  match a with
+  => (fun x => Zero)
+  | sup A f =>
+     (fix hlp b := match b with
+                   | sup B g => bu (sup A (fun a1 => OPair_Zero (f a1)) )
+                                   (sup B (fun b1 => OPair_One  (g b1)) )
+                   end
+     )
+  end
+with 
+.
+
+
+Program Fixpoint OPair (a b: Ens) : Ens.
+Proof.
+destruct a as [A f].
+destruct b as [B g].
+exact (bu (sup A (fun a1 => OPair Zero (f a1)) )
+                           (sup B (fun b1 => OPair  One (g b1)) )).
+Term.
+Defined.
+Fail Next Obligation.
 
 Timeout 1 Eval lazy in (OPair Zero sOmega).
 
