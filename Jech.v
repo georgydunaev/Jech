@@ -96,6 +96,11 @@ Definition ex2sig {A : Type} {P : A -> Prop}
 Inductive Ens : Type :=
     sup : forall A : Type, (A -> Ens) -> Ens.
 
+
+Definition Pair (A B:Ens) : Ens
+ := sup bool (fun b : bool => if b then A else B).
+
+
 (* Extensional equality of sets *)
 Fixpoint EQ (E1 E2: Ens) {struct E2}: Prop :=
   match E1, E2 with
@@ -5199,6 +5204,164 @@ apply IN_Pair_right.
 Defined.
 
 (* ex_1_6 *)
+
+(******************************)
+
+(*
+(* Kuratowski construction *)
+Definition OrdPair (x y : Ens) := Pair (Sing x) (Pair x y).
+*)
+(*
+Type corresponds to the current Universe
+is it possible to define classes in this way?
+*)
+(* Class-ordered pair construction *)
+(*
+remark: Inductive Ens : Type :=
+    sup : forall A : Type, (A -> Ens) -> Ens.
+
+*)
+
+Definition Zero := Vide.
+Definition One  := Sing Vide.
+
+Check thm_collection .
+Print collection .
+
+Definition to_type (E: Ens) : Type :=
+  match E with
+  | sup A f => A
+  end.
+
+(*
+Axiom ax: forall (B: Ens), ((to_type B) -> Ens) -> Ens.
+
+Theorem th : forall (B: Ens), ((to_type B) -> Ens) -> Ens.
+intros B X.
+exact (sup )
+*)
+
+Check unit.
+Check sum.
+(* binary union *)
+Definition bu A B := Union (Pair A B).
+
+(*https://coq.inria.fr/doc/v8.13/refman/language/core/inductive.html#recursive-functions-fix*)
+Require Import Coq.Program.Wf.
+
+Fail Program Fixpoint OPair (a b: Ens) {struct b}: Ens :=
+  match a, b with
+  | sup A f, sup B g => bu (sup A (fun a1 => OPair Zero (f a1)) )
+                           (sup B (fun b1 => OPair  One (g b1)) )
+  end
+.
+
+Check prod.
+Check @proj1.
+Check @fst.
+
+(* variant of replacement, where the first argument is treated as family/class-function. *)
+Axiom replvar : Ens -> Ens -> Ens.
+
+Unset Guard Checking.
+
+(* simultaneous with Cart definition *)
+Program Fixpoint OPair (a b: Ens) {struct b}: Ens :=
+   bu (Cart (Sing Zero) a) (Cart (Sing One) b)
+with Cart (a b: Ens) {struct b}: Ens :=
+  match a, b with
+  | sup A f, sup B g => sup (prod A B) (fun p => (OPair (f (fst p)) (g (snd p))))
+  end
+.
+
+Timeout 1 Theorem c1: EQ (OPair Zero Zero) Vide.
+Proof.
+ apply axExt.
+ intros.
+ split.
+ + intro.
+   unfold OPair in H.
+Abort.
+
+
+(* separate definition *)
+Reset OPair.
+Program Fixpoint OPair (a b: Ens) {struct b}: Ens :=
+  match a, b with
+  | sup A f, sup B g => bu (sup A (fun a1 => OPair Zero (f a1)) )
+                           (sup B (fun b1 => OPair  One (g b1)) )
+  end
+.
+
+
+Timeout 1 Theorem c1: EQ (OPair Zero Zero) Vide.
+Proof.
+ apply axExt.
+ intros.
+ split.
+ intro.
+ unfold OPair in H.
+ (*unfold One,Zero,Sing,Pair,Vide,bu,pi1,Union,Pair,pi1 in H.*)
+ simpl in H.
+ unfold OPair in H.
+ simpl in H.
+
+ simpl.
+Abort.
+
+
+(* Timeout 1 Compute (OPair Zero Zero). *)
+Timeout 1 Eval lazy in (OPair Zero Zero).
+Timeout 1 Eval lazy in (OPair Zero One).
+Timeout 1 Eval lazy in (OPair One Zero).
+Timeout 1 Eval lazy in (OPair One One).
+
+Timeout 1 Eval lazy in (OPair Zero sOmega).
+
+(* {b|(0,b) in p} *)
+
+(* for [a,b] it would be replvar, but here we need something else or not?*)
+Definition pr1 (p:Ens) := replvar p Zero.
+
+
+(*Fail Timeout 1 Eval lazy in OPair Zero Zero.*)
+
+Set Guard Checking.
+Definition size (a b:Ens) := 0.
+(*
+Fixpoint size (a b: Ens) : nat :=
+  match a, b with
+  | sup A f, sup B g => (size Zero (f a1))
+                        + (size  One (g b1))
+  end
+.*)
+
+Program Fixpoint OPair (a b: Ens) {measure (size a b)}: Ens :=
+  match a, b with
+  | sup A f, sup B g => bu (sup A (fun a1 => OPair Zero (f a1)) )
+                           (sup B (fun b1 => OPair  One (g b1)) )
+  end
+.
+Check size.
+
+Next Obligation.
+
+
+(*c (top -> top) (fun x => x) c.*)
+
+Proof
+Admitted.
+
+
+.
+Termination
+  cheat
+QED.
+
+Terminate
+
+Next Obligation.
+Fail Timeout 1 Eval lazy in c (top -> top) (fun x => x) c.
 
 
 (*assert (ex_1_4  
