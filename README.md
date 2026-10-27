@@ -211,7 +211,9 @@ Some files in the appendix are tiny experiments with "ensembles".
   `Jech.v` (5,708 lines), the ticket, and all `purgatorium/` scratch files.
 * No library code was changed. No commented-out or alternative proof was
   removed (per delegation rules).
-* Follow-up tickets proposed in `tickets/` (see `ticket_*_proposed_*.md`):
+* Follow-up tickets proposed in `tickets/` (see `ticket_7196_proposed_*.md`;
+  these were opened as follow-ups by this pass and are owned by later passes
+  #7197–#7200 or future iterations):
   - Expand Part III (first-order logic: syntax, derivations, soundness).
   - Prove remaining ZFC axioms (replacement/infinity in the internal class
     theory ▸ `axRep`, `axInfty` on `Ens`-small index types).
