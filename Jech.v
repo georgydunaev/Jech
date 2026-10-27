@@ -7,6 +7,50 @@ Gallina's "match .. end" notation rather than discover
 induction and recursion principles.)
 *)
 (* IST = "Introduction to Set Theory".(K.Hrbacek, T.Jech)
+(*
+(* =============================================
+(* Jech Library Documentation
+(* =============================================
+(*
+(* ## Overview
+(*
+(* This library is a remake and extension of the `zfc` library, with a focus on simplifying proofs and increasing readability. It covers various parts of set theory, including the ZFC axioms, exercises from Jech's "Set Theory" book, and experiments with classes and many theorems about them.
+(*
+(* ## Structure
+(*
+(* The library is divided into several parts:
+(*
+(* 1. **Part I**: Large isolated part of the `/coq-contribs/zfc/` library and proofs of some axioms of ZFC.
+(* 2. **Part II**: Development of the classic ZFC theory with exercises from Jech's "Set Theory" and "Introduction to Set Theory" books.
+(* 3. **Part III**: Development of formulas and derivations for first-order logic.
+(* 4. **Part IV**: Experiments with classes and many theorems about them.
+(* 5. **Part V**: Translation of Metamath theorems.
+(*
+(* ## Goals
+(*
+(* 1. Create a self-contained book of first-order logic and ZFC set theory.
+(* 2. Solve exercises from Jech's "Set Theory".
+(* 3. Re-use proofs from Metamath.
+(*
+(* ## Key Definitions
+(*
+(* - `p`: PROPERTY
+(* - `s`: SET
+(* - `c`: CLASS
+(* - `k`: CONGLOMERATE
+(* - `mc`: CLASS from Metamath set.mm
+(*
+(* ## Exercises
+(*
+(* - `snis`: 
+(* - `ex_1_2`, `ex_1_2'`, `ex_1_3''`: ex.1.2
+(* - `ex_1_3`: ex.1.3
+(* - `ex_1_4`: ex.1.4
+(* - `ex_1_5`: ex.1.5
+(* - `ex_1_6`: ex.1.6 (completed)
+(*
+(* =============================================
+(*
     ST = "Set Theory".(T.Jech, 2003)
  I2AST = "Introduction to Axiomatic Set Theory"(W.Zaring,G.Takeuti)
    AST = "Axiomatic Set Theory"(W.Zaring,G.Takeuti)
@@ -57,7 +101,7 @@ of the first-order logic and ZFC set theory.
   ex_1_3 : ex.1.3
   ex_1_4 : ex.1.4
   ex_1_5 : ex.1.5
-  ex_1_6 : ex.1.6
+  ex_1_6 : ex.1.6 (completed)
 *)
 
 (*
@@ -97,6 +141,22 @@ Inductive Ens : Type :=
     sup : forall A : Type, (A -> Ens) -> Ens.
 
 
+(*
+(* Pair: Constructs a set containing exactly two elements A and B
+(*
+(* This is a fundamental set operation that forms the basis for ordered pairs
+(* and other set constructions. The Pair is implemented using the boolean type
+(* to distinguish between the two elements.
+(*
+(* Parameters:
+(*   A, B: The two sets to be paired
+(*
+(* Returns:
+(*   A set containing exactly A and B as elements
+(*
+(* Example:
+(*   Pair {1} {2} constructs a set containing 1 and 2
+*)
 Definition Pair (A B:Ens) : Ens
  := sup bool (fun b : bool => if b then A else B).
 
@@ -126,7 +186,7 @@ Fixpoint EQ_refl (E : Ens) : EQ E E.
 Proof.
 destruct E as [A f].
 split; intros z; exists z; exact (EQ_refl (f z)).
-Defined.
+Qed.
 
 Definition EQ_refl' : forall (E : Ens), EQ E E
  := Ens_ind _
@@ -152,7 +212,7 @@ split.
   destruct (E32 x3) as [x2 P32].
   destruct (E21 x2) as [x1 P21].
   exists x1. apply (EQ_tran (f1 x1) (f2 x2) (f3 x3) P21 P32).
-Defined.
+Qed.
 
 Fixpoint EQ_sym (E1 E2 : Ens) {struct E2}: EQ E1 E2 -> EQ E2 E1.
 Proof.
@@ -162,7 +222,7 @@ simpl in * |- *.
 destruct H as [A2B B2A]; split.
 + intro b. destruct (B2A b) as [a J]. exists a. apply EQ_sym with (1:=J).
 + intro a. destruct (A2B a) as [b J]. exists b. apply EQ_sym with (1:=J).
-Defined.
+Qed.
 
 Hint Resolve EQ_sym EQ_refl : zfc.
 
@@ -173,7 +233,7 @@ apply EQ_sym in aeqb.
 eapply EQ_tran.
 exact aeqb.
 exact H.
-Defined.
+Qed.
 
 Definition EQ_sound_right (a b c : Ens) (aeqb : EQ b c)
  (H : EQ a b) : EQ a c 
@@ -194,7 +254,7 @@ exists Y.
 apply EQ_tran with A.
 + apply EQ_sym. exact AeqB.
 + apply AeqFY.
-Defined.
+Qed.
 
 Theorem IN_sound_left :
  forall E : Ens, SoundPred (fun y=>IN y E).
@@ -207,7 +267,7 @@ exists Y.
 apply EQ_tran with A.
 + apply EQ_sym. exact AeqB.
 + apply AeqFY.
-Defined.
+Qed.
 
 
 Theorem IN_sound_right :
@@ -222,7 +282,7 @@ destruct AinB as [y AeqGy].
 destruct (Y2Z y) as [z GyeqHz].
 exists z.
 eapply EQ_tran with (1:=AeqGy) (2:=GyeqHz).
-Defined.
+Qed.
 
 Theorem axExt_left : forall (x y : Ens),
   (forall z, IN z x <-> IN z y) -> EQ x y.
@@ -242,7 +302,7 @@ split.
   exists x.
   apply EQ_sym.
   exact H.
-Defined.
+Qed.
 
 Theorem axExt_right : forall x y : Ens,
    EQ x y -> forall z, (IN z x <-> IN z y).
@@ -250,7 +310,7 @@ Proof.
 intros; split.
 + apply IN_sound_right. exact H.
 + apply IN_sound_right. apply EQ_sym, H.
-Defined.
+Qed.
 
 Theorem axExt : forall x y : Ens,
    EQ x y <-> forall z, (IN z x <-> IN z y).
@@ -258,7 +318,7 @@ Proof.
 intros; split.
 + apply axExt_right.
 + apply axExt_left.
-Defined.
+Qed.
 
 Theorem EQ_INC : forall a b : Ens, EQ a b -> INC a b.
 Proof.
@@ -266,7 +326,7 @@ intros a b H z.
 eapply axExt_right in H.
 destruct H as [H1 H2].
 exact H1.
-Defined.
+Qed.
 
 Hint Resolve EQ_sym EQ_refl EQ_INC: zfc.
 
@@ -277,7 +337,7 @@ Definition INC_refl : forall E : Ens, INC E E
  := fun (E a : Ens) (H : IN a E) => H.
 (*Proof.
 unfold INC in |- *; auto with zfc.
-Defined.*)
+Qed.*)
 
 Theorem INC_antisym : forall a b : Ens,
  INC a b -> INC b a -> EQ a b.
@@ -287,13 +347,13 @@ apply axExt_left.
 intro z. split.
 + apply H1.
 + apply H2.
-Defined.
+Qed.
 
 Theorem INC_tran : forall a b c : Ens,
  INC a b -> INC b c -> INC a c.
 Proof.
 unfold INC in |- *; auto with zfc.
-Defined.
+Qed.
 
 Hint Resolve INC_antisym: zfc.
 
@@ -311,7 +371,7 @@ apply AincC.
 eapply IN_sound_right.
 + apply EQ_sym. exact AeqB.
 + exact ZinB.
-Defined.
+Qed.
 
 Theorem INC_sound_right :
  forall A B C : Ens, EQ B C -> INC A B -> INC A C.
@@ -321,7 +381,7 @@ eapply IN_sound_right.
 + exact BeqC.
 + apply AincB.
   exact ZinA.
-Defined.
+Qed.
 
 (************ Remastered Axioms.v ***************)
 
@@ -361,7 +421,7 @@ split.
   exists x.
   apply EQ_refl.
 + intro y. destruct y.
-Defined.
+Qed.
 
 (*Theorem tout_vide_est_Vide' :
  forall E : Ens, (forall E' : Ens, IN E' E -> False) -> EQ E Vide.
@@ -371,10 +431,26 @@ Proof.
 intros; elim (H0 (e x)); auto with zfc.
 exists x; auto with zfc.
 simple induction y.
-Defined.*)
+Qed.*)
 
 (* Pair *)
 
+(*
+(* Pair: Constructs a set containing exactly two elements A and B
+(*
+(* This is a fundamental set operation that forms the basis for ordered pairs
+(* and other set constructions. The Pair is implemented using the boolean type
+(* to distinguish between the two elements.
+(*
+(* Parameters:
+(*   A, B: The two sets to be paired
+(*
+(* Returns:
+(*   A set containing exactly A and B as elements
+(*
+(* Example:
+(*   Pair {1} {2} constructs a set containing 1 and 2
+*)
 Definition Pair (A B:Ens) : Ens
  := sup bool (fun b : bool => if b then A else B).
 
@@ -388,7 +464,7 @@ intros A A' B AeqA';
 split; (intros [|]; 
  [exists true; exact AeqA' | exists false; exact (EQ_refl B)]
 ).
-Defined.
+Qed.
 
 Theorem Pair_sound_right :
  forall A B B' : Ens, EQ B B' -> EQ (Pair A B) (Pair A B').
@@ -400,7 +476,7 @@ unfold Pair in |- *; simpl in |- *; intros; split.
 + simple induction y.
   exists true; auto with zfc.
   exists false; auto with zfc.
-Defined.
+Qed.
 
 Hint Resolve Pair_sound_right Pair_sound_left: zfc.
 
@@ -409,13 +485,13 @@ Theorem IN_Pair_left : forall E E' : Ens, IN E (Pair E E').
 Proof.
 unfold Pair in |- *. simpl in |- *. exists true. simpl in |- *.
 auto with zfc.
-Defined.
+Qed.
 
 Theorem IN_Pair_right : forall E E' : Ens, IN E' (Pair E E').
 Proof.
 unfold Pair in |- *. simpl in |- *. exists false. simpl in |- *.
 exact (EQ_refl E').
-Defined.
+Qed.
 
 Theorem Pair_IN :
  forall E E' A : Ens, IN A (Pair E E') -> EQ A E \/ EQ A E'.
@@ -423,7 +499,7 @@ Proof.
 unfold Pair in |- *; simpl in |- *.
 intros E E' A [b P].
 destruct b; auto with zfc.
-Defined.
+Qed.
 
 Hint Resolve IN_Pair_left IN_Pair_right nothing_IN_Vide: zfc.
 
@@ -434,14 +510,14 @@ Definition Sing (E : Ens) := Pair E E.
 Theorem IN_Sing : forall E : Ens, IN E (Sing E).
 Proof.
 unfold Sing in |- *; auto with zfc.
-Defined.
+Qed.
 
 Theorem IN_Sing_EQ : forall E E' : Ens, IN E (Sing E') -> EQ E E'.
 Proof.
 unfold Sing in |- *. 
 intros E E' H.
 apply Pair_IN in H as [H|H]; assumption.
-Defined.
+Qed.
 
 Hint Resolve IN_Sing IN_Sing_EQ: zfc.
 
@@ -450,7 +526,7 @@ Proof.
 unfold Sing in |- *; intros. apply EQ_tran with (Pair A A').
  auto with zfc.
  auto with zfc.
-Defined.
+Qed.
 
 Hint Resolve Sing_sound: zfc.
 
@@ -461,7 +537,7 @@ intros. cut (IN E1 (Sing E2)).
 + apply IN_sound_right with (Sing E1).
   - auto with zfc.
   - auto with zfc.
-Defined.
+Qed.
 
 Hint Resolve EQ_Sing_EQ: zfc.
 
@@ -479,7 +555,7 @@ intros [A f] P.
 apply (sup (sig (fun x:A => P (f x)))).
 intros [x _].
 exact (f x).
-Defined.
+Qed.
 
 
 
@@ -489,7 +565,7 @@ intros [A f] P.
 apply (sup (sig (fun x:A => P (f x)))).
 intros [x _].
 exact (f x).
-Defined.
+Qed.
 
 (* The comprehension/separation axioms *)
 Theorem Comp_INC : forall (E : Ens) (P : Ens -> Prop), INC (Comp E P) E.
@@ -500,7 +576,7 @@ simpl in *|-*.
 destruct zinCompEP as [w R].
 destruct w as [a Pfa].
 exists a. exact R.
-Defined.
+Qed.
 
 Theorem IN_Comp_P :
  forall (E A : Ens) (P : Ens -> Prop),
@@ -510,7 +586,7 @@ intros E A P H H0.
 destruct E,H0,x as [a p].
 apply H with (2:=p).
 apply EQ_sym. assumption.
-Defined.
+Qed.
 
 (* I2AST p.13, thm 4.12, (<-) *)
 Theorem IN_P_Comp :
@@ -528,7 +604,7 @@ apply H with (2:=H1).
 exact p.
 simpl.
 exact p.
-Defined.
+Qed.
 
 (* Again, extentionality is not stated, but easy 
    only if P preserves EQ.
@@ -555,7 +631,7 @@ intros [A f].
 apply (sup { x : A & pi1 (f x)} ).
 intros [a b].
 exact (pi2 (f a) b).
-Defined.
+Qed.
 
 Theorem EQ_EXType :
  forall E E' : Ens,
@@ -566,7 +642,7 @@ Proof.
 intros [A f] [A' f'] [e1 e2].
 simpl in |- *.
 apply e1.
-Defined.
+Qed.
 
 Theorem IN_EXType :
  forall E E' : Ens,
@@ -574,7 +650,7 @@ Theorem IN_EXType :
 Proof.
 intros [A f]. simpl.
 intros [A' f']. trivial.
-Defined.
+Qed.
 
 (* The union axioms *)
 Theorem IN_Union :
@@ -606,7 +682,7 @@ apply IN_EXType in i1 as [x0 e2].
 simpl in x0.
 exists (existT (fun x : A => pi1 (f x)) x x0).
 exact e2.
-Defined.
+Qed.
 
 Theorem IN_INC_Union : forall E E' : Ens, IN E' E -> INC E' (Union E).
 Proof.
@@ -622,7 +698,7 @@ assert (i'': IN E'' (f a)).
 eapply IN_EXType in i'' as [aa ee].
 exists (existT (fun x : A => pi1 (f x)) a aa).
 exact ee.
-Defined.
+Qed.
 
 Theorem Union_IN :
  forall E E' : Ens,
@@ -641,7 +717,7 @@ split.
   simpl in |- *.
   destruct (f a). simpl.
   exists b. auto with zfc.
-Defined.
+Qed.
 
 (* extentionality of union  *)
 Theorem Union_sound : forall E E' : Ens, EQ E E' -> EQ (Union E) (Union E').
@@ -662,7 +738,7 @@ intros [A f] [A' f'].
   { auto with zfc. }
   destruct (EQ_EXType (f' a') (f a) ea' aa') as [aa eaa].
   exists (existT (fun x : A => pi1 (f x)) a aa); auto with zfc.
-Defined.
+Qed.
 
 
 (* The union construction is monotone w.r.t. inclusion   *)
@@ -672,7 +748,7 @@ unfold INC in |- *; intros E E' IEE E'' IEE''.
 destruct (Union_IN E E'') as [E''' [I1 I2]].
 + auto with zfc.
 + apply IN_Union with E'''; auto with zfc.
-Defined.
+Qed.
 
 (*  The powerset and its axioms   *)
 Definition Power (E : Ens) : Ens :=
@@ -698,7 +774,7 @@ intros E'' [a' e].
 destruct (HA a') as [[a p] H].
 intros; exists a.
 apply EQ_tran with (f' a'); auto with zfc.
-Defined.
+Qed.
 
 Theorem INC_IN_Power : forall E E' : Ens, INC E' E -> IN E' (Power E).
 Proof.
@@ -723,7 +799,7 @@ split.
 + simple induction y; simpl in |- *.
   simple induction 1; intros.
   exists x0; auto with zfc.
-Defined.
+Qed.
 
 Theorem Power_mon : forall E E' : Ens, INC E E' -> INC (Power E) (Power E').
 Proof.
@@ -733,7 +809,7 @@ apply INC_IN_Power.
 cut (INC E0 E).
 unfold INC in |- *; unfold INC in H; intros; auto with zfc.
 apply IN_Power_INC; auto with zfc.
-Defined.
+Qed.
 
 Theorem Power_sound : forall E E' : Ens, EQ E E' -> EQ (Power E) (Power E').
 Proof.
@@ -751,7 +827,7 @@ intros; apply INC_IN_Power; assumption.
 cut (INC A E'); intros.
 apply INC_sound_right with E'; auto with zfc.
 apply IN_Power_INC; assumption.
-Defined.
+Qed.
 
 (* small lemma *)
 Theorem not_EQ_Sing_Vide : forall E : Ens, EQ (Sing E) Vide -> False.
@@ -761,7 +837,7 @@ cut (IN E Vide).
 + simpl in |- *.
   intros [[]].
 + apply IN_sound_right with (Sing E); auto with zfc.
-Defined.
+Qed.
 
 Theorem not_EQ_Vide_Sing : forall E : Ens, EQ Vide (Sing E) -> False.
 Proof.
@@ -771,7 +847,7 @@ exact (nothing_IN_Vide E).
 apply IN_sound_right with (Sing E).
 + auto with zfc.
 + auto with zfc.
-Defined.
+Qed.
 
 (*=== Omega.v ===*)
 
@@ -782,7 +858,7 @@ Proof.
 simple induction 1; intros.
 exact Vide.
 exact (succ X).
-Defined.
+Qed.
 
 Definition Omega : Ens := sup nat Nat.
 
@@ -790,14 +866,14 @@ Theorem IN_succ : forall E : Ens, IN E (succ E).
 Proof.
 intros E; unfold succ in |- *; unfold Sing in |- *;
  apply IN_Union with (Pair E E); auto with zfc.
-Defined.
+Qed.
 
 Theorem INC_succ : forall E : Ens, INC E (succ E).
 Proof.
 unfold INC in |- *; unfold succ in |- *.
 intros.
 apply IN_Union with E; auto with zfc.
-Defined.
+Qed.
 
 Hint Resolve IN_succ INC_succ: zfc.
 
@@ -813,7 +889,7 @@ intros; right; apply IN_sound_right with E1; auto with zfc.
 intros; left; cut (IN E' (Sing E)).
 auto with zfc.
 apply IN_sound_right with E1; auto with zfc.
-Defined.
+Qed.
 
 Theorem E_not_IN_E : forall E : Ens, IN E E -> False.
 Proof.
@@ -826,12 +902,12 @@ change (EQ (sup A f) (f a)) in e.
 elim (r a).
 apply IN_sound_right with (sup A f); auto with zfc.
 exists a; auto with zfc.
-Defined.
+Qed.
 
 Theorem Nat_IN_Omega : forall n : nat, IN (Nat n) Omega.
 Proof.
 intros; simpl in |- *; exists n; auto with zfc.
-Defined.
+Qed.
 Hint Resolve Nat_IN_Omega: zfc.
 
 Theorem IN_Omega_EXType :
@@ -840,7 +916,7 @@ Proof.
 simpl in |- *; simple induction 1.
 intros n e.
 exists n; auto with zfc.
-Defined.
+Qed.
 
 Theorem IN_Nat_EXType :
  forall (n : nat) (E : Ens),
@@ -857,7 +933,7 @@ simple induction n.
     auto with zfc.
   - intros.
     elim (H E); auto with zfc.
-Defined.
+Qed.
 
 Theorem Omega_EQ_Union : EQ Omega (Union Omega).
 Proof.
@@ -878,7 +954,7 @@ apply INC_antisym; unfold INC in |- *.
   1 : apply IN_sound_right with e; auto with zfc.
   destruct (IN_Nat_EXType n E H0) as [x H1].
   apply IN_sound_left with (Nat x); auto with zfc.
-Defined.
+Qed.
 
 (*
 Theorem Omega_Ord : (Ord Omega).
@@ -931,7 +1007,7 @@ split.
   refine (IN_sound_right _ _ _ _ _).
   apply EQ_sym, H.
   apply zina.
-Defined.
+Qed.
 
 (* page 3 *)
 (* axExt see above *)
@@ -950,7 +1026,7 @@ split.
   - eapply IN_sound_left.
     apply EQ_sym in H; exact H.
     apply IN_Pair_right.
-Defined.
+Qed.
 
 Theorem axUnion : forall X : Ens, exists Y:Ens,
    forall z, (IN z Y <-> exists m:Ens, IN m X /\ IN z m).
@@ -964,7 +1040,7 @@ intro z; split; intro H.
   eapply IN_Union.
   exact minX.
   exact zinm.
-Defined.
+Qed.
 
 Theorem axPower : forall X : Ens, exists Y:Ens,
    forall z, (IN z Y <-> INC z X).
@@ -976,7 +1052,7 @@ intro z; split; intro H.
   exact H.
 + apply INC_IN_Power.
   exact H.
-Defined.
+Qed.
 
 (*=== 3_Regularity.v ===*)
 
@@ -996,7 +1072,7 @@ destruct q as [a G].
 apply (Sou_R (e a) y).
 apply EQ_sym, G.
 apply H0.
-Defined.
+Qed.
 
 (* (regular_over x) means
 "Every set that contains x as an element is regular." *)
@@ -1022,7 +1098,7 @@ split; intros.
 + eapply IN_sound_left in H1.
   apply H0. apply H1.
   exact H.
-Defined.
+Qed.
 
 (* Here I follow Zuhair's proof from source.
 https://math.stackexchange.com/users/489784/zuhair *)
@@ -1046,7 +1122,7 @@ exists c.
 split.
 exact M1.
 exact ninc.
-Defined.
+Qed.
 
 (* Soundness of WF *)
 Theorem WF_sound : SoundPred WF.
@@ -1072,7 +1148,7 @@ apply H0.
   eapply IN_sound_left. (* with (E:=a).*)
   exact H.
   exact a2.*)
-Defined.
+Qed.
 
 (* Induction. "Every set is well-founded." *)
 Theorem Zuhair_2 (y:Ens): WF y.
@@ -1080,7 +1156,7 @@ Proof.
 apply eps_ind.
 - exact WF_sound.
 - intros a. exact (Zuhair_1 a).
-Defined.
+Qed.
 
 (* Formalization of Andreas Blass variant of proof. 
 https://math.stackexchange.com/users/48510/andreas-blass *)
@@ -1108,7 +1184,7 @@ apply not_and_or in Hb.
  intro v.
  destruct Hb as [L0|L1]. exact L0.
  destruct (L1 v).
-Defined.
+Qed.
 
 (* Standard formulation of the regularity axiom. *)
 Theorem axReg (x:Ens) :
@@ -1128,7 +1204,7 @@ split.
 + intro s.
   destruct s as [w [W1 W2]].
   exact (G2 w W2 W1).
-Defined.
+Qed.
 
 (* Other theorems *)
 
@@ -1138,13 +1214,13 @@ Theorem esiacf : Ens -> (Ens -> Prop).
 Proof.
 intro e.
 exact (fun x => IN x e).
-Defined.
+Qed.
 
 (* "is a set" predicate *)
 Definition ias1 (s: Ens -> Prop) : Prop.
 Proof.
 exact (exists x:Ens, forall w, s w <-> esiacf x w).
-Defined.
+Qed.
 
 (* class must respect extensional equality
    sree is a witness of the soundness of class' definition *)
@@ -1155,7 +1231,7 @@ Context (s:Ens->Prop)
 Theorem rewr (w1 w2:Ens) (J:s w1) (H : EQ w1 w2) : s w2.
 Proof.
 rewrite <- (sree w1 w2); assumption.
-Defined.
+Qed.
 *)
 
 (* subclass of a set is a set *)
@@ -1181,7 +1257,7 @@ split.
   apply (IN_Comp_P m).
   exact sree.
   exact u.
-Defined.
+Qed.
 
 End TheoremsAboutClasses.
 
@@ -1195,7 +1271,7 @@ assert (L1: EQ (Pair X (Sing X)) (Pair Y (Sing Y))).
 apply EQ_tran with (E2:=Pair Y (Sing X)).
 + apply Pair_sound_left; exact H.
 + apply Pair_sound_right. apply Sing_sound. exact H.
-Defined.
+Qed.
 
 Theorem axInf : exists X, (IN Vide X /\ 
 forall Y, (IN Y X -> IN (succ Y) X)
@@ -1215,7 +1291,7 @@ split.
   apply (IN_sound_left _ _ _ as1).
   (*Eval simpl in (Nat (S x)).*)
   apply (Nat_IN_Omega (S x)).
-Defined.
+Qed.
 
 Definition sOmega : Ens := proj1_sig (ex2sig axInf).
 
@@ -1239,7 +1315,7 @@ apply EQ_tran with (E2:=Pair (Sing x1) (Pair x2 y)).
 + eapply Pair_sound_left.
   eapply Sing_sound.
   assumption.
-Defined.
+Qed.
 
 Theorem OrdPair_sound_right (x y1 y2 : Ens) (H : EQ y1 y2)
  : EQ (OrdPair x y1) (OrdPair x y2).
@@ -1248,7 +1324,7 @@ unfold OrdPair.
 eapply Pair_sound_right.
 eapply Pair_sound_right.
 assumption.
-Defined.
+Qed.
 
 Lemma SingEqPair x y1 y2 (J: EQ (Sing x) (Pair y1 y2)) :
 EQ x y1 /\ EQ x y2.
@@ -1262,7 +1338,7 @@ eapply IN_sound_right (*with (1:=J)*) in i2.
 apply IN_Sing_EQ, EQ_sym in i2.
 split. exact i1. exact i2.
 exact J. exact J.
-Defined.
+Qed.
 
 Lemma Pair_sound (a b c d:Ens) (L:EQ a c) (R:EQ b d) 
  : EQ (Pair a b) (Pair c d).
@@ -1270,7 +1346,7 @@ Proof.
   apply EQ_tran with (E2:= Pair a d).
   apply Pair_sound_right, R.
   apply Pair_sound_left, L.
-Defined.
+Qed.
 
 Lemma Pair_EQ_cases a b c d (H:EQ (Pair a b) (Pair c d)) : 
 (EQ a c \/ EQ a d)/\(EQ b c \/ EQ b d).
@@ -1283,7 +1359,7 @@ split.
 + destruct (H b) as [W1 _].
   assert (E := W1 (IN_Pair_right a b)).
   apply Pair_IN. assumption.
-Defined.
+Qed.
 
 Theorem OrdPair_inj : forall a b c d : Ens, 
   EQ (OrdPair a b) (OrdPair c d)->(EQ a c/\EQ b d).
@@ -1341,13 +1417,13 @@ split.
   apply SingEqPair in v as [U1 U2].
   apply EQ_sym.
   apply (EQ_tran d a b X1 U2).
-Defined.
+Qed.
 
 Theorem OrdPair_inj_right :
  forall A A' B B' : Ens, EQ (OrdPair A A') (OrdPair B B') -> EQ A' B'.
 Proof.
 intros. apply OrdPair_inj in H as [a b]. exact b.
-Defined.
+Qed.
 
 (* technical theorem for rewrite tactic *)
 Theorem two_sided (C : Ens -> Prop) :
@@ -1360,7 +1436,7 @@ split;intros H1.
 - eapply (H a b). exact H0. exact H1.
 - apply EQ_sym in H0.
   eapply (H b a). exact H0. exact H1.
-Defined.
+Qed.
 
 Theorem two_sided2 (C:Ens->Ens):
 (forall X Y : Ens,
@@ -1373,7 +1449,7 @@ intros H X Y XeqY z.
 split.
 + apply H; assumption.
 + apply H; auto with zfc.
-Defined.
+Qed.
 
 Theorem Comp_sound_left (P:Ens->Prop)
 (P_sound:(SoundPred P))
@@ -1391,7 +1467,7 @@ intro K.
   - eapply IN_Comp_P in K.
     * exact K.
     * exact P_sound.
-Defined.
+Qed.
 
 Theorem cEQ_pres_soundness (P R:Ens->Prop)
 (H:forall w1 w2 : Ens, EQ w1 w2 -> P w1 <-> R w2)
@@ -1406,7 +1482,7 @@ apply (P_sound w2 w1).
 exact H0.
 apply (proj2 (H w2 w1 H0)).
 exact H1.
-Defined.
+Qed.
 
 Definition SoundCongl (A:(Ens->Prop)->Prop) :=
 forall P R:Ens->Prop, SoundPred P  ->
@@ -1436,7 +1512,7 @@ apply (P_sound w1 w2).
 exact H0.
 apply (proj2 (H w1)).
 exact H1.
-Defined.
+Qed.
 
 Section cngl_sec.
 Context (X z : Ens).
@@ -1471,7 +1547,7 @@ intro z.
     apply (IN_Comp_P X).
     * apply (pred_sou P R H P_sound).
     * assumption.
-Defined.
+Qed.
 
 Theorem Comp_sound (P R:Ens->Prop)
 (P_sound:(SoundPred P))
@@ -1481,7 +1557,7 @@ Proof.
 eapply EQ_tran with (E2:= (Comp Y P)).
 + apply Comp_sound_left; assumption.
 + apply Comp_sound_right; assumption.
-Defined.
+Qed.
 
 (* The Intersection of a nonempty set.  *)
 Definition Inter (E : Ens) : Ens :=
@@ -1506,7 +1582,7 @@ apply Comp_sound.
     apply H.
     assumption.
 + apply Union_sound; assumption.
-Defined.
+Qed.
 
 Theorem IN_Inter_all :
  forall E E' : Ens,
@@ -1520,7 +1596,7 @@ unfold SoundPred.
 intros.
 apply IN_sound_left with w1; auto with zfc.
 assumption.
-Defined.
+Qed.
 
 Theorem all_IN_Inter :
  forall E E' E'' : Ens,
@@ -1533,7 +1609,7 @@ unfold SoundPred.
 intros; apply IN_sound_left with w1; auto with zfc.
 + apply IN_Union with (E' := E''); auto with zfc.
 + auto.
-Defined.
+Qed.
 
 (* predicate for separation of the product *)
 Definition inProduct (X Y u:Ens) :=
@@ -1607,7 +1683,7 @@ apply (eps_ind (fun Y => ~(IN Y Y))).
 + intros x H xinx.
   pose (Q:=H x xinx).
   exact (Q xinx).
-Defined.
+Qed.
 
 (* ex.1.2 p.22 *)
 Theorem ex_1_2 : ~( exists X:Ens, INC (Power X) X).
@@ -1616,7 +1692,7 @@ intros [X H].
 apply INC_IN_Power in H.
 apply snis in H.
 exact H.
-Defined.
+Qed.
 
 Definition XNotInX (X:Ens) : Prop := ~ IN X X.
 (* it's for Comp ax *)
@@ -1629,7 +1705,7 @@ intros w1 w2 H1 H2 Y.
   eapply IN_sound_left (*with (E':=w1)*) in Y.
   eapply IN_sound_right (*with (E'':=w1)*) in Y.
   exact Y. assumption. assumption.
-Defined.
+Qed.
 
 (* Here we will not use epsilon-induction. *)
 Theorem ex_1_2' : ~( exists X:Ens, INC (Power X) X).
@@ -1654,7 +1730,7 @@ pose (H1:=H0).
 apply IN_Comp_P in H1.
 exact (H1 H0).
 apply ex_1_2_lem.
-Defined.
+Qed.
 
 (* Here we will not use both epsilon-induction
  and the law of the excluded middle. *)
@@ -1678,7 +1754,7 @@ assert (R1:~(IN S S)).
   - exact Q.
   - exact R1.
  + exact (R1 R). }
-Defined.
+Qed.
 
 (* Subset of X which consist of subsets of X. *)
 Definition SoS (X:Ens) : Ens := Comp X (fun x => INC x X).
@@ -1690,7 +1766,7 @@ Lemma INC_Vide (X:Ens): INC Vide X.
 Proof.
 unfold INC. intros E IN_E_Vide.
 destruct (nothing_IN_Vide E IN_E_Vide).
-Defined.
+Qed.
 
 (* it's for Comp ax *)
 Lemma ex_1_3_lem : 
@@ -1701,7 +1777,7 @@ intros Y w1 w2 H1 H2.
 eapply IN_sound_right.
 exact H2.
 exact H1.
-Defined.
+Qed.
 
 (* SoS is inductive *)
 Theorem ex_1_3 (X:Ens) (H: Ind X) : Ind (SoS X).
@@ -1732,7 +1808,7 @@ constructor. (*split.*)
   apply IN_succ_or in J as [L1|L2].
   - eapply IN_sound_left (*with (E:=x)*). exact L1. exact H0.
   - apply H1. assumption.
-Defined.
+Qed.
 
 Lemma ex_1_4_lem :
 SoundPred (fun w1 => forall z : Ens, IN z w1 -> INC z w1) (* ->
@@ -1743,7 +1819,7 @@ Proof.
     apply H0.
     eapply IN_sound_right. apply EQ_sym. exact H. exact H1.
   }
-Defined.
+Qed.
 
 (* PROPERTY ON SET : transitivity of a set *)
 Definition pTr (T:Ens) : Prop := forall z, IN z T -> INC z T.
@@ -1762,7 +1838,7 @@ eapply IN_sound_right.
 apply EQ_sym.
 exact eqw1w2.
 exact zinw2.
-Defined.
+Qed.
 
 Theorem sutra E (H:pTr E): pTr (succ E).
 Proof.
@@ -1776,7 +1852,7 @@ apply IN_succ_or in K as [L|R].
   eapply INC_succ.
   apply R.
   exact qinw.
-Defined.
+Qed.
 
 Theorem ex_1_4 (X:Ens) (H: Ind X) 
  : Ind (Comp X pTr).
@@ -1797,7 +1873,7 @@ split.
   apply IN_P_Comp.
   exact ex_1_4_lem.
   exact H0. exact H1.
-Defined.
+Qed.
 
 Lemma ex_1_5_lem1 : SoundPred (fun w=> pTr w /\ ~ IN w w).
 (*forall w1 w2 : Ens,
@@ -1816,14 +1892,14 @@ split.
   eapply IN_sound_left.
   exact eqw2w1.
   exact w2inw2.
-Defined.
+Qed.
 
 Theorem pTr_Vide : pTr Vide.
 Proof.
 unfold pTr.
 intros z zinvide.
 destruct (nothing_IN_Vide z zinvide).
-Defined.
+Qed.
 
 Theorem ex_1_5 (X:Ens) (H: Ind X) 
  : Ind (Comp X (fun x => (pTr x)/\~(IN x x))).
@@ -1859,7 +1935,7 @@ split.
     pose (J:= IN_succ Y).
     apply G2 in J.
     exact (H1' J).
-Defined.
+Qed.
 
 (* useless lemma: *)
 Lemma lem2_l1 E Y (B:~EQ E Y): IN E (succ Y) -> IN E Y.
@@ -1869,7 +1945,7 @@ apply IN_succ_or in r as [G1|G2].
 2 :  exact G2.
 apply EQ_sym in G1.
 destruct (B G1).
-Defined.
+Qed.
 
 (* unfinished: NN - natural numbers.
 Theorem : forall x:Ens, IN x NN -> ~ IN x x.
@@ -1907,13 +1983,13 @@ split.
   destruct Q as [t [J1 J2]].
   exists t.
   firstorder.
-Defined.
+Qed.
 
 Theorem Inhab_Sing y : Inhab (Sing y).
 Proof.
 exists y.
 apply IN_Sing.
-Defined.
+Qed.
 
 Lemma subunsi z w q :
 INC z (Union (Pair q (Sing w))) -> (INC z q \/ IN w z).
@@ -1935,7 +2011,7 @@ destruct (classic (IN w z)) as [O1|O2].
     apply O2.
     eapply IN_sound_left.
     exact K2. exact uinz.
-Defined.
+Qed.
 
 Lemma subunsi2 z w q :
 INC z (Union (Pair q (Sing w))) -> (INC z q 
@@ -1972,7 +2048,7 @@ destruct H1 as [H1 H2].
   exact ex_1_6_lem1.
   assumption.
   split.
-(* Тут можно двумя способами, либо повторить код: *)
+apply pTr_Vide.
 (*  apply pTr_Vide. *)
 (* Либо вытащить : *)
   { pose (W := ex_1_5 X H).
@@ -1985,7 +2061,7 @@ destruct H1 as [H1 H2].
   destruct K1 as [q L].
   assert (Y:=K2 q L).
   destruct (nothing_IN_Vide _ Y).
-Defined.
+Qed.
 
 Section lemma_1_6.
 Definition PP y := forall z : Ens,
@@ -2013,13 +2089,13 @@ eapply IN_sound_right.
 apply IN_Sing_EQ in T1.
 apply EQ_sym, T1.
 exact F.
-Defined.
+Qed.
 
 Lemma ex_1_6_lem3 a (B:IN a y): ~IN y a.
 Proof.
 intro L.
 apply (ex_1_6_lem2 (J0 a B _ L)).
-Defined.
+Qed.
 
 (*Context .*)
 Lemma ex_1_6_lem4 (z : Ens) (K1 : Inhab z)
@@ -2043,7 +2119,7 @@ split.
     apply (IN_sound_left _ _ _ V2) in W.
     refine (ex_1_6_lem3 m _ W).
     exact (P m N1).
-Defined.
+Qed.
 
 Theorem ex_1_6_lem5 : PP (Sing y).
 Proof.
@@ -2063,7 +2139,7 @@ apply ex_1_6_lem2.
 eapply IN_sound_left.
 exact G2.
 exact ciny.
-Defined.
+Qed.
 
 Theorem ex_1_6_lem6 : PP (Union (Pair y (Sing y))).
 Proof.
@@ -2203,7 +2279,7 @@ unshelve eapply Build_class.
 + exact Vprty.
 + intros a b aeqb.
   apply (H a b aeqb).
-Defined.
+Qed.
 
 (* little transformation of a soundness predicate *)
 Theorem sound_transf (T:class) (s:
@@ -2212,7 +2288,7 @@ forall w1 w2 : Ens, T w1 -> EQ w1 w2 -> T w2 .
 Proof.
 intros w1 w2 Tw1 w1eqw2.
 apply (proj1 (s w1 w2 w1eqw2) Tw1).
-Defined.
+Qed.
 
 
 
@@ -2242,7 +2318,7 @@ Definition cEQ (A B: Ens->Prop) := forall z:Ens, A z <-> B z.
 Definition ias (s: class) : Prop.
 Proof.
 exact (exists (x:Ens), forall w, s w <-> IN w x).
-Defined.
+Qed.
 
 (* "is a set" is a sound property on classes. *)
 Definition ias_sound (A B: class)
@@ -2255,7 +2331,7 @@ intro z.
 unfold cEQ in w.
 rewrite <- w.
 apply eqv.
-Defined.
+Qed.
 
 (* the class of transitive sets *)
 Definition cTr : class.
@@ -2263,7 +2339,7 @@ Proof.
 unshelve eapply Build_class.
 + exact pTr.
 + apply pTr_sound.
-Defined.
+Qed.
 
 Definition cINC (A B:class) : Prop := forall x:Ens, A x -> B x.
 
@@ -2273,7 +2349,7 @@ intros z P.
 apply K.
 apply H.
 exact P.
-Defined.
+Qed.
 
 Lemma cINC_sound_right (A B1 B2:class) (H:cEQ B1 B2) 
 (K:cINC A B1) : cINC A B2.
@@ -2282,7 +2358,7 @@ intros z P.
 apply H.
 apply K.
 exact P.
-Defined.
+Qed.
 
 (*Lemma sousym (K:Ens->Prop)
 (H:forall (a b : Ens), EQ a b -> (K a -> K b))
@@ -2291,7 +2367,7 @@ Proof.
 intros a b aeqb. split.
 apply (H a b aeqb).
 apply H. apply EQ_sym. exact aeqb.
-Defined.
+Qed.
 Check two_sided.
 *)
 
@@ -2302,7 +2378,7 @@ Proof.
 unshelve eapply Build_class.
 + intro z. exact True.
 + simpl. intros a b H1 H2. exact H2.
-Defined.
+Qed.
 
 (* Empty class *)
 Definition cE : class.
@@ -2310,7 +2386,7 @@ Proof.
 unshelve eapply Build_class.
 + intro z. exact False.
 + simpl. intros a b H1 H2. exact H2.
-Defined.
+Qed.
 
 (* I2AST p.13, thm 4.12, (->) *)
 Theorem Comp_elim x y (K:Ens->Prop) (K_sound: SoundPred K)
@@ -2322,7 +2398,7 @@ split.
 + apply IN_Comp_P in e. exact e.
   intros.
   eapply K_sound.
-Defined.
+Qed.
 
 Theorem Comp_elimC x y (K:class) : IN x (Comp y K) -> (IN x y /\ K x).
 Proof.
@@ -2332,7 +2408,7 @@ intros a b aeqb q.
 eapply (sound K).
 exact aeqb.
 exact q.
-Defined.
+Qed.
 
 Definition cInter (c:class) : class.
 Proof.
@@ -2342,14 +2418,14 @@ unshelve eapply Build_class.
   eapply IN_sound_left.
   exact aeqb.
   exact (czainz z cz). }
-Defined.
+Qed.
 
 Theorem InterEmpty : cEQ (cInter cE) cV.
 Proof.
 intro z. split; intro w.
 + simpl in * |- *. constructor.
 + simpl in * |- *. intros z0 [].
-Defined.
+Qed.
 
 Theorem InterSS (c:class) (x:Ens) (H : c x) :
  forall g, (cInter c) g -> (IN g x).
@@ -2357,7 +2433,7 @@ Proof.
 simpl.
 intros g K.
 apply (K x H).
-Defined.
+Qed.
 Arguments IN _ _ : simpl nomatch.
 (* set to class *)
 Definition stoc : Ens -> class.
@@ -2369,7 +2445,7 @@ unshelve eapply Build_class.
   apply two_sided.*)
   intros a0 b0 H H0.
   eapply IN_sound_left. exact H. exact H0.
-Defined.
+Qed.
 
 Section stoc_sec.
 Local Coercion stoc : Ens >-> class.
@@ -2378,7 +2454,7 @@ Theorem EQ2cEQ (a b : Ens) (aeqb : EQ a b) : cEQ a b.
 Proof.
 unfold cEQ.
 eapply (axExt_right a b aeqb).
-Defined.
+Qed.
 
 
 Theorem eqv_rtran (T:Type) (A B C : T->Prop)
@@ -2393,14 +2469,14 @@ intro z. split; intro K.
 + apply (proj1 (H2 z)).
   apply (proj2 (H1 z)).
   assumption.
-Defined.
+Qed.
 (*
 Theorem stoc_sound (e:Ens) : cEQ e (stoc e).
 Proof.
 intro z.
 simpl in *|-*.
 firstorder.
-Defined.
+Qed.
 *)
 Theorem stoc_sound (e1 e2:Ens) (p:EQ e1 e2): cEQ e1 e2.
 Proof.
@@ -2408,13 +2484,13 @@ intro q.
 apply axExt.
 exact p.
 Show Proof.
-Defined.
+Qed.
 
 Lemma sound2rewr (s:class) : SoundPred s.
 Proof.
 intros w1 w2 H1 H2.
 eapply (sound s). exact H1. exact H2.
-Defined.
+Qed.
 
 (* subclass of a set is a set *)
 Theorem scosias (s:class) (m:Ens) 
@@ -2441,7 +2517,7 @@ split.
   apply (IN_Comp_P m).
   apply sound2rewr.
   exact u.
-Defined.
+Qed.
 (* try the same proof through the powerset *)
 
 Theorem InterNonEmpty (c:class) (x:Ens) (H : c x) : ias (cInter c).
@@ -2449,7 +2525,7 @@ Proof.
 eapply scosias.
 eapply InterSS.
 exact H.
-Defined.
+Qed.
 
 Definition cInd : class.
 Proof.
@@ -2462,7 +2538,7 @@ unshelve eapply Build_class.
     apply Q1. eapply IN_sound_right.
     apply EQ_sym. exact aeqb.
     exact H.
-Defined.
+Qed.
 
 Definition cUnion (c:class) : class.
 Proof.
@@ -2474,7 +2550,7 @@ unshelve eapply Build_class.
   +  eapply IN_sound_left.
      exact aeqb.
      exact ainz. }
-Defined.
+Qed.
 
 (* Unionclass extends unionset *)
 Theorem UCextendsUS (e:Ens) (c:class) (p:cEQ e c)
@@ -2496,7 +2572,7 @@ intro z; split; intro H.
   unfold cEQ in p.
   apply (proj2 (p w)).
   exact P1.
-Defined.
+Qed.
 
 (* Class of all subsets *)
 Definition cPower (c:class) : class.
@@ -2512,7 +2588,7 @@ unshelve eapply Build_class.
   eapply IN_sound_right.
   apply EQ_sym, aeqb.
   assumption. }
-Defined.
+Qed.
 
 (* The powerclass of V equals V. *)
 Theorem PVeqV : cEQ (cPower cV) cV.
@@ -2521,7 +2597,7 @@ intro z. split; intro H.
 + simpl. constructor.
 + simpl. simpl in H.
 intros. constructor.
-Defined.
+Qed.
 
 (* Powerclass of set is a powerset of set. *)
 Theorem PCextendsPS (e:Ens) (c:class) (p:cEQ e c)
@@ -2541,7 +2617,7 @@ intro z. split; intro H.
   unfold cEQ in p.
   apply (proj2 (p w)).
   exact (H w winz).
-Defined.
+Qed.
 
 Theorem Power_extends (e:Ens) : cEQ (Power e) (cPower e).
 Proof.
@@ -2556,7 +2632,7 @@ intro z. split; intro H.
   intros w winz.
   apply H.
   exact winz.
-Defined.
+Qed.
 
 
 Lemma schSepar_lem (c:class) :
@@ -2567,7 +2643,7 @@ eapply (sound c). exact eqw1w2. exact cw1.
 (** rewrite (sound c).
 exact cw1.
 apply EQ_sym; assumption. **)
-Defined.
+Qed.
 
 Theorem schSepar (c:class) :
 forall X:Ens, exists Y:Ens, forall z, (IN z Y <-> IN z X /\ (prty c z)).
@@ -2584,7 +2660,7 @@ intro z; split; intro H.
   - unfold SoundPred. apply (sound c). (*apply schSepar_lem*)
   - firstorder.
   - firstorder.
-Defined.
+Qed.
 
 (* Omega is inductive set 
 TODO: redefine Omega using set-theoretic approach.
@@ -2603,7 +2679,7 @@ exact p.
 simpl.
 exists (S n).
 apply EQ_refl.
-Defined.
+Qed.
 
 Definition cNN := cInter cInd.
 
@@ -2613,7 +2689,7 @@ unfold cNN.
 unshelve eapply InterNonEmpty.
 exact Omega.
 apply Omega_cInd.
-Defined.
+Qed.
 
 Definition sNN := Omega. (*?*)
 
@@ -2625,7 +2701,7 @@ Definition EQK (k1 k2 : class -> Prop)
 Definition iac (k:class -> Prop) : Prop.
 Proof.
 exact (forall (c:class), (k c) -> (ias c)).
-Defined.
+Qed.
 
 Section sec_ex2sig.
 (*Context (ex2sig:forall (A:Type) (P:A->Prop), @ex A P -> @sig A P).*)
@@ -2634,7 +2710,7 @@ Proof.
 apply ex2sig in H.
 destruct H.
 exact x.
-Defined.
+Qed.
 End sec_ex2sig.
 
 Definition ktoc (k:class -> Prop) (H:iac k) : class.
@@ -2664,7 +2740,7 @@ Definition Compr : Ens -> class -> Ens.
 Proof.
 intros e c.
 exact (Comp e c).
-Defined.
+Qed.
 
 Definition cComp : class -> class -> class.
 Proof.
@@ -2676,7 +2752,7 @@ unshelve eapply Build_class.
   firstorder.
   - eapply (sound). exact H. exact H0.
   - eapply (sound). exact H. exact H1.
-Defined.
+Qed.
 
 (* Transitive closure *)
 Definition trcl : Ens -> Ens.
@@ -2738,7 +2814,7 @@ apply IN_P_Comp.
       apply t0inct.
       exact zinu.
     * exact Tz.
-Defined.
+Qed.
 
 (*Search Comp.*)
 
@@ -2768,7 +2844,7 @@ repeat split.
   exact aeq. }
 exact xx.
 exact yy.
-Defined.
+Qed.
 
 (* Product of sets *)
 Definition eProduct (x y:Ens) :=
@@ -2788,10 +2864,10 @@ apply Pair_IN in H as [H|H];
  apply EQ_sym in H;
  apply IN_sound_left with (1:=H);
  assumption.
-Defined.
+Qed.
 
 (* Theorem thm (x a:Ens) : (prty (stoc x) a) = IN a x.
-Proof. firstorder. Defined. *)
+Proof. firstorder. Qed. *)
 
 (* Product of sets as classes is a subclass of set. *)
 Theorem prodissc: forall (X1 X2:Ens),
@@ -2833,7 +2909,7 @@ apply Pair_IN in U1 as [V1|V2].
     eapply IN_sound_left with (1:=c2).
     exact B2.
 + exact A.
-Defined.
+Qed.
 
 
 (*_________________________________*)
@@ -2852,7 +2928,7 @@ Definition sound'
 Proof.
 intros. split. eapply (sound c). exact H.
 eapply (sound c). apply EQ_sym. exact H.
-Defined.
+Qed.
 
 Definition cDom (R:class) : class.
 Proof.
@@ -2867,14 +2943,14 @@ rewrite (sound' R).
 exact w.
 apply OrdPair_sound_left.
 auto with zfc. (*apply EQ_sym; exact aeqb.*)
-Defined.
+Qed.
 
 Definition exampleproperclass : class.
 Proof.
 Abort.
 
 (*Definition ias (s: class) : Prop.*)
-(* Proof. firstorder. (* Show Proof. *) . Defined. *)
+(* Proof. firstorder. (* Show Proof. *) . Qed. *)
 
 Definition cprty_sound (cprty:class->Prop) (A B: class)
 (w:cEQ A B) (H:cprty A): cprty B.
@@ -2896,7 +2972,7 @@ eapply scosias.
 intros z H.
 apply prodissc.
 exact H.
-Defined.
+Qed.
 
 (* Cartesian product as an operation on sets *)
 Definition CProduct (x y:Ens): Ens.
@@ -2904,7 +2980,7 @@ Proof.
 exact (Compr (Power (Power (Union (Pair x y)))) (cProduct x y)).
 (* pose (w:=(cpss x y)). unfold ias in w.
    fails when destruct w. *)
-Defined.
+Qed.
 
 (* Now I will define extraction of the first and the 
 second element of a couple. *)
@@ -2922,39 +2998,39 @@ intro z; split; intro y.
   exact M.
   exact (IN_Sing M).
   assumption.
-Defined.
+Qed.
 
 Theorem sing2union W M : EQ W (Sing M) -> EQ (Union W) M.
 Proof. intro H. pose (y:= unionsing M).
 apply EQ_tran with (E2:=Union (Sing M)).
 apply Union_sound. assumption.
 assumption.
-Defined.
+Qed.
 
 Ltac ueapp P := unshelve eapply P.
 
 Lemma cEQ_refl (x:class): cEQ x x.
 Proof.
 intros m; reflexivity.
-Defined.
+Qed.
 
 Lemma cEQ_sym (x y:class): cEQ x y -> cEQ y x.
 Proof.
 intros H m. symmetry. apply H.
-Defined.
+Qed.
 
 Lemma cEQ_tran (x y z:class): cEQ x y -> cEQ y z -> cEQ x z.
 Proof.
 intros H1 H2 m.
 transitivity (y m).
 apply H1. apply H2.
-Defined.
+Qed.
 
 Lemma cEQ_sym' A B : cEQ A B -> cEQ B A.
 Proof. intros H w. split.
 exact (proj2 (H w)).
 exact (proj1 (H w)).
-Defined.
+Qed.
 
 Lemma cEQ_sound_left (A1 A2 B: class) (H : cEQ A1 A2)
 (K : cEQ A1 B) : cEQ A2 B.
@@ -2964,7 +3040,7 @@ intro z.
 split; intro q.
 + apply K. apply H. exact q.
 + apply H. apply K. exact q.
-Defined.
+Qed.
 
 Lemma cEQ_sound_right (A B1 B2: class) (H : cEQ B1 B2)
 (K : cEQ A B1) : cEQ A B2.
@@ -2974,7 +3050,7 @@ intro z.
 split; intro q.
 + apply H. apply K. exact q.
 + apply K. apply H. exact q.
-Defined.
+Qed.
 
 
 Lemma two_sided3 (D:class->class) :
@@ -2985,7 +3061,7 @@ Proof.
 intros. intro q. split.
 + apply H. exact H0.
 + apply H. apply cEQ_sym. exact H0.
-Defined.
+Qed.
 
 Definition cIN (A B:class):Prop := exists x:Ens, cEQ x A /\ B x.
 
@@ -3001,7 +3077,7 @@ eapply cINC_sound_right. exact p.
 eapply H.
 eapply p.
 exact H0.
-Defined.
+Qed.
 
 Record congl := Build_congl {
  cprty :> class->Prop;
@@ -3035,7 +3111,7 @@ exists x. split.
   exact H.
   exact P1.
 + exact P2.
-Defined.
+Qed.
 
 Theorem cIN_sound_right (Z B1 B2 : class)
 (H : cEQ B1 B2) (K : cIN Z B1) : cIN Z B2.
@@ -3050,7 +3126,7 @@ exists x. split.
   apply proj1 in Hx.
   apply Hx.
   exact P2.
-Defined.
+Qed.
 
 Coercion EQ2cEQ : EQ >-> cEQ .
 
@@ -3066,7 +3142,7 @@ apply axExt. intro z. split; intro H.
 + apply IN_Union with (E':=X).
   - apply INC_IN_Power. intros a K. exact K.
   - exact H.
-Defined.
+Qed.
 
 Theorem XiPUX (X:Ens): INC X (Power (Union X)).
 Proof.
@@ -3077,7 +3153,7 @@ intros B K.
 apply IN_Union with (E':=A).
 exact H.
 exact K.
-Defined.
+Qed.
 
 Theorem nPUXiX : not (forall (X:Ens),INC (Power (Union X)) X).
 Proof.
@@ -3090,7 +3166,7 @@ assert (C:IN Vide (Power (Union Vide))).
   apply nothing_IN_Vide in J as [].
 + apply B in C.
   apply nothing_IN_Vide in C as [].
-Defined.
+Qed.
 
 Theorem union_vide: EQ (Union Vide) Vide.
 Proof.
@@ -3099,7 +3175,7 @@ intro z. split; intro H.
 + apply Union_IN in H as [w [W1 W2]].
   destruct (nothing_IN_Vide w W1).
 + destruct (nothing_IN_Vide z H).
-Defined.
+Qed.
 
 Lemma nemp_then_inh (S:Ens) (H:~EQ S Vide) : exists m, IN m S.
 Proof.
@@ -3108,7 +3184,7 @@ intro D.
 apply H.
 apply (empty_set_EQ_Vide S).
 exact D.
-Defined.
+Qed.
 
 Lemma pi1pi2 (E:Ens): E = sup (pi1 E) (pi2 E).
 Proof.
@@ -3116,13 +3192,13 @@ destruct E.
 apply f_equal.
 apply functional_extensionality.
 intro. simpl. reflexivity.
-Defined.
+Qed.
 
 Lemma pi1pi2' (E:Ens): EQ E (sup (pi1 E) (pi2 E)).
 Proof.
 destruct E. simpl. 
 split; intro z; exists z; auto with zfc.
-Defined.
+Qed.
 
 Lemma lem3 (S:Ens) (K:~IN Vide S) :
 forall a:Ens, IN a S -> exists b:Ens, IN b a.
@@ -3135,7 +3211,7 @@ intros a ainS.
  destruct (K ainS).
  apply nemp_then_inh.
  exact J.
-Defined.
+Qed.
 
 Theorem lem4 (S:Ens) (a:pi1 S) : IN (pi2 S a) S.
 Proof.
@@ -3143,14 +3219,14 @@ induction S.
 simpl.
 exists a.
 apply EQ_refl.
-Defined.
+Qed.
 
 Lemma in2term (s x:Ens) : IN x s -> (pi1 s).
 Proof. intro xins. destruct s. simpl in xins.
 apply ex2sig in xins.
 destruct xins as [y ep]. 
 exact y.
-Defined.
+Qed.
 
 Lemma goodlem (b US:Ens) (binUS:IN b US) : EQ b (pi2 US (in2term US b binUS)).
 Proof.
@@ -3160,7 +3236,7 @@ simpl.
 simpl in binUS.
 destruct (ex2sig binUS). (* A (fun y : A => EQ b (e y)) *)
 assumption.
-Defined.
+Qed.
 
 Theorem OrdPair_sound_both :
   forall x1 x2 y1 y2: Ens, 
@@ -3172,7 +3248,7 @@ eapply OrdPair_sound_left.
 exact x1eqx2.
 eapply OrdPair_sound_right.
 exact y1eqy2.
-Defined.
+Qed.
 
 Section AC_sec.
 Context (S:Ens).
@@ -3200,7 +3276,7 @@ simpl.
 eapply IN_sound_left.
 apply goodlem.
 assumption.
-Defined.
+Qed.
 
 Definition AC_R : AC_A->AC_A->Prop := fun a1 a2 => EQ (pi2 S a1) (pi2 S a2).
 
@@ -3210,7 +3286,7 @@ constructor.
 + intro x. apply EQ_refl.
 + intros x1 x2 K. apply EQ_sym. exact K.
 + intros x1 x2 x3 K1 K2. eapply EQ_tran. exact K1. exact K2.
-Defined.
+Qed.
 
 Theorem T_sound : (forall (x x' : AC_A) (y : AC_B),
  AC_R x x' -> AC_T x y -> AC_T x' y).
@@ -3219,7 +3295,7 @@ intros x1 x2 y Rx1x2 Txy.
 eapply IN_sound_right.
 exact Rx1x2.
 exact Txy.
-Defined.
+Qed.
 
 (*Axiom (SFC:SetoidFunctionalChoice_on AC_A AC_B).*)
 Definition SFC:= axSFC AC_A AC_B.
@@ -3257,10 +3333,10 @@ eapply IN_sound_right.
 unfold t.
 apply EQ_sym.
 apply goodlem. }
-Defined.
+Qed.
 
 Lemma eq2EQ (E1 E2:Ens) (K:E1=E2): EQ E1 E2.
-Proof. destruct K. apply EQ_refl. Defined.
+Proof. destruct K. apply EQ_refl. Qed.
 
 Theorem Achfu_func : forall X:Ens, (IN X S) ->
 (forall Q1 Q2, IN (OrdPair X Q1) Achfu /\ IN (OrdPair X Q2) Achfu -> EQ Q1 Q2).
@@ -3284,7 +3360,7 @@ destruct (J y1) as [_ QR].
 apply (QR y2).
 unfold AC_R.
 eapply EQ_tran. apply EQ_sym. exact L1. exact L2.
-Defined.
+Qed.
 
 Theorem axChoice : exists f:Ens,
 forall X, IN X S -> (* '<->' for the restriction of f on S *)
@@ -3299,7 +3375,7 @@ intros X.
     apply Achfu_total with (1:=G).
   - (* functionality of the relation *)
     apply Achfu_func with (1:=G).
-Defined.
+Qed.
 
 End AC_sec.
 
@@ -3324,7 +3400,7 @@ unfold Pi1.
 apply Union_sound.
 apply Inter_sound.
 exact H.
-Defined.
+Qed.
 
 Theorem EQ_sound X1 X2 Y1 Y2 (H1: EQ X1 Y1) (H2: EQ X2 Y2)
  (H: EQ X1 X2): EQ Y1 Y2.
@@ -3332,7 +3408,7 @@ Proof.
 apply (EQ_tran _ X1).
 auto with zfc.
 apply (EQ_tran _ X2); auto with zfc.
-Defined.
+Qed.
 
 Theorem Pi2_sound_lem1 X : SoundPred (Pi2_P X).
 (*Theorem Pi2_sound_lem1 (X: Ens) : forall w1 w2 : Ens,
@@ -3344,7 +3420,7 @@ Proof.
   eapply (IN_sound_left _ w2 w1) in H3.
   2 : auto with zfc.
   apply H1; assumption.
-Defined.
+Qed.
 
 Theorem Pi2_sound_lem2 (*: SoundPred (Pi2_P X).*)
 (X Y : Ens) (H : EQ X Y) :
@@ -3364,7 +3440,7 @@ intro w. revert X Y H.
   - eapply (IN_sound_right _ (Inter Y)).
     apply Inter_sound, EQ_sym, H.
     exact L2.
-Defined.
+Qed.
 
 Theorem Pi2_sound (X Y: Ens) (H: EQ X Y): EQ (Pi2 X) (Pi2 Y).
 Proof.
@@ -3374,7 +3450,7 @@ apply Comp_sound.
 3 : apply Union_sound; exact H.
 + apply Pi2_sound_lem1.
 + apply (Pi2_sound_lem2 X Y H).
-Defined.
+Qed.
 
 Theorem InterOP A B : EQ (Inter (OrdPair A B)) (Sing A).
 Proof.
@@ -3399,7 +3475,7 @@ intro z. split; intro q.
     apply (IN_sound_left _ A).
     auto with zfc.
     auto with zfc.
-Defined.
+Qed.
 
 Theorem UnionOP A B : EQ (Union (OrdPair A B)) (Pair A B).
 Proof.
@@ -3418,7 +3494,7 @@ intro z. split; intro q.
   2 : exact q.
   unfold OrdPair.
   auto with zfc.
-Defined.
+Qed.
 
 (* computation of Pi1 *)
 Theorem Pi1_comput (A B:Ens): EQ (Pi1 (OrdPair A B)) A.
@@ -3428,14 +3504,14 @@ apply (EQ_tran _ (Union (Sing A))).
 + apply Union_sound.
   apply InterOP.
 + apply unionsing.
-Defined.
+Qed.
 
 Lemma contrap {A B:Prop}: (~A->~B)->(B->A).
 Proof.
 intros. destruct (classic A).
 exact H1.
 destruct (H H1 H0).
-Defined.
+Qed.
 
 (* computation of Pi2 *)
 Theorem Pi2_comput (A B:Ens): EQ (Pi2 (OrdPair A B)) B.
@@ -3505,7 +3581,7 @@ apply Pair_IN in q5 as [q8|q8].
     2 : apply InterOP.
     apply IN_Sing_EQ in q2.
     apply EQ_sym, q2.
-Defined.
+Qed.
 
 (* http://us.metamath.org/mpegif/df-iota.html *)
 Definition riota (X S:Ens) (P:Ens->Prop) : Ens
@@ -3520,7 +3596,7 @@ eapply Comp.
     exact S.
     exact P.
   - exact (Sing y).
-Defined.*)
+Qed.*)
 
 (* http://us.metamath.org/mpegif/df-fv.html *)
 Definition AT (F: Ens) (X:Ens) : Ens.
@@ -3581,7 +3657,7 @@ assert (J1:(forall (x x' : A) (y : B), x = x' -> P x y -> P x' y)).
 (*Check (axSFC A B (@eq A) P J0 J1 H).*)
 destruct (axSFC A B (@eq A) P J0 J1 H) as [f Q].
 exists f. firstorder.
-Defined.
+Qed.
 
 Theorem Choice_Collection : choice -> collection.
 Proof.
@@ -3599,10 +3675,10 @@ apply comp with (g a); auto with zfc.
 unfold choice in H.
 apply H; intros.
 elim (G a); intros b hb; exists b; auto with zfc.
-Defined.
+Qed.
 
 Theorem thm_collection : collection.
-Proof. apply Choice_Collection. exact thm_choice. Defined.
+Proof. apply Choice_Collection. exact thm_choice. Qed.
 
 (* If we also assume the excluded middle, we can derive         *)
 (* the usual replacement schemata.                              *)
@@ -3700,7 +3776,7 @@ Proof.
 apply classical_Collection_Replacement.
 exact classic.
 exact thm_collection.
-Defined.
+Qed.
 
 
 (* ===================================== *)
@@ -3717,7 +3793,7 @@ unshelve eapply Build_class.
   simpl. intros [H|H].
   - left. eapply cEQ_sound_left. exact aeqb. exact H.
   - right. eapply cEQ_sound_left. exact aeqb. exact H.
-Defined.
+Qed.
 
 Definition cSing (A:class) : class := cPair A A.
 
@@ -3735,7 +3811,7 @@ unshelve eapply Build_class.
   - apply EQ2cEQ.
     exact aeqb.
   - exact P3.
-Defined.
+Qed.
 
 Lemma two_sidedC (P:class->class) :
 (forall (B1 B2 : class) (H : cEQ B1 B2),
@@ -3748,7 +3824,7 @@ intros.
 split; apply H.
 + assumption.
 + apply cEQ_sym. assumption.
-Defined.
+Qed.
 
 Theorem cPair_sound_right (A B1 B2:class) (H:cEQ B1 B2) :
  cEQ (cPair A B1) (cPair A B2).
@@ -3763,7 +3839,7 @@ intros.
     eapply (cEQ_sound_right).
     * exact H.
     * exact M.
-Defined.
+Qed.
 
 Theorem cPair_sound_left (A1 A2 B:class) (H:cEQ A1 A2) :
  cEQ (cPair A1 B) (cPair A2 B).
@@ -3779,7 +3855,7 @@ intros.
     exact H.
   - right.
     exact M.
-Defined.
+Qed.
 
 Theorem cPair_sound (A1 A2 B1 B2:class) (HA:cEQ A1 A2)
 (HB:cEQ B1 B2) : cEQ (cPair A1 B1) (cPair A2 B2).
@@ -3787,7 +3863,7 @@ Proof.
 eapply cEQ_tran.
 + eapply cPair_sound_left. exact HA.
 + eapply cPair_sound_right. exact HB.
-Defined.
+Qed.
 
 Theorem cOrdPair_sound_right (A B1 B2:class) (H:cEQ B1 B2):
  cEQ (cOrdPair A B1) (cOrdPair A B2).
@@ -3807,14 +3883,14 @@ repeat split.
 apply cPair_sound_right.
 apply cPair_sound_right.
 exact H.
-Defined.
+Qed.
 
 Theorem cSing_sound (A1 A2:class) (H:cEQ A1 A2) :
  cEQ (cSing A1) (cSing A2).
 Proof.
 unfold cSing.
 eapply cPair_sound; exact H.
-Defined.
+Qed.
 
 Theorem cOrdPair_sound_left (A1 A2 B:class) (H:cEQ A1 A2) :
  cEQ (cOrdPair A1 B) (cOrdPair A2 B).
@@ -3833,7 +3909,7 @@ repeat split.
   eapply cPair_sound.
   eapply cSing_sound. exact H.
   eapply cPair_sound_left. exact H.
-Defined.
+Qed.
 
 (* http://us.metamath.org/mpegif/df-tr.html *)
 Definition mcTr (A:class) : Prop := cINC (cUnion A) A.
@@ -3848,7 +3924,7 @@ simpl in *|-*.
 destruct H0 as [w [P1 P2]].
 exists w. split. 2:exact P2.
 apply H. assumption.
-Defined.
+Qed.
 
 Theorem mcTr_sound (A B : class) (aeqb : cEQ A B) : (mcTr A) -> (mcTr B).
 Proof.
@@ -3860,7 +3936,7 @@ try eapply cUnion_sound in H0.
 apply aeqb.
 apply H.
 assumption.
-Defined.
+Qed.
 
 (* predicate of the nonemptiness TODO: make class *)
 Definition inhab (x:Ens) : Prop := exists y:Ens, IN y x.
@@ -3880,7 +3956,7 @@ Proof.
 unfold IrrR in *|-*.
 intros x H0.
 apply H. apply p. exact H0.
-Defined.
+Qed.
 
 Definition TranR (R A:class) : Prop :=
  forall x, A x ->
@@ -3895,7 +3971,7 @@ Proof.
 unfold TranR in *|-*.
 intros x Bx y By z Bz.
 apply H; apply p; assumption.
-Defined.
+Qed.
 
 (* the strict partial order predicate
  similar with http://us.metamath.org/mpegif/df-po.html *)
@@ -3914,7 +3990,7 @@ split.
 + eapply TranR_sound_right.
   exact p.
   exact H2.
-Defined.
+Qed.
 
 
 (* strict complete (linear) order predicate 
@@ -3937,7 +4013,7 @@ intros x Qx y Qy.
 apply p in Qx.
 apply p in Qy.
 exact (H2 x Qx y Qy).
-Defined.
+Qed.
 
 (* http://us.metamath.org/mpegif/df-we.html *)
 Definition We (R A:class) : Prop := (Fr R A /\ Or R A).
@@ -3958,7 +4034,7 @@ intros z zinx Rp.
 eapply P.
 exact zinx.
 exact Rp.
-Defined.
+Qed.
 
 Theorem We_sound_right (R A B:class)
  (p:cEQ A B) (H:We R A):We R B.
@@ -3972,7 +4048,7 @@ split.
 + eapply Or_sound_right.
   exact p.
   exact H2.
-Defined.
+Qed.
 
 (*
 Opaque EQ. (* forbid "simpl" to unfold "EQ" *) Transparent EQ.
@@ -3994,7 +4070,7 @@ unshelve eapply Build_class.
   - eapply cEQ_sound_left. apply EQ2cEQ.
     exact aeqb. exact aeqxy.
   - exact xiny.
-Defined.
+Qed.
 
 (* http://us.metamath.org/mpegif/df-ord.html *)
 Definition cOrd (A:class) : Prop := (mcTr A /\ We cEps A).
@@ -4006,7 +4082,7 @@ destruct H as [TrA WeEA].
 split.
 + eapply mcTr_sound. exact AeqB. exact TrA.
 + eapply We_sound_right. exact AeqB. exact WeEA.
-Defined.
+Qed.
 
 Theorem cOrd_esound : forall a b : Ens, EQ a b -> cOrd a -> cOrd b.
 Proof.
@@ -4014,7 +4090,7 @@ intros a b aeqb.
 apply cOrd_sound.
 apply EQ2cEQ.
 assumption.
-Defined.
+Qed.
 
 (* ordinal numbers *)
 Definition On : class.
@@ -4022,7 +4098,7 @@ Proof.
 unshelve eapply Build_class.
 + intro x. exact (cOrd x).
 + simpl. exact cOrd_esound.
-Defined.
+Qed.
 
 Definition Rel (A:class) : Prop := cINC A (cProduct cV cV).
 
@@ -4040,7 +4116,7 @@ unshelve eapply Build_class.
   exact aeqb.
   exact W1.
   exact W2.
-Defined.
+Qed.
 
 (* composition *)
 Definition compos (A B:class):class.
@@ -4055,7 +4131,7 @@ exact (exists x y, cEQ e (cOrdPair x y) /\
   eapply cEQ_sound_left. apply EQ2cEQ.
   exact aeqb.
   exact aeq.
-Defined.
+Qed.
 
 Definition cI : class.
 Proof.
@@ -4064,7 +4140,7 @@ unshelve eapply Build_class.
 + simpl. intros a b aeqb [x p].
   exists x. eapply cEQ_sound_left. exact aeqb.
   exact p.
-Defined.
+Qed.
 
 (* http://us.metamath.org/mpegif/df-fun.html *)
 Definition Fun (A:class): Prop 
@@ -4091,7 +4167,7 @@ unshelve eapply Build_class.
   apply cOrdPair_sound_left.
   apply EQ2cEQ.
   apply  aeqb.
-Defined.
+Qed.
 
 (* http://us.metamath.org/mpegif/df-fn.html *)
 Definition Fn (A B:class): Prop := (Fun A)/\(cEQ (cdom A) B).
@@ -4124,7 +4200,7 @@ intros a b aeqb; intro H.
     * eapply cEQ_sound_right. apply EQ2cEQ, EQ_sym.
       exact aeqb. exact zheqb.
 (* TODO: reduce repetitions! *)
-Defined.
+Qed.
 
 (* http://us.metamath.org/mpegif/df-iota.html *)
 Definition iota (F:class) : class
@@ -4155,7 +4231,7 @@ unshelve eapply Build_class.
   apply cOrdPair_sound_right.
   apply EQ2cEQ.
   exact aeqb.
-Defined.
+Qed.
 
 (* Later, change every soundness proof with this.
    keeping "<->" for "rewrite" tactic is useless. *)
@@ -4165,7 +4241,7 @@ Proof.
 intros.
 apply (sound c a b H).
 exact H0.
-Defined.
+Qed.
 
 Lemma Rel_sound (A1 A2:class) (H:cEQ A1 A2) (K:Rel A1) : Rel A2.
 Proof.
@@ -4173,7 +4249,7 @@ unfold Rel in *|- *.
 eapply cINC_sound_left.
 exact H.
 exact K.
-Defined.
+Qed.
 
 Lemma compos_sound_left : forall (B A1 A2:class) (H:cEQ A1 A2),
  cEQ (compos A1 B) (compos A2 B).
@@ -4193,7 +4269,7 @@ split. exact P1.
 eapply cIN_sound_right.
 apply H0.
 exact P2.
-Defined.
+Qed.
 
 Lemma compos_sound_right : forall (A B1 B2:class) (H:cEQ B1 B2),
  cEQ (compos A B1) (compos A B2).
@@ -4212,7 +4288,7 @@ split.
 eapply cIN_sound_right.
 apply (H). exact P1.
 exact P2.
-Defined.
+Qed.
 
 Lemma compos_sound (A1 A2 B1 B2:class) (HA:cEQ A1 A2) (HB:cEQ B1 B2) : 
  cEQ (compos A1 B1) (compos A2 B2).
@@ -4220,7 +4296,7 @@ Proof.
 eapply cEQ_tran.
 apply compos_sound_left. exact HA.
 apply compos_sound_right. exact HB.
-Defined.
+Qed.
 
 Lemma invR_sound : forall (A1 A2:class) (H:cEQ A1 A2),
  cEQ (invR A1) (invR A2).
@@ -4232,7 +4308,7 @@ destruct H0 as [x [y [P1 P2]]].
 exists x. exists y. split. exact P1.
 eapply cIN_sound_right.
 apply H. exact P2.
-Defined.
+Qed.
 
 Lemma Fun_sound (A1 A2:class) (H:cEQ A1 A2) (K:Fun A1) : Fun A2.
 Proof.
@@ -4245,7 +4321,7 @@ split.
   exact H.
   apply invR_sound.
   exact H.
-Defined.
+Qed.
 
 
 Lemma cdom_sound : forall (A1 A2 : class) (H : cEQ A1 A2),
@@ -4257,7 +4333,7 @@ intros.
 destruct H0 as [y P].
 exists y.
 eapply cIN_sound_right. apply H. exact P.
-Defined.
+Qed.
 
 Lemma Fn_sound_left (A1 A2 B:class) (H:cEQ A1 A2) (K:Fn A1 B) : Fn A2 B.
 Proof.
@@ -4269,7 +4345,7 @@ eapply cEQ_sound_left.
 2 :  exact H1.
 apply cdom_sound.
 exact H.
-Defined.
+Qed.
 
 Lemma cAT_sound_left (B:class) : forall (A1 A2:class) (H:cEQ A1 A2),
   cEQ (cAT A1 B) (cAT A2 B).
@@ -4289,7 +4365,7 @@ split.
   - eapply cIN_sound_right.
     apply cEQ_sym. exact H. exact g.
 + exact P2.
-Defined.
+Qed.
 
 (* wff   ->  Prop
    set   ->  Ens
@@ -4317,7 +4393,7 @@ unshelve eapply Build_class.
     2 : exact (P3 y yinx).
     eapply cAT_sound_left.
     apply EQ2cEQ. exact H.
-Defined.
+Qed.
 
 (* http://us.metamath.org/mpegif/df-recs.html *)
 (* transfinite recursion "functor". *)
@@ -4334,7 +4410,7 @@ unshelve eapply Build_class.
 + simpl. intros a b aeqb [x [P1 P2]].
   exists x. split. exact P1.
   eapply (sound (B x)). exact aeqb. exact P2.
-Defined.
+Qed.
 
 (* http://us.metamath.org/mpegif/uniiun.html *)
 Theorem uniiun (A:class): cEQ (cUnion A) (iun A (id)).
@@ -4348,7 +4424,7 @@ split; intro q.
 + destruct q as [w [P1 P2]].
   exists w. split. exact P1.
   exact P2.
-Defined.
+Qed.
 
 (* http://us.metamath.org/mpegif/reliun.html *)
 Theorem reliun (A:class) (B:Ens->class) :
@@ -4368,7 +4444,7 @@ split; intro H.
   eapply H.
   exact Ax.
   exact Bxz.
-Defined.
+Qed.
 (* TODO: define "-->" - functions which respect extensional equality. *)
 
 (* http://us.metamath.org/mpegif/reluni.html *)
@@ -4386,7 +4462,7 @@ split; intro H1.
   unfold id.
   apply reliun.
   exact H1.
-Defined.
+Qed.
 
 (* http://us.metamath.org/mpegif/tfr1.html *)
 Theorem recs_is_rel (F:class) : Rel (recs F).
@@ -4400,7 +4476,7 @@ unfold Fn in FnxA.
 unfold Fun in FnxA.
 destruct FnxA as [[Q _] _].
 exact Q.
-Defined.
+Qed.
 
 (* http://us.metamath.org/mpegif/zfpair2.html *)
 Lemma Pair_extends (x y:Ens): cEQ (Pair x y) (cPair x y).
@@ -4412,12 +4488,12 @@ intro w. split; simpl; intro H.
 + destruct H as [H|H].
   - exists true. apply axExtC. exact H.
   - exists false. apply axExtC. exact H.
-Defined.
+Qed.
 
 Lemma Pair_exists (x y:Ens): exists a:Ens, cEQ a (cPair x y). 
 Proof.
 exists (Pair x y). apply Pair_extends.
-Defined.
+Qed.
 
 (* http://us.metamath.org/mpegif/prex.html *)
 Lemma cPair_exists (A B:class): exists a:Ens, cEQ a (cPair A B).
@@ -4463,19 +4539,19 @@ left. eapply cEQ_sound_right. apply cEQ_sym. exact be. exact H0.
   - destruct q.
     apply (ex_intro (fun w:Ens=>cEQ w _)) in H1. destruct (H H1).
     apply (ex_intro (fun w:Ens=>cEQ w _)) in H1. destruct (H0 H1).
-Defined.
+Qed.
 
 Lemma EnsInV (e:Ens) : cV e.
 Proof.
 simpl.
 trivial.
-Defined.
+Qed.
 
 Lemma eq_then_InV (A:class) (w:Ens) (p:cEQ w A): cIN A cV.
 Proof.
 unfold cIN.
 exists w. split. exact p. exact (EnsInV w).
-Defined.
+Qed.
 
 (*
 "Our df-op 3902 was chosen because it often
@@ -4596,7 +4672,7 @@ intro p.
 eapply functional_extensionality.
 intro Hx.
 eapply axPI.
-Defined.
+Qed.
 (*Require Import Coq.Sets.Ensembles.
 Check Extensionality_Ensembles.
 Axiom Extensionality_Ensembles : forall A B:Ensemble, 
@@ -4689,7 +4765,7 @@ intros val1 val2 K H;
   + destruct H as [H1|H2].
     - left. eapply IHf1. 2 : exact H1. exact K.
     - right. eapply IHf2. 2 : exact H2.  exact K.
-Defined.
+Qed.
 
 (* Build a class: *)
 Definition BC (f:Fo) : class.
@@ -4703,13 +4779,13 @@ eapply ptws.
 simpl.
 intros _.
 exact H.
-Defined.
+Qed.
 
 (*Check BC (Impl Bot Bot).  (* _V *)*)
 Theorem all_in_V (x:Ens) : BC (Impl Bot Bot) x.
 Proof.
 simpl. trivial.
-Defined.
+Qed.
 (* \forall x, x \in y <->  (x=\varempty) *)
 Definition Iff (f1 f2:Fo) := (Conj (Impl f1 f2) (Impl f2 f1)).
 
@@ -4730,7 +4806,7 @@ Proof.
 simpl.
 intros.
 destruct H as [[]].
-Defined.
+Qed.
 
 Theorem Vide_isEmpty2 : (BC (isEmpty 1)) (Vide).
 Proof.
@@ -4739,7 +4815,7 @@ intros.
 assert (K:IN m m). exact H.
 eapply snis.
 exact K.
-Defined.
+Qed.
 
 Theorem Vide_isEmpty3 n : (BC (isEmpty n)) (Vide).
 Proof.
@@ -4752,10 +4828,10 @@ destruct (Nat.eqb n 1).
   eapply snis.
   exact H.
 + eapply nothing_IN_Vide, H.
-Defined.
+Qed.
 
 Lemma no_choose A (b:bool) (c:A) : (if b then c else c) = c.
-Proof. destruct b;reflexivity. Defined.
+Proof. destruct b;reflexivity. Qed.
 
 Theorem isEmpty_EQ_Sing_Vide
  : cEQ (BC (isEmpty 7)) (stoc (Sing Vide)).
@@ -4780,7 +4856,7 @@ rewrite (no_choose _ x0 Vide) in H.
 eapply IN_sound_right in W.
 2 : exact H.
 eapply nothing_IN_Vide, W.
-Defined.
+Qed.
 
 (* Definition isOne (x:SetVars)
 : Fo := (Fora 1 (Neg (In 1 x))).*) 
@@ -4797,7 +4873,7 @@ Check BC (Impl Bot Bot).  (* _V *)
 Theorem all_in_V (A B:class): c INC (BC (Conj 1 )).
 Proof.
 simpl. trivial.
-Defined. *)
+Qed. *)
 
 End Fo.
 (** END: Formulas for automatization of soundness proofs. **)
@@ -4850,7 +4926,7 @@ induction n.
   apply (H0 _ _ H1).
   apply H.
   exact H2.
-Defined.
+Qed.
 
 Theorem nEQ_sound_left {n:nat}
 (q p1 p2:nPrty n) (e:nEQ p1 p2) (H:nEQ p1 q) : nEQ p2 q.
@@ -4862,7 +4938,7 @@ induction n.
 + intro z. split; intro w.
   - apply H. apply e. exact w.
   - apply e. apply H. exact w.
-Defined.
+Qed.
 
 Theorem nEQ_sound_right {n:nat}
 (p q1 q2:nPrty n) (e:nEQ q1 q2) (H:nEQ p q1) : nEQ p q2.
@@ -4873,7 +4949,7 @@ induction n.
 + intro z. split; intro w.
   - apply e. apply H. exact w.
   - apply H. apply e. exact w.
-Defined.
+Qed.
 
 Record nClass :=
 {
@@ -4889,7 +4965,7 @@ induction n;simpl in *|-*.
 + exact (fun y : Ens => IN y x). (* stoc *)
 + intro A.
   exact (exists w:nPrty n, @nEQ (S n) (IHn w) A /\ x w).
-Defined.
+Qed.
 
 (* generalized stoc without soundness *)
 Coercion plift : nPrty >-> nPrty.
@@ -4900,7 +4976,7 @@ Coercion coe : Ens >-> nPrty.
 Example in_plift (a b:Ens) : IN a b <-> plift b a.
 Proof.
 reflexivity.
-Defined.
+Qed.
 
 Definition lift (x:nClass) : nClass.
 Proof.
@@ -4919,7 +4995,7 @@ unshelve eapply Build_nClass.
     intro q. split; intro w.
     * apply H, J1, w.
     * apply J1, H, w.
-Defined.
+Qed.
 
 (* generalization of EQ2cEQ *)
 Definition lift_EQ {n:nat} (x y:nPrty n) (H:nEQ x y)
@@ -4940,7 +5016,7 @@ Definition nIN {n:nat} (a b : nPrty n) : Prop := plift b a.
  unfold IN', stoc.
  simpl.
  reflexivity.
- Defined.
+ Qed.
 (* End of motivation *)
 
 Definition pPair {n:nat} (a b : nPrty n) : nPrty n.
@@ -4949,7 +5025,7 @@ destruct n.
 + exact (Pair a b).
 + simpl in *|-*.
   exact (fun e => nEQ (plift e) a \/ nEQ (plift e) b).
-Defined.
+Qed.
 
 Definition nPair (a b : nClass) : nClass.
 Proof.
@@ -4990,7 +5066,7 @@ split.
   intros.
   assert (Q:= H z H0).
   apply H0. exact Q.
-Defined.
+Qed.
 
 Lemma cNNincOmega (x:Ens) : cNN x -> IN x Omega.
 Proof.
@@ -5001,7 +5077,7 @@ simpl in H.
 assert (oi:=Omega_cInd).
 simpl in oi.
 exact (H Omega oi). *)
-Defined.
+Qed.
 
 
 Arguments EQ _ _ : simpl nomatch.
@@ -5029,14 +5105,14 @@ induction y; intros x e.
   apply b.
   apply IHy.
   apply EQ_refl.
-Defined.
+Qed.
 
 Theorem Omega_cEQ_cNN : cEQ (stoc Omega) cNN.
 Proof.
 intro x. split.
  apply OmegainccNN.
  apply cNNincOmega.
-Defined.
+Qed.
 
 Theorem Vide_in_Omega : IN Vide Omega.
 Proof.
@@ -5044,7 +5120,7 @@ Transparent IN.
 unfold IN.
 unfold Omega.
 exists 0. apply EQ_refl.
-Defined.
+Qed.
 
 Theorem succ_in_Omega (Y:Ens)(H: IN Y Omega)
  : IN (succ Y) Omega.
@@ -5055,7 +5131,7 @@ exists (S n).
 change (Nat (S n)) with (succ (Nat n)).
 apply succ_sound.
 exact K.
-Defined.
+Qed.
 
 Theorem Ind_Omega : Ind Omega.
 Proof.
@@ -5063,7 +5139,7 @@ unfold Ind.
 split.
 exact Vide_in_Omega.
 exact succ_in_Omega.
-Defined.
+Qed.
 
 Theorem Induction X : (Ind X) -> (INC Omega X).
 Proof.
@@ -5075,7 +5151,7 @@ apply U.
 apply Omega_cEQ_cNN.
 simpl.
 exact H.
-Defined.
+Qed.
 
 Theorem pTr_Omega: pTr Omega.
 Proof.
@@ -5089,7 +5165,7 @@ apply Comp_elim in H as [H1 H2].
 2 : { unfold SoundPred. (*eapply INC_sound_left.*)
 intros. eapply INC_sound_left. exact H0. exact H1. }
 exact H2.
-Defined.
+Qed.
 
 Arguments Omega : simpl nomatch.
 (* ex.1.3 part 2*)
@@ -5121,7 +5197,7 @@ change ((stoc Omega) z) with (IN z Omega).
 simpl.
 revert x u z.
 apply pTr_Omega.
-Defined.
+Qed.
 Check InterSS cInd Omega Omega_cInd.
 Definition less := IN.
 Notation " x < y " := (less x y).
@@ -5148,7 +5224,7 @@ intro z. split; intro q.
   apply IN_Comp_P in q.
   exact q.
   apply IN_sound_left.
-Defined.
+Qed.
 
 Theorem ex_1_3_part3_c (n:Ens) (H:IN n Omega)
  : cEQ (stoc n) (cComp cNN (stoc n)).
@@ -5162,7 +5238,7 @@ intro z. split; intro q.
 + simpl in *|-*.
   destruct q as [_ q].
   exact q.
-Defined.
+Qed.
 
 Theorem ex_1_4_i (n:Ens) (H:IN n Omega)
  : pTr n.
@@ -5172,7 +5248,7 @@ assert (M:=D n H).
 apply IN_Comp_P in M.
 exact M.
 exact pTr_sound.
-Defined.
+Qed.
 
 Theorem ex_1_5_i (n:Ens) (H:IN n Omega)
  : ~ IN n n.
@@ -5182,7 +5258,7 @@ assert (M:=D n H).
 apply IN_Comp_P in M. destruct M as [_ M].
 exact M.
 exact ex_1_5_lem1.
-Defined.
+Qed.
 
 Theorem ex_1_5_ii (n:Ens) (H:IN n Omega)
  : ~ (EQ n (succ n)).
@@ -5201,7 +5277,7 @@ Search Sing.
 2 : apply IN_Sing.
 Search Pair.
 apply IN_Pair_right.
-Defined.
+Qed.
 
 (* ex_1_6 *)
 
@@ -5251,7 +5327,7 @@ Proof.
 apply @Coq.Logic.FunctionalExtensionality.functional_extensionality.
 intro x.
 destruct x.
-Defined.
+Qed.
 
 Check @Coq.Logic.FunctionalExtensionality.functional_extensionality.
 Theorem sup_false {f} : (sup False f) = Vide.
@@ -5260,7 +5336,7 @@ unfold Vide.
 simpl.
 apply f_equal.
 refine (lw f).
-Defined.
+Qed.
 
 
 Theorem false_vide f: EQ Vide (sup False f).
@@ -5274,7 +5350,7 @@ Proof.
 +  intro.
    destruct H.
    destruct x.
-Defined.
+Qed.
 
 (* binary union *)
 Definition bu A B := Union (Pair A B).
@@ -5345,7 +5421,7 @@ Proof.
  + intro H.
    destruct H.
    destruct x.
-Defined.
+Qed.
 
 Theorem c1': EQ (OPair Zero Zero) Vide.
 Proof.
@@ -5365,7 +5441,7 @@ Proof.
  + intro H.
    destruct H.
    destruct x.
-Defined.
+Qed.
 
 (* (*unfold One,Zero,Sing,Pair,Vide,bu,pi1,Union,Pair,pi1 in H.*)
  simpl in H.
@@ -5498,14 +5574,14 @@ unfold bu, Pair, Union.
 compute.
 repeat rewrite sup_false.
 trivial.
-Defined.
+Qed.
 
 Theorem th2 : img OPair_Zero Zero = Zero.
 Proof.
 compute.
 repeat rewrite sup_false.
 trivial.
-Defined.
+Qed.
 
 Theorem th1 a b : (OPair a b) = ((img (OPair Zero) a) u (img (OPair One) b)).
 Proof.
@@ -5549,7 +5625,7 @@ unfold One, Zero, Vide, img, bu.
 simpl.
 compute.
 
-Defined.
+Qed.
 
 
 
@@ -5638,7 +5714,7 @@ destruct b as [B g].
 exact (bu (sup A (fun a1 => OPair Zero (f a1)) )
                            (sup B (fun b1 => OPair  One (g b1)) )).
 Term.
-Defined.
+Qed.
 Fail Next Obligation.
 
 Timeout 1 Eval lazy in (OPair Zero sOmega).
