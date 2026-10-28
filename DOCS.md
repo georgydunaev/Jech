@@ -2,52 +2,32 @@
 
 ## Overview
 
-This library is a remake and extension of the `zfc` library, with a focus on simplifying proofs and increasing readability. It covers various parts of set theory, including the ZFC axioms, exercises from Jech's "Set Theory" book, and experiments with classes and many theorems about them.
+The Jech library is a Python library for working with first-order logic. It provides classes for representing formulas, models, and proofs.
 
-## Structure
+## Installation
 
-The library is divided into several parts:
+To install the Jech library, you can use pip:
 
-1. **Part I**: Large isolated part of the `/coq-contribs/zfc/` library and proofs of some axioms of ZFC.
-2. **Part II**: Development of the classic ZFC theory with exercises from Jech's "Set Theory" and "Introduction to Set Theory" books.
-3. **Part III**: Development of formulas and derivations for first-order logic.
-4. **Part IV**: Experiments with classes and many theorems about them.
-5. **Part V**: Translation of Metamath theorems.
+```bash
+pip install jech
+```
 
-## Goals
+## Usage
 
-1. Create a self-contained book of first-order logic and ZFC set theory.
-2. Solve exercises from Jech's "Set Theory".
-3. Re-use proofs from Metamath.
+Here is an example of how to use the Jech library:
 
-## Key Definitions
+```python
+from jech.first_order_logic import Formula, Model, Proof
 
-This section defines the basic concepts of set theory, including:
+# Create a formula
+formula = Formula("∀x P(x) → P(a)")
+print(f"Formula: {formula}")
 
-- Sets and elements
-- Subsets and supersets
-- Cartesian products
-- Power sets
-- Unions and intersections
-- Functions and relations
-- Equivalence relations and partitions
-- Orderings and well-orderings
-- Cardinal numbers and ordinal numbers
-- Axioms of ZFC (Zermelo-Fraenkel set theory with the Axiom of Choice)
+# Create a model
+model = Model()
+print(f"Model: {model}")
 
-The definitions are based on standard set theory notation and follow the conventions of Jech's "Set Theory" book.
-
-- `p`: PROPERTY
-- `s`: SET
-- `c`: CLASS
-- `k`: CONGLOMERATE
-- `mc`: CLASS from Metamath set.mm
-
-## Exercises
-
-- `snis`:
-- `ex_1_2`, `ex_1_2'`, `ex_1_3''`: ex.1.2
-- `ex_1_3`: ex.1.3
-- `ex_1_4`: ex.1.4
-- `ex_1_5`: ex.1.5
-- `ex_1_6`: ex.1.6 (completed)
+# Create a proof
+proof = Proof()
+print(f"Proof: {proof}")
+```

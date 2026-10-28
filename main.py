@@ -13,9 +13,17 @@ from jech.first_order_logic import Formula, Model, Proof
 
 
 def main():
+    """Main function to demonstrate the functionality of the Jech library.
+    
+    This function demonstrates the usage of the Formula, Model, and Proof classes
+    from the jech.first_order_logic module. It creates instances of these classes
+    and prints them to the console.
+    """
     """Main function to demonstrate the functionality of the Jech library."""
     
     # Example usage of the Formula class
+    # This demonstrates how to create a formula using the Formula class
+    # and print it to the console.
     formula = Formula("∀x P(x) → P(a)")
     print(f"Formula: {formula}")
     
