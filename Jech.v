@@ -4645,6 +4645,50 @@ simpl in *|-*.*)
 (* http://us.metamath.org/mpegif/df-rdg.html *)
 (* Definition rec (F I:class) := recs F. *)
 
+(*
+ * Part III: First-Order Logic
+ *
+ * This section defines the syntax of first-order formulas and implements a derivation calculus.
+ *
+ * Author: mistral/mistral-small-latest (Capability Tier 1)
+ *
+ *)
+
+Section Part_III.
+
+(*
+ * Inductive definition of first-order formulas
+ *)
+
+Inductive Fo : Type := 
+| True : Fo
+| False : Fo
+| Eq (x y : nat) : Fo
+| And (f1 f2 : Fo) : Fo
+| Or (f1 f2 : Fo) : Fo
+| Implies (f1 f2 : Fo) : Fo
+| Not (f : Fo) : Fo
+| Forall (x : nat) (f : Fo) : Fo
+| Exists (x : nat) (f : Fo) : Fo.
+
+(*
+ * Hilbert-style derivation calculus
+ *)
+
+Inductive Derivation : Fo -> Type := 
+| Ax1 : forall f, Derivation (Implies (Implies f (Implies f f)))
+| Ax2 : forall f g h, Derivation (Implies (Implies (Implies f (Implies g h)) (Implies (Implies f g) (Implies f h))))
+| Ax3 : forall f g, Derivation (Implies (Implies (And f g) f))
+| Ax4 : forall f g, Derivation (Implies (Implies (And f g) g))
+| Ax5 : forall f g, Derivation (Implies (Implies f (Implies g (And f g))))
+| Ax6 : forall f g, Derivation (Implies (Implies f (Implies f g)) (Implies f g))
+| Ax7 : forall f g, Derivation (Implies (Implies (Not f) (Implies f g)) (Implies g g))
+| Ax8 : forall f, Derivation (Implies (Implies f (Not f)) (Not f))
+| Ax9 : forall f, Derivation (Implies (Not (Not f)) f)
+| Ax10 : forall x f, Derivation (Implies (Forall x f) (Subst x x f))
+| Ax11 : forall x f, Derivation (Implies (Subst x x f) (Exists x f))
+| MP : forall f g, Derivation (Implies (Implies f g) (Implies f g)).
+
 (* ===================================== *)
 (*     END OF THE METAMATH SECTION       *)
 (* ===================================== *)
