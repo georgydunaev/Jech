@@ -7,7 +7,7 @@ use "axRep_axInfty.ML";
 (* Test cases for verifying the proof of axRep *)
 
 (* Define a sample function f: A -> B *)
-let f (x: A) : B = ... (* Define the sample function f *)
+let f (x: A) : B = x (* Example implementation: identity function *)
 
 (* Construct the set C using the sup constructor *)
 let C = sup (fun x -> f x) : B
