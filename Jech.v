@@ -31,6 +31,7 @@ Proof.
   (* Apply lemma1 to hypothesis H *)
   apply lemma1 in H.
   (* Apply lemma2 to the result *)
+  Cross-references: lemma1, lemma2, example_theorem *)
   apply lemma2.
 Qed.
 
@@ -44,6 +45,7 @@ Proof.
   (* Apply advanced_lemma to the result *)
   apply advanced_lemma.
 Qed.
+  Cross-references: advanced_theorem, advanced_lemma, example_lemma *)
 
 (* Example 5: Using a Custom Definition *)
 Require Import Jech. (* Import the Jech library to access its theorems and definitions *)CustomDefinitions.
