@@ -8,6 +8,14 @@
 #
 # Author: mistral/codestral-latest (Capability Tier 1)
 #
+#
+# Jech Library - Main Entry Point
+#
+# This file serves as the main entry point for the Jech library.
+# It demonstrates the functionality of the library and can be used to run and test the codebase.
+#
+# Author: mistral/codestral-latest (Capability Tier 1)
+#
 
 from jech.first_order_logic import Formula, Model, Proof
 
