@@ -1044,7 +1044,31 @@ Save.
 Transparent Alpha.
 *)
 
-(*=== AXIOMS ===*)
+(*=== AXIOMS
+
+Theorem axInfty: exists Omega : Ens, (forall n : nat, IN (Nat n) Omega) /\ (forall E : Ens, IN E Omega -> exists n : nat, EQ (Nat n) E).
+Proof.
+  exists (sup nat (fun n : nat => Nat n)).
+  split.
+  - intros n. apply IN_sup with n.
+    apply IN_Nat.
+  - intros E H. apply IN_Omega_EXType with E H.
+Qed.
+
+
+
+Theorem axRep: forall A (f: A -> Ens), is_set (sup A f).
+Proof.
+  intros A f.
+  apply is_set_sup.
+  intros a.
+  apply is_set_Power.
+  apply is_set_Vee.
+  apply f.
+  apply is_set_a.
+Qed.
+
+ ===*)
 
 Theorem axInfty : exists Y:Ens, forall z, (IN z Y <-> exists n:Nat, EQ z (Nat n)).
 Proof.
