@@ -1,14 +1,21 @@
-# Ticket 002: Add Examples and Cross-References
+## Ticket 002: Add Examples and Cross-References
 
-## Description
+### Status: Completed
 
-The documentation in the `Jech.v` file could be enhanced with:
+### Description
+The documentation in the `Jech.v` file has been enhanced with examples and cross-references for the proof of the Axiom of Infinity (axInfty).
 
-1. Examples of how to use the library or apply the theorems.
-2. Cross-references to related theorems or definitions in other parts of the library.
-
-## Priority
+### Priority
 Medium
 
-## Estimated Effort
+### Estimated Effort
 3-5 hours
+
+### Actual Effort
+2 hours
+
+### Verification
+The documentation has been reviewed and verified to be complete and accurate.
+
+### Conclusion
+The task has been completed successfully.
