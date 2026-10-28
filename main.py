@@ -4,6 +4,10 @@
 # Jech Library - Main Entry Point
 #
 # This file serves as the main entry point for the Jech library.
+
+if __name__ == "__main__":
+    print("Hello, Jech!")
+
 # It demonstrates the functionality of the library and can be used to run and test the codebase.
 #
 # Author: mistral/codestral-latest (Capability Tier 1)
