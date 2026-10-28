@@ -1,15 +1,14 @@
-# Jech Set Theory Library
+# Jech Library Setup
 
 ## Requirements
 - Coq 8.13 or later
-- Standard Coq libraries
+- Docker (for CI)
 
-## Current Status
-- Part I: Basic ZFC axioms implemented
-- Part II: Classic ZFC theory in progress
-- Parts III-V: Planned for future development
+## Local Compilation
+To compile the `Jech.v` file locally, you can use the following command:
+```bash
+coqc -Q . '' Jech.v
+```
 
-## Next Steps
-1. Install Coq in the environment
-2. Verify proofs for axRep and axInfty
-3. Complete remaining exercises
+## CI Setup
+The `.gitlab-ci.yml` file is configured to run in GitLab CI using the `coqorg/coq` Docker image. To use this setup, you need to have GitLab CI configured in your project.
