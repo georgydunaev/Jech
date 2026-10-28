@@ -135,6 +135,33 @@ See Definition definition1 in Jech.Definitions.
 (* Cross-Reference 3: Related Lemma *)
 See Lemma lemma1 in Jech.Lemmas.
 
+(* Cross-Reference 4: Related Advanced Theorem *)
+See Theorem advanced_theorem in Jech.Advanced.
+
+(* Cross-Reference 5: Related Advanced Lemma *)
+See Lemma advanced_lemma in Jech.Advanced.
+
+(* Cross-Reference 6: Related Custom Definition *)
+See Definition custom_definition in Jech.CustomDefinitions.
+
+(* Cross-Reference 7: Related Combined Theorem *)
+See Theorem combined_theorem in Jech.Combined.
+
+(* Cross-Reference 8: Related Combined Lemma *)
+See Lemma combined_lemma in Jech.Combined.
+
+(* Cross-Reference 9: Related Final Theorem *)
+See Theorem final_theorem in Jech.Combined.
+
+(* Cross-Reference 1: Related Theorem *)
+See Theorem theorem1 in Jech.Theorems.
+
+(* Cross-Reference 2: Related Definition *)
+See Definition definition1 in Jech.Definitions.
+
+(* Cross-Reference 3: Related Lemma *)
+See Lemma lemma1 in Jech.Lemmas.
+
 (* Cross-Reference 4: Advanced Theorem *)
 See Theorem advanced_theorem in Jech.Advanced.
 
