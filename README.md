@@ -22,6 +22,12 @@ The library is divided into several parts:
 
 ## Key Definitions
 
+- `p`: PROPERTY - A property is a collection of sets that share a common characteristic. Properties are used to define classes and other constructs in set theory.
+- `s`: SET - A set is a collection of distinct objects, considered as an object in its own right. Sets are the fundamental building blocks of set theory.
+- `c`: CLASS - A class is a collection of sets that is too large to be considered a set. Classes are used to avoid the paradoxes associated with the naive theory of sets.
+- `k`: CONGLOMERATE - A conglomerate is a collection of classes. Conglomerates are used to extend the theory of classes to handle even larger collections.
+- `mc`: CLASS from Metamath set.mm - A class defined in the Metamath set theory library, which provides a formalized foundation for set theory.
+
 - `p`: PROPERTY
 - `s`: SET
 - `c`: CLASS
@@ -32,6 +38,27 @@ The library is divided into several parts:
 
 ### Part I: ZFC Axioms and Basic Definitions
 
+1. **Axiom of Extensionality**: Two sets are equal if they have the same elements. This axiom ensures that the identity of a set is determined by its elements, not by any other property.
+   - **Example**: If set A = {1, 2, 3} and set B = {1, 2, 3}, then A = B.
+
+2. **Axiom of Pairing**: For any two sets, there exists a set that contains both of them. This axiom allows the formation of pairs of sets.
+   - **Example**: For sets A and B, there exists a set C = {A, B}.
+
+3. **Axiom of Union**: For any collection of sets, there exists a set that contains all the elements of the sets in the collection. This axiom allows the formation of the union of a collection of sets.
+   - **Example**: For a collection of sets {A, B, C}, there exists a set D = A ∪ B ∪ C.
+
+4. **Axiom of Power Set**: For any set, there exists a set that contains all the subsets of the original set. This axiom allows the formation of the power set of a set.
+   - **Example**: For a set A = {1, 2}, the power set of A is {{}, {1}, {2}, {1, 2}}.
+
+5. **Axiom of Infinity**: There exists a set that contains the empty set and is closed under the successor operation. This axiom ensures the existence of an infinite set.
+   - **Example**: The set of natural numbers N = {0, 1, 2, ...} is an infinite set.
+
+6. **Axiom of Regularity**: Every non-empty set contains an element that is disjoint from it. This axiom prevents the formation of sets that contain themselves as elements, which would lead to Russell's paradox.
+   - **Example**: For a set A = {1, {2, 3}}, the element 1 is disjoint from A.
+
+7. **Axiom of Choice**: For any collection of non-empty sets, there exists a function that selects one element from each set in the collection. This axiom is controversial and has implications in various areas of mathematics.
+   - **Example**: For a collection of non-empty sets {A, B, C}, there exists a function f such that f(A) ∈ A, f(B) ∈ B, and f(C) ∈ C.
+
 1. **Axiom of Extensionality**: Two sets are equal if they have the same elements.
 2. **Axiom of Pairing**: For any two sets, there exists a set that contains both of them.
 3. **Axiom of Union**: For any collection of sets, there exists a set that contains all the elements of the sets in the collection.
@@ -41,6 +68,21 @@ The library is divided into several parts:
 7. **Axiom of Choice**: For any collection of non-empty sets, there exists a function that selects one element from each set in the collection.
 
 ### Part II: Classic ZFC Theory
+
+1. **Theorem 1.1**: The intersection of any two sets is a set. This theorem ensures that the intersection of two sets is also a set.
+   - **Example**: For sets A = {1, 2, 3} and B = {2, 3, 4}, the intersection A ∩ B = {2, 3} is a set.
+
+2. **Theorem 1.2**: The difference of any two sets is a set. This theorem ensures that the difference of two sets is also a set.
+   - **Example**: For sets A = {1, 2, 3} and B = {2, 3, 4}, the difference A - B = {1} is a set.
+
+3. **Theorem 1.3**: The Cartesian product of any two sets is a set. This theorem ensures that the Cartesian product of two sets is also a set.
+   - **Example**: For sets A = {1, 2} and B = {3, 4}, the Cartesian product A × B = {(1, 3), (1, 4), (2, 3), (2, 4)} is a set.
+
+4. **Theorem 1.4**: The power set of any set is a set. This theorem ensures that the power set of a set is also a set.
+   - **Example**: For a set A = {1, 2}, the power set of A is {{}, {1}, {2}, {1, 2}}.
+
+5. **Theorem 1.5**: The union of any collection of sets is a set. This theorem ensures that the union of a collection of sets is also a set.
+   - **Example**: For a collection of sets {A, B, C}, the union A ∪ B ∪ C is a set.
 
 1. **Theorem 1.1**: The intersection of any two sets is a set.
 2. **Theorem 1.2**: The difference of any two sets is a set.
