@@ -1,5 +1,38 @@
 # Contributing to Jech
 
+## How to Contribute
+
+### Reporting Issues
+
+1. **Check Existing Issues**: Before creating a new issue, please check if it has already been reported.
+2. **Create a New Issue**: If the issue is not already reported, create a new issue in the GitHub repository.
+3. **Provide Details**: Include a clear and concise description of the issue, steps to reproduce, and any relevant screenshots or code snippets.
+
+### Creating Pull Requests
+
+1. **Fork the Repository**: Fork the Jech repository to your GitHub account.
+2. **Clone the Repository**: Clone the forked repository to your local machine.
+3. **Create a New Branch**: Create a new branch for your changes.
+4. **Make Changes**: Make your changes to the codebase.
+5. **Commit Changes**: Commit your changes with a clear and concise commit message.
+6. **Push Changes**: Push your changes to your forked repository.
+7. **Create a Pull Request**: Create a pull request from your forked repository to the main Jech repository.
+
+### Code Style
+
+- **Consistency**: Follow the existing code style and conventions in the repository.
+- **Documentation**: Ensure that your code is well-documented, including comments and docstrings.
+- **Testing**: Write tests for your code to ensure it works as expected.
+
+## Code of Conduct
+
+Please note that the Jech project is released with a Contributor Code of Conduct. By participating in this project, you agree to abide by its terms.
+
+## License
+
+By contributing to Jech, you agree that your contributions will be licensed under the MIT License.
+
+
 Thank you for considering contributing to Jech! We appreciate your interest and effort. This guide will help you understand how to contribute effectively to the project.
 
 ## How to Submit Issues
