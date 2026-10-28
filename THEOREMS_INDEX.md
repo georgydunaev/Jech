@@ -6,6 +6,12 @@
 
 - **Description**: Represents a first-order logic formula.
 - **Usage**: `Formula(formula_str)`
+- **Example**: See `main.py` for example usage and detailed comments.
+
+### Model
+
+- **Description**: Represents a first-order logic formula.
+- **Usage**: `Formula(formula_str)`
 
 ### Model
 
