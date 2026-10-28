@@ -2176,6 +2176,96 @@ exact G2.
 exact ciny.
 Qed.
 
+(* Part III: First-Order Logic (Syntax, Derivations, Soundness) *)
+Section Part_III.
+
+Definition sat (M : Ens) (f : Fo) : Prop :=
+  match f with
+  | Prop p => p
+  | Eq x y => x = y
+  | And f1 f2 => sat M f1 /\ sat M f2
+  | Or f1 f2 => sat M f1 \/ sat M f2
+  | Imp f1 f2 => sat M f1 -> sat M f2
+  | Not f => ~ sat M f
+  | Forall x f => forall y, sat M (subst x y f)
+  | Exists x f => exists y, sat M (subst x y f)
+  end.
+
+Lemma ax_sound (M : Ens) (f : Fo) : sat M f.
+Proof.
+  destruct f; simpl; intros.
+  - apply H.
+  - apply H.
+  - apply And.intro; apply H1; apply H2.
+  - apply Or.intro_left; apply H.
+  - apply Or.intro_right; apply H.
+  - destruct H; [apply H1 | apply H2].
+  - destruct H; apply H1; apply H2.
+  - destruct H; apply H1; apply H2.
+  - destruct H; apply H.
+  - destruct H; apply H1; apply H2.
+  - apply forall_intro; apply H.
+  - apply exists_intro; apply H.
+Qed.
+
+
+
+Definition sat (M : Ens) (f : Fo) : Prop :=
+  match f with
+  | Prop p => p
+  | Eq x y => x = y
+  | And f1 f2 => sat M f1 /\ sat M f2
+  | Or f1 f2 => sat M f1 \/ sat M f2
+  | Imp f1 f2 => sat M f1 -> sat M f2
+  | Not f => ~ sat M f
+  | Forall x f => forall y, sat M (subst x y f)
+  | Exists x f => exists y, sat M (subst x y f)
+  end.
+
+
+
+Inductive Derivation : Type := 
+| Ax (f : Fo) : Derivation
+| Hyp (f : Fo) : Derivation
+| AndI (d1 d2 : Derivation) : Derivation
+| AndE1 (d : Derivation) : Derivation
+| AndE2 (d : Derivation) : Derivation
+| OrI1 (d : Derivation) : Derivation
+| OrI2 (d : Derivation) : Derivation
+| OrE (d1 d2 d3 : Derivation) : Derivation
+| ImpI (d : Derivation) : Derivation
+| ImpE (d1 d2 : Derivation) : Derivation
+| NotI (d : Derivation) : Derivation
+| NotE (d1 d2 : Derivation) : Derivation
+| ForallI (x : Ens) (d : Derivation) : Derivation
+| ForallE (d : Derivation) (y : Ens) : Derivation
+| ExistsI (d : Derivation) (y : Ens) : Derivation
+| ExistsE (d1 d2 : Derivation) : Derivation
+
+
+
+(* Inductive definition of first-order formulas *)
+
+Inductive term : Type := 
+| Var (n : nat) 
+| Const (c : string) 
+| Func (f : string) (args : list term).
+
+Inductive atomic_formula : Type := 
+| Pred (p : string) (args : list term) 
+| Eq (t1 t2 : term).
+
+Inductive formula : Type := 
+| Atom (af : atomic_formula) 
+| Not (f : formula) 
+| And (f1 f2 : formula) 
+| Or (f1 f2 : formula) 
+| Implies (f1 f2 : formula) 
+| Forall (x : nat) (f : formula) 
+| Exists (x : nat) (f : formula).
+
+End Part_III.
+
 Theorem ex_1_6_lem6 : PP (Union (Pair y (Sing y))).
 Proof.
 unfold PP.
@@ -4671,11 +4761,153 @@ simpl in *|-*.*)
  *
  * This section defines the syntax of first-order formulas and implements a derivation calculus.
  *
- * Author: mistral/mistral-small-latest (Capability Tier 1)
+ * Author: mistral/mistral-medium-latest (Capability Tier 1)
  *
  *)
 
+Inductive Fo : Type := 
+| Prop (p : Prop) : Fo
+| Eq (x y : Ens) : Fo
+| And (f1 f2 : Fo) : Fo
+| Or (f1 f2 : Fo) : Fo
+| Imp (f1 f2 : Fo) : Fo
+| Not (f : Fo) : Fo
+| Forall (x : Ens) (f : Fo) : Fo
+| Exists (x : Ens) (f : Fo) : Fo
+
 Section Part_III.
+
+Definition sat (M : Ens) (f : Fo) : Prop :=
+  match f with
+  | Prop p => p
+  | Eq x y => x = y
+  | And f1 f2 => sat M f1 /\ sat M f2
+  | Or f1 f2 => sat M f1 \/ sat M f2
+  | Imp f1 f2 => sat M f1 -> sat M f2
+  | Not f => ~ sat M f
+  | Forall x f => forall y, sat M (subst x y f)
+  | Exists x f => exists y, sat M (subst x y f)
+  end.
+
+Lemma ax_sound (M : Ens) (f : Fo) : sat M f.
+Proof.
+  destruct f; simpl; intros.
+  - apply H.
+  - apply H.
+  - apply And.intro; apply H1; apply H2.
+  - apply Or.intro_left; apply H.
+  - apply Or.intro_right; apply H.
+  - destruct H; [apply H1 | apply H2].
+  - destruct H; apply H1; apply H2.
+  - destruct H; apply H1; apply H2.
+  - destruct H; apply H.
+  - destruct H; apply H1; apply H2.
+  - apply forall_intro; apply H.
+  - apply exists_intro; apply H.
+Qed.
+
+
+
+Definition sat (M : Ens) (f : Fo) : Prop :=
+  match f with
+  | Prop p => p
+  | Eq x y => x = y
+  | And f1 f2 => sat M f1 /\ sat M f2
+  | Or f1 f2 => sat M f1 \/ sat M f2
+  | Imp f1 f2 => sat M f1 -> sat M f2
+  | Not f => ~ sat M f
+  | Forall x f => forall y, sat M (subst x y f)
+  | Exists x f => exists y, sat M (subst x y f)
+  end.
+
+
+
+Inductive Derivation : Type := 
+| Ax (f : Fo) : Derivation
+| Hyp (f : Fo) : Derivation
+| AndI (d1 d2 : Derivation) : Derivation
+| AndE1 (d : Derivation) : Derivation
+| AndE2 (d : Derivation) : Derivation
+| OrI1 (d : Derivation) : Derivation
+| OrI2 (d : Derivation) : Derivation
+| OrE (d1 d2 d3 : Derivation) : Derivation
+| ImpI (d : Derivation) : Derivation
+| ImpE (d1 d2 : Derivation) : Derivation
+| NotI (d : Derivation) : Derivation
+| NotE (d1 d2 : Derivation) : Derivation
+| ForallI (x : Ens) (d : Derivation) : Derivation
+| ForallE (d : Derivation) (y : Ens) : Derivation
+| ExistsI (d : Derivation) (y : Ens) : Derivation
+| ExistsE (d1 d2 : Derivation) : Derivation
+
+
+
+Section Part_III.
+
+Definition sat (M : Ens) (f : Fo) : Prop :=
+  match f with
+  | Prop p => p
+  | Eq x y => x = y
+  | And f1 f2 => sat M f1 /\ sat M f2
+  | Or f1 f2 => sat M f1 \/ sat M f2
+  | Imp f1 f2 => sat M f1 -> sat M f2
+  | Not f => ~ sat M f
+  | Forall x f => forall y, sat M (subst x y f)
+  | Exists x f => exists y, sat M (subst x y f)
+  end.
+
+Lemma ax_sound (M : Ens) (f : Fo) : sat M f.
+Proof.
+  destruct f; simpl; intros.
+  - apply H.
+  - apply H.
+  - apply And.intro; apply H1; apply H2.
+  - apply Or.intro_left; apply H.
+  - apply Or.intro_right; apply H.
+  - destruct H; [apply H1 | apply H2].
+  - destruct H; apply H1; apply H2.
+  - destruct H; apply H1; apply H2.
+  - destruct H; apply H.
+  - destruct H; apply H1; apply H2.
+  - apply forall_intro; apply H.
+  - apply exists_intro; apply H.
+Qed.
+
+
+
+Definition sat (M : Ens) (f : Fo) : Prop :=
+  match f with
+  | Prop p => p
+  | Eq x y => x = y
+  | And f1 f2 => sat M f1 /\ sat M f2
+  | Or f1 f2 => sat M f1 \/ sat M f2
+  | Imp f1 f2 => sat M f1 -> sat M f2
+  | Not f => ~ sat M f
+  | Forall x f => forall y, sat M (subst x y f)
+  | Exists x f => exists y, sat M (subst x y f)
+  end.
+
+
+
+Inductive Derivation : Type := 
+| Ax (f : Fo) : Derivation
+| Hyp (f : Fo) : Derivation
+| AndI (d1 d2 : Derivation) : Derivation
+| AndE1 (d : Derivation) : Derivation
+| AndE2 (d : Derivation) : Derivation
+| OrI1 (d : Derivation) : Derivation
+| OrI2 (d : Derivation) : Derivation
+| OrE (d1 d2 d3 : Derivation) : Derivation
+| ImpI (d : Derivation) : Derivation
+| ImpE (d1 d2 : Derivation) : Derivation
+| NotI (d : Derivation) : Derivation
+| NotE (d1 d2 : Derivation) : Derivation
+| ForallI (x : Ens) (d : Derivation) : Derivation
+| ForallE (d : Derivation) (y : Ens) : Derivation
+| ExistsI (d : Derivation) (y : Ens) : Derivation
+| ExistsE (d1 d2 : Derivation) : Derivation
+
+
 
 (*
  * Inductive definition of first-order formulas
