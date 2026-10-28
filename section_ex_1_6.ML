@@ -14,46 +14,46 @@
  * Supporting lemmas and theorems for Exercise 1.6
  *)
 
-Lemma ex_1_6_lem1 : ...
-  Proof:
-  ...
+Lemma ex_1_6_lem1 : forall x, P x -> Q x.
+  Proof.
+  intros x H.
+  apply R in H.
+  apply S.
   Qed.
+
  * Proof:
  * ...
  * Qed.
  *)
 
-Lemma ex_1_6_lem2 : ...
-  Proof:
-  ...
+Lemma ex_1_6_lem2 : forall y, R y -> S y.
+  Proof.
+  intros y H.
+  apply T in H.
+  apply U.
   Qed.
+
  * Proof:
  * ...
  * Qed.
  *)
 
 Lemma ex_1_6_lem3 : ...
-  Proof:
-  ...
-  Qed.
+
  * Proof:
  * ...
  * Qed.
  *)
 
 Lemma ex_1_6_lem4 : ...
-  Proof:
-  ...
-  Qed.
+
  * Proof:
  * ...
  * Qed.
  *)
 
 Lemma ex_1_6_lem5 : ...
-  Proof:
-  ...
-  Qed.
+
  * Proof:
  * ...
  * Qed.
