@@ -72,6 +72,13 @@ induction and recursion principles.)
 (* Compute subset mysubset myset.
 (*
 (* For more complex definitions, refer to the specific theorems and proofs in the library.
+(* Example:
+(* To define a function, you can use the following notation:
+(* Definition myfunction : set -> set := fun x => x + 1.
+(* To apply a function to an element, you can use the following notation:
+(* Example: Apply myfunction to 1.
+(* Compute myfunction 1.
+(* For more complex definitions, refer to the specific theorems and proofs in the library.
 (*
 (* ## Exercises
 (*
@@ -86,6 +93,11 @@ induction and recursion principles.)
 (* apply H.
 (* Qed.
 (*
+(* For more complex exercises, refer to the specific theorems and proofs in the library.
+(* Cross-references:
+(* - For more information on functions and relations, refer to the [Functions and Relations](#functions-and-relations) section.
+(* - For more information on cardinal numbers, refer to the [Cardinal Numbers](#cardinal-numbers) section.
+(* - For more information on ordinal numbers, refer to the [Ordinal Numbers](#ordinal-numbers) section.
 (* For more complex exercises, refer to the specific theorems and proofs in the library.
 (*
 (* - `snis`:
@@ -129,6 +141,11 @@ induction and recursion principles.)
 (* apply H.
 (* Qed.
 (*
+(* For more complex exercises, refer to the specific theorems and proofs in the library.
+(* Cross-references:
+(* - For more information on functions and relations, refer to the [Functions and Relations](#functions-and-relations) section.
+(* - For more information on cardinal numbers, refer to the [Cardinal Numbers](#cardinal-numbers) section.
+(* - For more information on ordinal numbers, refer to the [Ordinal Numbers](#ordinal-numbers) section.
 (* For more complex exercises, refer to the specific theorems and proofs in the library.
 (*
 (* - `snis`:
@@ -221,6 +238,13 @@ induction and recursion principles.)
 (* Compute subset mysubset myset.
 (*
 (* For more complex definitions, refer to the specific theorems and proofs in the library.
+(* Example:
+(* To define a function, you can use the following notation:
+(* Definition myfunction : set -> set := fun x => x + 1.
+(* To apply a function to an element, you can use the following notation:
+(* Example: Apply myfunction to 1.
+(* Compute myfunction 1.
+(* For more complex definitions, refer to the specific theorems and proofs in the library.
 (*
 (* ## Exercises
 (*
@@ -235,6 +259,11 @@ induction and recursion principles.)
 (* apply H.
 (* Qed.
 (*
+(* For more complex exercises, refer to the specific theorems and proofs in the library.
+(* Cross-references:
+(* - For more information on functions and relations, refer to the [Functions and Relations](#functions-and-relations) section.
+(* - For more information on cardinal numbers, refer to the [Cardinal Numbers](#cardinal-numbers) section.
+(* - For more information on ordinal numbers, refer to the [Ordinal Numbers](#ordinal-numbers) section.
 (* For more complex exercises, refer to the specific theorems and proofs in the library.
 (*
 (* - `snis`:
@@ -278,6 +307,11 @@ induction and recursion principles.)
 (* apply H.
 (* Qed.
 (*
+(* For more complex exercises, refer to the specific theorems and proofs in the library.
+(* Cross-references:
+(* - For more information on functions and relations, refer to the [Functions and Relations](#functions-and-relations) section.
+(* - For more information on cardinal numbers, refer to the [Cardinal Numbers](#cardinal-numbers) section.
+(* - For more information on ordinal numbers, refer to the [Ordinal Numbers](#ordinal-numbers) section.
 (* For more complex exercises, refer to the specific theorems and proofs in the library.
 (*
 (* - `snis`:
