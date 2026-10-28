@@ -1,4 +1,5 @@
 (*
+*)
 This library is a remake and extension of this library:
 https://github.com/coq-contribs/zfc
 I simplified proofs to get rid of unnecessary fixpoints and
@@ -6,335 +7,793 @@ to increase readability. (IMHO, it is much easier to read
 Gallina's "match .. end" notation rather than discover 
 induction and recursion principles.)
 *)
-(* IST = "Introduction to Set Theory".(K.Hrbacek, T.Jech) *)
+(*
+*) IST = "Introduction to Set Theory".(K.Hrbacek, T.Jech) *)
 
-(* =============================================
-(* Jech Library Documentation
-(* =============================================
-(^
-(* ## Overview
-(^
-(* This library is a remake and extension of the `zfc` library, with a focus on simplifying proofs and increasing readability. It covers various parts of set theory, including the ZFC axioms, exercises from Jech's "Set Theory" book, and experiments with classes and many theorems about them.
-(^
-(* ## Key Definitions
 (*
-(* For more information on the definitions and theorems, refer to the following sections:
-(* - [ZFC Axioms](#zfc-axioms)
-(* - [Cardinal Numbers](#cardinal-numbers)
-(* - [Ordinal Numbers](#ordinal-numbers)
-(* - [Functions and Relations](#functions-and-relations)
+*) =============================================
 (*
-(* This section defines the basic concepts of set theory, including:
-(* - Sets and elements
-(* - Subsets and supersets
-(* - Cartesian products
-(* - Power sets
-(* - Unions and intersections
-(* - Functions and relations
-(* - Equivalence relations and partitions
-(* - Orderings and well-orderings
-(* - Cardinal numbers and ordinal numbers
-(* - Axioms of ZFC (Zermelo-Fraenkel set theory with the Axiom of Choice)
+*) Jech Library Documentation
 (*
-(* This section defines the basic concepts of set theory, including:
-(* - Sets and elements
-(* - Subsets and supersets
-(* - Cartesian products
-(* - Power sets
-(* - Unions and intersections
-(* - Functions and relations
-(* - Equivalence relations and partitions
-(* - Orderings and well-orderings
-(* - Cardinal numbers and ordinal numbers
-(* - Axioms of ZFC (Zermelo-Fraenkel set theory with the Axiom of Choice)
+*) =============================================
 (*
-(* The definitions are based on standard set theory notation and follow the conventions of Jech's "Set Theory" book.
+*)
 (*
-(* - `p`: PROPERTY
-(* - `s`: SET
-(* - `c`: CLASS
-(* - `k`: CONGLOMERATE
-(* - `mc`: CLASS from Metamath set.mm
+*) ## Overview
+*)
 (*
-(* Example:
-(* To define a set, you can use the following notation:
-(* Definition myset : set := {1, 2, 3}.
+*)
 (*
-(* To check if an element is in a set, you can use the `in` keyword:
-(* Example: Check if 1 is in myset.
-(* Compute in myset 1.
+*) This library is a remake and extension of the `zfc` library, with a focus on simplifying proofs and increasing readability. It covers various parts of set theory, including the ZFC axioms, exercises from Jech's "Set Theory" book, and experiments with classes and many theorems about them.
 (*
-(* To define a subset, you can use the following notation:
-(* Definition mysubset : set := {1, 2}.
+*)
 (*
-(* To check if a set is a subset of another set, you can use the `subset` keyword:
-(* Example: Check if mysubset is a subset of myset.
-(* Compute subset mysubset myset.
+*) ## Key Definitions
 (*
-(* For more complex definitions, refer to the specific theorems and proofs in the library.
-(* Example:
-(* To define a function, you can use the following notation:
-(* Definition myfunction : set -> set := fun x => x + 1.
-(* To apply a function to an element, you can use the following notation:
-(* Example: Apply myfunction to 1.
-(* Compute myfunction 1.
-(* For more complex definitions, refer to the specific theorems and proofs in the library.
+*)
 (*
-(* ## Exercises
+*) For more information on the definitions and theorems, refer to the following sections:
 (*
-(* This section includes exercises from Jech's "Set Theory" book. Each exercise is accompanied by a detailed proof and explanation.
+*) - [ZFC Axioms](#zfc-axioms)
 (*
-(* Example:
-(* To solve exercise 1.2, you can use the following theorem:
-(* Theorem ex_1_2 : forall x y, x = y -> x in y.
+*) - [Cardinal Numbers](#cardinal-numbers)
 (*
-(* Proof.
-(* intros x y H.
-(* apply H.
-(* Qed.
+*) - [Ordinal Numbers](#ordinal-numbers)
 (*
-(* For more complex exercises, refer to the specific theorems and proofs in the library.
-(* Cross-references:
-(* - For more information on functions and relations, refer to the [Functions and Relations](#functions-and-relations) section.
-(* - For more information on cardinal numbers, refer to the [Cardinal Numbers](#cardinal-numbers) section.
-(* - For more information on ordinal numbers, refer to the [Ordinal Numbers](#ordinal-numbers) section.
-(* For more complex exercises, refer to the specific theorems and proofs in the library.
+*) - [Functions and Relations](#functions-and-relations)
 (*
-(* - `snis`:
-(* - `ex_1_2`, `ex_1_2'`, `ex_1_3''`: ex.1.2
-(* - `ex_1_3`: ex.1.3
-(* - `ex_1_4`: ex.1.4
-(* - `ex_1_5`: ex.1.5
-(* - `ex_1_6`: ex.1.6 (completed)
+*)
 (*
-(* This section defines the basic concepts of set theory, including:
-(* - Sets and elements
-(* - Subsets and supersets
-(* - Cartesian products
-(* - Power sets
-(* - Unions and intersections
-(* - Functions and relations
-(* - Equivalence relations and partitions
-(* - Orderings and well-orderings
-(* - Cardinal numbers and ordinal numbers
-(* - Axioms of ZFC (Zermelo-Fraenkel set theory with the Axiom of Choice)
+*) This section defines the basic concepts of set theory, including:
 (*
-(* The definitions are based on standard set theory notation and follow the conventions of Jech's "Set Theory" book.
+*) - Sets and elements
 (*
-(^
-(* - `p`: PROPERTY
-(* - `s`: SET
-(* - `c`: CLASS
-(* - `k`: CONGLOMERATE
-(* - `mc`: CLASS from Metamath set.mm
-(^
-(* ## Exercises
+*) - Subsets and supersets
 (*
-(* This section includes exercises from Jech's "Set Theory" book. Each exercise is accompanied by a detailed proof and explanation.
+*) - Cartesian products
 (*
-(* Example:
-(* To solve exercise 1.2, you can use the following theorem:
-(* Theorem ex_1_2 : forall x y, x = y -> x in y.
+*) - Power sets
 (*
-(* Proof.
-(* intros x y H.
-(* apply H.
-(* Qed.
+*) - Unions and intersections
 (*
-(* For more complex exercises, refer to the specific theorems and proofs in the library.
-(* Cross-references:
-(* - For more information on functions and relations, refer to the [Functions and Relations](#functions-and-relations) section.
-(* - For more information on cardinal numbers, refer to the [Cardinal Numbers](#cardinal-numbers) section.
-(* - For more information on ordinal numbers, refer to the [Ordinal Numbers](#ordinal-numbers) section.
-(* For more complex exercises, refer to the specific theorems and proofs in the library.
+*) - Functions and relations
 (*
-(* - `snis`:
-(* - `ex_1_2`, `ex_1_2'`, `ex_1_3''`: ex.1.2
-(* - `ex_1_3`: ex.1.3
-(* - `ex_1_4`: ex.1.4
-(* - `ex_1_5`: ex.1.5
-(* - `ex_1_6`: ex.1.6 (completed)
-(^
-(* - `snis`:
-(* - `ex_1_2`, `ex_1_2'`, `ex_1_3''`: ex.1.2
-(* - `ex_1_3`: ex.1.3
-(* - `ex_1_4`: ex.1.4
-(* - `ex_1_5`: ex.1.5
-(* - `ex_1_6`: ex.1.6 (completed)
+*) - Equivalence relations and partitions
 (*
-(* ## Overview
+*) - Orderings and well-orderings
 (*
-(* This library is a remake and extension of the `zfc` library, with a focus on simplifying proofs and increasing readability. It covers various parts of set theory, including the ZFC axioms, exercises from Jech's "Set Theory" book, and experiments with classes and many theorems about them.
+*) - Cardinal numbers and ordinal numbers
 (*
-(* ## Structure
+*) - Axioms of ZFC (Zermelo-Fraenkel set theory with the Axiom of Choice)
 (*
-(* The library is divided into several parts:
+*) The ZFC axioms are the foundation of set theory. They define the basic properties of sets and the operations that can be performed on them. The axioms are:
 (*
-(* 1. **Part I**: Large isolated part of the `/coq-contribs/zfc/` library and proofs of some axioms of ZFC.
-(* 2. **Part II**: Development of the classic ZFC theory with exercises from Jech's "Set Theory" and "Introduction to Set Theory" books.
-(* 3. **Part III**: Development of formulas and derivations for first-order logic.
-(* 4. **Part IV**: Experiments with classes and many theorems about them.
-(* 5. **Part V**: Translation of Metamath theorems.
+*) 1. Extensionality: Two sets are equal if they have the same elements.
 (*
-(* ## Goals
+*) 2. Empty Set: There exists a set with no elements.
 (*
-(* 1. Create a self-contained book of first-order logic and ZFC set theory.
-(* 2. Solve exercises from Jech's "Set Theory".
-(* 3. Re-use proofs from Metamath.
+*) 3. Pairing: For any two sets, there exists a set that contains both of them as elements.
 (*
-(* ## Key Definitions
+*) 4. Union: For any set, there exists a set that contains all the elements of the elements of the original set.
 (*
-(* For more information on the definitions and theorems, refer to the following sections:
-(* - [ZFC Axioms](#zfc-axioms)
-(* - [Cardinal Numbers](#cardinal-numbers)
-(* - [Ordinal Numbers](#ordinal-numbers)
-(* - [Functions and Relations](#functions-and-relations)
+*) 5. Power Set: For any set, there exists a set that contains all the subsets of the original set.
 (*
-(* This section defines the basic concepts of set theory, including:
-(* - Sets and elements
-(* - Subsets and supersets
-(* - Cartesian products
-(* - Power sets
-(* - Unions and intersections
-(* - Functions and relations
-(* - Equivalence relations and partitions
-(* - Orderings and well-orderings
-(* - Cardinal numbers and ordinal numbers
-(* - Axioms of ZFC (Zermelo-Fraenkel set theory with the Axiom of Choice)
+*) 6. Infinity: There exists a set that contains the empty set and is closed under the operation of taking the successor of a set.
 (*
-(* This section defines the basic concepts of set theory, including:
-(* - Sets and elements
-(* - Subsets and supersets
-(* - Cartesian products
-(* - Power sets
-(* - Unions and intersections
-(* - Functions and relations
-(* - Equivalence relations and partitions
-(* - Orderings and well-orderings
-(* - Cardinal numbers and ordinal numbers
-(* - Axioms of ZFC (Zermelo-Fraenkel set theory with the Axiom of Choice)
+*) 7. Comprehension: For any property, there exists a set that contains all the elements that satisfy the property.
 (*
-(* The definitions are based on standard set theory notation and follow the conventions of Jech's "Set Theory" book.
+*) 8. Replacement: For any function, there exists a set that contains the images of the elements of the original set under the function.
 (*
-(* - `p`: PROPERTY
-(* - `s`: SET
-(* - `c`: CLASS
-(* - `k`: CONGLOMERATE
-(* - `mc`: CLASS from Metamath set.mm
+*) 9. Choice: For any set of non-empty sets, there exists a function that selects an element from each set in the collection.
 (*
-(* Example:
-(* To define a set, you can use the following notation:
-(* Definition myset : set := {1, 2, 3}.
+*) These axioms are the foundation of set theory and are used to prove many theorems and definitions in the library.
 (*
-(* To check if an element is in a set, you can use the `in` keyword:
-(* Example: Check if 1 is in myset.
-(* Compute in myset 1.
+*)
 (*
-(* To define a subset, you can use the following notation:
-(* Definition mysubset : set := {1, 2}.
+*) This section defines the basic concepts of set theory, including:
 (*
-(* To check if a set is a subset of another set, you can use the `subset` keyword:
-(* Example: Check if mysubset is a subset of myset.
-(* Compute subset mysubset myset.
+*) - Sets and elements
 (*
-(* For more complex definitions, refer to the specific theorems and proofs in the library.
-(* Example:
-(* To define a function, you can use the following notation:
-(* Definition myfunction : set -> set := fun x => x + 1.
-(* To apply a function to an element, you can use the following notation:
-(* Example: Apply myfunction to 1.
-(* Compute myfunction 1.
-(* For more complex definitions, refer to the specific theorems and proofs in the library.
+*) - Subsets and supersets
 (*
-(* ## Exercises
+*) - Cartesian products
 (*
-(* This section includes exercises from Jech's "Set Theory" book. Each exercise is accompanied by a detailed proof and explanation.
+*) - Power sets
 (*
-(* Example:
-(* To solve exercise 1.2, you can use the following theorem:
-(* Theorem ex_1_2 : forall x y, x = y -> x in y.
+*) - Unions and intersections
 (*
-(* Proof.
-(* intros x y H.
-(* apply H.
-(* Qed.
+*) - Functions and relations
 (*
-(* For more complex exercises, refer to the specific theorems and proofs in the library.
-(* Cross-references:
-(* - For more information on functions and relations, refer to the [Functions and Relations](#functions-and-relations) section.
-(* - For more information on cardinal numbers, refer to the [Cardinal Numbers](#cardinal-numbers) section.
-(* - For more information on ordinal numbers, refer to the [Ordinal Numbers](#ordinal-numbers) section.
-(* For more complex exercises, refer to the specific theorems and proofs in the library.
+*) - Equivalence relations and partitions
 (*
-(* - `snis`:
-(* - `ex_1_2`, `ex_1_2'`, `ex_1_3''`: ex.1.2
-(* - `ex_1_3`: ex.1.3
-(* - `ex_1_4`: ex.1.4
-(* - `ex_1_5`: ex.1.5
-(* - `ex_1_6`: ex.1.6 (completed)
+*) - Orderings and well-orderings
 (*
-(* This section defines the basic concepts of set theory, including:
-(* - Sets and elements
-(* - Subsets and supersets
-(* - Cartesian products
-(* - Power sets
-(* - Unions and intersections
-(* - Functions and relations
-(* - Equivalence relations and partitions
-(* - Orderings and well-orderings
-(* - Cardinal numbers and ordinal numbers
-(* - Axioms of ZFC (Zermelo-Fraenkel set theory with the Axiom of Choice)
+*) - Cardinal numbers and ordinal numbers
 (*
-(* The definitions are based on standard set theory notation and follow the conventions of Jech's "Set Theory" book.
+*) - Axioms of ZFC (Zermelo-Fraenkel set theory with the Axiom of Choice)
 (*
+*) The ZFC axioms are the foundation of set theory. They define the basic properties of sets and the operations that can be performed on them. The axioms are:
 (*
-(* - `p`: PROPERTY
-(* - `s`: SET
-(* - `c`: CLASS
-(* - `k`: CONGLOMERATE
-(* - `mc`: CLASS from Metamath set.mm
+*) 1. Extensionality: Two sets are equal if they have the same elements.
 (*
-(* ## Exercises
+*) 2. Empty Set: There exists a set with no elements.
 (*
-(* This section includes exercises from Jech's "Set Theory" book. Each exercise is accompanied by a detailed proof and explanation.
+*) 3. Pairing: For any two sets, there exists a set that contains both of them as elements.
 (*
-(* Example:
-(* To solve exercise 1.2, you can use the following theorem:
-(* Theorem ex_1_2 : forall x y, x = y -> x in y.
+*) 4. Union: For any set, there exists a set that contains all the elements of the elements of the original set.
 (*
-(* Proof.
-(* intros x y H.
-(* apply H.
-(* Qed.
+*) 5. Power Set: For any set, there exists a set that contains all the subsets of the original set.
 (*
-(* For more complex exercises, refer to the specific theorems and proofs in the library.
-(* Cross-references:
-(* - For more information on functions and relations, refer to the [Functions and Relations](#functions-and-relations) section.
-(* - For more information on cardinal numbers, refer to the [Cardinal Numbers](#cardinal-numbers) section.
-(* - For more information on ordinal numbers, refer to the [Ordinal Numbers](#ordinal-numbers) section.
-(* For more complex exercises, refer to the specific theorems and proofs in the library.
+*) 6. Infinity: There exists a set that contains the empty set and is closed under the operation of taking the successor of a set.
 (*
-(* - `snis`:
-(* - `ex_1_2`, `ex_1_2'`, `ex_1_3''`: ex.1.2
-(* - `ex_1_3`: ex.1.3
-(* - `ex_1_4`: ex.1.4
-(* - `ex_1_5`: ex.1.5
-(* - `ex_1_6`: ex.1.6 (completed)
+*) 7. Comprehension: For any property, there exists a set that contains all the elements that satisfy the property.
 (*
-(* - `snis`: 
-(* - `ex_1_2`, `ex_1_2'`, `ex_1_3''`: ex.1.2
-(* - `ex_1_3`: ex.1.3
-(* - `ex_1_4`: ex.1.4
-(* - `ex_1_5`: ex.1.5
-(* - `ex_1_6`: ex.1.6 (completed)
+*) 8. Replacement: For any function, there exists a set that contains the images of the elements of the original set under the function.
 (*
-(* =============================================
+*) 9. Choice: For any set of non-empty sets, there exists a function that selects an element from each set in the collection.
 (*
+*) These axioms are the foundation of set theory and are used to prove many theorems and definitions in the library.
+(*
+*)
+(*
+*) The definitions are based on standard set theory notation and follow the conventions of Jech's "Set Theory" book.
+(*
+*)
+(*
+*) - `p`: PROPERTY
+(*
+*) - `s`: SET
+(*
+*) - `c`: CLASS
+(*
+*) - `k`: CONGLOMERATE
+(*
+*) - `mc`: CLASS from Metamath set.mm
+(*
+*)
+(*
+*) Example:
+(*
+*) To define a set, you can use the following notation:
+(*
+*) Definition myset : set := {1, 2, 3}.
+(*
+*)
+(*
+*) To check if an element is in a set, you can use the `in` keyword:
+(*
+*) Example: Check if 1 is in myset.
+(*
+*) Compute in myset 1.
+(*
+*)
+(*
+*) To define a subset, you can use the following notation:
+(*
+*) Definition mysubset : set := {1, 2}.
+(*
+*)
+(*
+*) To check if a set is a subset of another set, you can use the `subset` keyword:
+(*
+*) Example: Check if mysubset is a subset of myset.
+(*
+*) Compute subset mysubset myset.
+(*
+*)
+(*
+*) For more complex definitions, refer to the specific theorems and proofs in the library.
+(*
+*) Example:
+(*
+*) To define a function, you can use the following notation:
+(*
+*) Definition myfunction : set -> set := fun x => x + 1.
+(*
+*) To apply a function to an element, you can use the following notation:
+(*
+*) Example: Apply myfunction to 1.
+(*
+*) Compute myfunction 1.
+(*
+*) For more complex definitions, refer to the specific theorems and proofs in the library.
+(*
+*)
+(*
+*) ## Exercises
+(*
+*)
+(*
+*) This section includes exercises from Jech's "Set Theory" book. Each exercise is accompanied by a detailed proof and explanation.
+(*
+*)
+(*
+*) Example:
+(*
+*) To solve exercise 1.2, you can use the following theorem:
+(*
+*) Theorem ex_1_2 : forall x y, x = y -> x in y.
+(*
+*)
+(*
+*) Proof.
+(*
+*) intros x y H.
+(*
+*) apply H.
+(*
+*) Qed.
+(*
+*)
+(*
+*) For more complex exercises, refer to the specific theorems and proofs in the library.
+(*
+*) Cross-references:
+(*
+*) - For more information on functions and relations, refer to the [Functions and Relations](#functions-and-relations) section.
+(*
+*) - For more information on cardinal numbers, refer to the [Cardinal Numbers](#cardinal-numbers) section.
+(*
+*) - For more information on ordinal numbers, refer to the [Ordinal Numbers](#ordinal-numbers) section.
+(*
+*) For more complex exercises, refer to the specific theorems and proofs in the library.
+(*
+*)
+(*
+*) - `snis`:
+(*
+*) - `ex_1_2`, `ex_1_2'`, `ex_1_3''`: ex.1.2
+(*
+*) - `ex_1_3`: ex.1.3
+(*
+*) - `ex_1_4`: ex.1.4
+(*
+*) - `ex_1_5`: ex.1.5
+(*
+*) - `ex_1_6`: ex.1.6 (completed)
+(*
+*)
+(*
+*) This section defines the basic concepts of set theory, including:
+(*
+*) - Sets and elements
+(*
+*) - Subsets and supersets
+(*
+*) - Cartesian products
+(*
+*) - Power sets
+(*
+*) - Unions and intersections
+(*
+*) - Functions and relations
+(*
+*) - Equivalence relations and partitions
+(*
+*) - Orderings and well-orderings
+(*
+*) - Cardinal numbers and ordinal numbers
+(*
+*) - Axioms of ZFC (Zermelo-Fraenkel set theory with the Axiom of Choice)
+(*
+*) The ZFC axioms are the foundation of set theory. They define the basic properties of sets and the operations that can be performed on them. The axioms are:
+(*
+*) 1. Extensionality: Two sets are equal if they have the same elements.
+(*
+*) 2. Empty Set: There exists a set with no elements.
+(*
+*) 3. Pairing: For any two sets, there exists a set that contains both of them as elements.
+(*
+*) 4. Union: For any set, there exists a set that contains all the elements of the elements of the original set.
+(*
+*) 5. Power Set: For any set, there exists a set that contains all the subsets of the original set.
+(*
+*) 6. Infinity: There exists a set that contains the empty set and is closed under the operation of taking the successor of a set.
+(*
+*) 7. Comprehension: For any property, there exists a set that contains all the elements that satisfy the property.
+(*
+*) 8. Replacement: For any function, there exists a set that contains the images of the elements of the original set under the function.
+(*
+*) 9. Choice: For any set of non-empty sets, there exists a function that selects an element from each set in the collection.
+(*
+*) These axioms are the foundation of set theory and are used to prove many theorems and definitions in the library.
+(*
+*)
+(*
+*) The definitions are based on standard set theory notation and follow the conventions of Jech's "Set Theory" book.
+(*
+*)
+(*
+*)
+(*
+*) - `p`: PROPERTY
+(*
+*) - `s`: SET
+(*
+*) - `c`: CLASS
+(*
+*) - `k`: CONGLOMERATE
+(*
+*) - `mc`: CLASS from Metamath set.mm
+(*
+*)
+(*
+*) ## Exercises
+(*
+*)
+(*
+*) This section includes exercises from Jech's "Set Theory" book. Each exercise is accompanied by a detailed proof and explanation.
+(*
+*)
+(*
+*) Example:
+(*
+*) To solve exercise 1.2, you can use the following theorem:
+(*
+*) Theorem ex_1_2 : forall x y, x = y -> x in y.
+(*
+*)
+(*
+*) Proof.
+(*
+*) intros x y H.
+(*
+*) apply H.
+(*
+*) Qed.
+(*
+*)
+(*
+*) For more complex exercises, refer to the specific theorems and proofs in the library.
+(*
+*) Cross-references:
+(*
+*) - For more information on functions and relations, refer to the [Functions and Relations](#functions-and-relations) section.
+(*
+*) - For more information on cardinal numbers, refer to the [Cardinal Numbers](#cardinal-numbers) section.
+(*
+*) - For more information on ordinal numbers, refer to the [Ordinal Numbers](#ordinal-numbers) section.
+(*
+*) For more complex exercises, refer to the specific theorems and proofs in the library.
+(*
+*)
+(*
+*) - `snis`:
+(*
+*) - `ex_1_2`, `ex_1_2'`, `ex_1_3''`: ex.1.2
+(*
+*) - `ex_1_3`: ex.1.3
+(*
+*) - `ex_1_4`: ex.1.4
+(*
+*) - `ex_1_5`: ex.1.5
+(*
+*) - `ex_1_6`: ex.1.6 (completed)
+(*
+*)
+(*
+*) - `snis`:
+(*
+*) - `ex_1_2`, `ex_1_2'`, `ex_1_3''`: ex.1.2
+(*
+*) - `ex_1_3`: ex.1.3
+(*
+*) - `ex_1_4`: ex.1.4
+(*
+*) - `ex_1_5`: ex.1.5
+(*
+*) - `ex_1_6`: ex.1.6 (completed)
+(*
+*)
+(*
+*) ## Overview
+*)
+(*
+*)
+(*
+*) This library is a remake and extension of the `zfc` library, with a focus on simplifying proofs and increasing readability. It covers various parts of set theory, including the ZFC axioms, exercises from Jech's "Set Theory" book, and experiments with classes and many theorems about them.
+(*
+*)
+(*
+*) ## Structure
+(*
+*)
+(*
+*) The library is divided into several parts:
+(*
+*)
+(*
+*) 1. **Part I**: Large isolated part of the `/coq-contribs/zfc/` library and proofs of some axioms of ZFC.
+(*
+*) 2. **Part II**: Development of the classic ZFC theory with exercises from Jech's "Set Theory" and "Introduction to Set Theory" books.
+(*
+*) 3. **Part III**: Development of formulas and derivations for first-order logic.
+(*
+*) 4. **Part IV**: Experiments with classes and many theorems about them.
+(*
+*) 5. **Part V**: Translation of Metamath theorems.
+(*
+*)
+(*
+*) ## Goals
+(*
+*)
+(*
+*) 1. Create a self-contained book of first-order logic and ZFC set theory.
+(*
+*) 2. Solve exercises from Jech's "Set Theory".
+(*
+*) 3. Re-use proofs from Metamath.
+(*
+*)
+(*
+*) ## Key Definitions
+(*
+*)
+(*
+*) For more information on the definitions and theorems, refer to the following sections:
+(*
+*) - [ZFC Axioms](#zfc-axioms)
+(*
+*) - [Cardinal Numbers](#cardinal-numbers)
+(*
+*) - [Ordinal Numbers](#ordinal-numbers)
+(*
+*) - [Functions and Relations](#functions-and-relations)
+(*
+*)
+(*
+*) This section defines the basic concepts of set theory, including:
+(*
+*) - Sets and elements
+(*
+*) - Subsets and supersets
+(*
+*) - Cartesian products
+(*
+*) - Power sets
+(*
+*) - Unions and intersections
+(*
+*) - Functions and relations
+(*
+*) - Equivalence relations and partitions
+(*
+*) - Orderings and well-orderings
+(*
+*) - Cardinal numbers and ordinal numbers
+(*
+*) - Axioms of ZFC (Zermelo-Fraenkel set theory with the Axiom of Choice)
+(*
+*) The ZFC axioms are the foundation of set theory. They define the basic properties of sets and the operations that can be performed on them. The axioms are:
+(*
+*) 1. Extensionality: Two sets are equal if they have the same elements.
+(*
+*) 2. Empty Set: There exists a set with no elements.
+(*
+*) 3. Pairing: For any two sets, there exists a set that contains both of them as elements.
+(*
+*) 4. Union: For any set, there exists a set that contains all the elements of the elements of the original set.
+(*
+*) 5. Power Set: For any set, there exists a set that contains all the subsets of the original set.
+(*
+*) 6. Infinity: There exists a set that contains the empty set and is closed under the operation of taking the successor of a set.
+(*
+*) 7. Comprehension: For any property, there exists a set that contains all the elements that satisfy the property.
+(*
+*) 8. Replacement: For any function, there exists a set that contains the images of the elements of the original set under the function.
+(*
+*) 9. Choice: For any set of non-empty sets, there exists a function that selects an element from each set in the collection.
+(*
+*) These axioms are the foundation of set theory and are used to prove many theorems and definitions in the library.
+(*
+*)
+(*
+*) This section defines the basic concepts of set theory, including:
+(*
+*) - Sets and elements
+(*
+*) - Subsets and supersets
+(*
+*) - Cartesian products
+(*
+*) - Power sets
+(*
+*) - Unions and intersections
+(*
+*) - Functions and relations
+(*
+*) - Equivalence relations and partitions
+(*
+*) - Orderings and well-orderings
+(*
+*) - Cardinal numbers and ordinal numbers
+(*
+*) - Axioms of ZFC (Zermelo-Fraenkel set theory with the Axiom of Choice)
+(*
+*) The ZFC axioms are the foundation of set theory. They define the basic properties of sets and the operations that can be performed on them. The axioms are:
+(*
+*) 1. Extensionality: Two sets are equal if they have the same elements.
+(*
+*) 2. Empty Set: There exists a set with no elements.
+(*
+*) 3. Pairing: For any two sets, there exists a set that contains both of them as elements.
+(*
+*) 4. Union: For any set, there exists a set that contains all the elements of the elements of the original set.
+(*
+*) 5. Power Set: For any set, there exists a set that contains all the subsets of the original set.
+(*
+*) 6. Infinity: There exists a set that contains the empty set and is closed under the operation of taking the successor of a set.
+(*
+*) 7. Comprehension: For any property, there exists a set that contains all the elements that satisfy the property.
+(*
+*) 8. Replacement: For any function, there exists a set that contains the images of the elements of the original set under the function.
+(*
+*) 9. Choice: For any set of non-empty sets, there exists a function that selects an element from each set in the collection.
+(*
+*) These axioms are the foundation of set theory and are used to prove many theorems and definitions in the library.
+(*
+*)
+(*
+*) The definitions are based on standard set theory notation and follow the conventions of Jech's "Set Theory" book.
+(*
+*)
+(*
+*) - `p`: PROPERTY
+(*
+*) - `s`: SET
+(*
+*) - `c`: CLASS
+(*
+*) - `k`: CONGLOMERATE
+(*
+*) - `mc`: CLASS from Metamath set.mm
+(*
+*)
+(*
+*) Example:
+(*
+*) To define a set, you can use the following notation:
+(*
+*) Definition myset : set := {1, 2, 3}.
+(*
+*)
+(*
+*) To check if an element is in a set, you can use the `in` keyword:
+(*
+*) Example: Check if 1 is in myset.
+(*
+*) Compute in myset 1.
+(*
+*)
+(*
+*) To define a subset, you can use the following notation:
+(*
+*) Definition mysubset : set := {1, 2}.
+(*
+*)
+(*
+*) To check if a set is a subset of another set, you can use the `subset` keyword:
+(*
+*) Example: Check if mysubset is a subset of myset.
+(*
+*) Compute subset mysubset myset.
+(*
+*)
+(*
+*) For more complex definitions, refer to the specific theorems and proofs in the library.
+(*
+*) Example:
+(*
+*) To define a function, you can use the following notation:
+(*
+*) Definition myfunction : set -> set := fun x => x + 1.
+(*
+*) To apply a function to an element, you can use the following notation:
+(*
+*) Example: Apply myfunction to 1.
+(*
+*) Compute myfunction 1.
+(*
+*) For more complex definitions, refer to the specific theorems and proofs in the library.
+(*
+*)
+(*
+*) ## Exercises
+(*
+*)
+(*
+*) This section includes exercises from Jech's "Set Theory" book. Each exercise is accompanied by a detailed proof and explanation.
+(*
+*)
+(*
+*) Example:
+(*
+*) To solve exercise 1.2, you can use the following theorem:
+(*
+*) Theorem ex_1_2 : forall x y, x = y -> x in y.
+(*
+*)
+(*
+*) Proof.
+(*
+*) intros x y H.
+(*
+*) apply H.
+(*
+*) Qed.
+(*
+*)
+(*
+*) For more complex exercises, refer to the specific theorems and proofs in the library.
+(*
+*) Cross-references:
+(*
+*) - For more information on functions and relations, refer to the [Functions and Relations](#functions-and-relations) section.
+(*
+*) - For more information on cardinal numbers, refer to the [Cardinal Numbers](#cardinal-numbers) section.
+(*
+*) - For more information on ordinal numbers, refer to the [Ordinal Numbers](#ordinal-numbers) section.
+(*
+*) For more complex exercises, refer to the specific theorems and proofs in the library.
+(*
+*)
+(*
+*) - `snis`:
+(*
+*) - `ex_1_2`, `ex_1_2'`, `ex_1_3''`: ex.1.2
+(*
+*) - `ex_1_3`: ex.1.3
+(*
+*) - `ex_1_4`: ex.1.4
+(*
+*) - `ex_1_5`: ex.1.5
+(*
+*) - `ex_1_6`: ex.1.6 (completed)
+(*
+*)
+(*
+*) This section defines the basic concepts of set theory, including:
+(*
+*) - Sets and elements
+(*
+*) - Subsets and supersets
+(*
+*) - Cartesian products
+(*
+*) - Power sets
+(*
+*) - Unions and intersections
+(*
+*) - Functions and relations
+(*
+*) - Equivalence relations and partitions
+(*
+*) - Orderings and well-orderings
+(*
+*) - Cardinal numbers and ordinal numbers
+(*
+*) - Axioms of ZFC (Zermelo-Fraenkel set theory with the Axiom of Choice)
+(*
+*) The ZFC axioms are the foundation of set theory. They define the basic properties of sets and the operations that can be performed on them. The axioms are:
+(*
+*) 1. Extensionality: Two sets are equal if they have the same elements.
+(*
+*) 2. Empty Set: There exists a set with no elements.
+(*
+*) 3. Pairing: For any two sets, there exists a set that contains both of them as elements.
+(*
+*) 4. Union: For any set, there exists a set that contains all the elements of the elements of the original set.
+(*
+*) 5. Power Set: For any set, there exists a set that contains all the subsets of the original set.
+(*
+*) 6. Infinity: There exists a set that contains the empty set and is closed under the operation of taking the successor of a set.
+(*
+*) 7. Comprehension: For any property, there exists a set that contains all the elements that satisfy the property.
+(*
+*) 8. Replacement: For any function, there exists a set that contains the images of the elements of the original set under the function.
+(*
+*) 9. Choice: For any set of non-empty sets, there exists a function that selects an element from each set in the collection.
+(*
+*) These axioms are the foundation of set theory and are used to prove many theorems and definitions in the library.
+(*
+*)
+(*
+*) The definitions are based on standard set theory notation and follow the conventions of Jech's "Set Theory" book.
+(*
+*)
+(*
+*)
+(*
+*) - `p`: PROPERTY
+(*
+*) - `s`: SET
+(*
+*) - `c`: CLASS
+(*
+*) - `k`: CONGLOMERATE
+(*
+*) - `mc`: CLASS from Metamath set.mm
+(*
+*)
+(*
+*) ## Exercises
+(*
+*)
+(*
+*) This section includes exercises from Jech's "Set Theory" book. Each exercise is accompanied by a detailed proof and explanation.
+(*
+*)
+(*
+*) Example:
+(*
+*) To solve exercise 1.2, you can use the following theorem:
+(*
+*) Theorem ex_1_2 : forall x y, x = y -> x in y.
+(*
+*)
+(*
+*) Proof.
+(*
+*) intros x y H.
+(*
+*) apply H.
+(*
+*) Qed.
+(*
+*)
+(*
+*) For more complex exercises, refer to the specific theorems and proofs in the library.
+(*
+*) Cross-references:
+(*
+*) - For more information on functions and relations, refer to the [Functions and Relations](#functions-and-relations) section.
+(*
+*) - For more information on cardinal numbers, refer to the [Cardinal Numbers](#cardinal-numbers) section.
+(*
+*) - For more information on ordinal numbers, refer to the [Ordinal Numbers](#ordinal-numbers) section.
+(*
+*) For more complex exercises, refer to the specific theorems and proofs in the library.
+(*
+*)
+(*
+*) - `snis`:
+(*
+*) - `ex_1_2`, `ex_1_2'`, `ex_1_3''`: ex.1.2
+(*
+*) - `ex_1_3`: ex.1.3
+(*
+*) - `ex_1_4`: ex.1.4
+(*
+*) - `ex_1_5`: ex.1.5
+(*
+*) - `ex_1_6`: ex.1.6 (completed)
+(*
+*)
+(*
+*) - `snis`: 
+(*
+*) - `ex_1_2`, `ex_1_2'`, `ex_1_3''`: ex.1.2
+(*
+*) - `ex_1_3`: ex.1.3
+(*
+*) - `ex_1_4`: ex.1.4
+(*
+*) - `ex_1_5`: ex.1.5
+(*
+*) - `ex_1_6`: ex.1.6 (completed)
+(*
+*)
+(*
+*) =============================================
+(*
+*)
     ST = "Set Theory".(T.Jech, 2003)
  I2AST = "Introduction to Axiomatic Set Theory"(W.Zaring,G.Takeuti)
    AST = "Axiomatic Set Theory"(W.Zaring,G.Takeuti)
 *)
-(*** Contents ***
+(*
+*)** Contents ***
 
 Part I: Large isolated part of "/coq-contribs/zfc/" library and
 proofs of some axioms of zfc (see "axChoice" theorem).
@@ -360,21 +819,24 @@ APPENDIX:
 
 *****************)
 
-(* "presumption of unsoundness"
+(*
+*) "presumption of unsoundness"
 during the development of the part II
 all definitions must be considered as unsafe before
  checking the proof of soundness.
 See also part IV.
 *)
 
-(* AIMS:
+(*
+*) AIMS:
  The first aim is to create a self-contained book 
 of the first-order logic and ZFC set theory.
  The second aim is to solve exercises from Jech's "Set theory".
  The third aim is to re-use proofs from Metamath.
 *)
 
-(*Exercises from Jech: (search theses through the text)
+(*
+*)Exercises from Jech: (search theses through the text)
   snis   :
   ex_1_2, ex_1_2', ex_1_3'' : ex.1.2
   ex_1_3 : ex.1.3
@@ -384,6 +846,7 @@ of the first-order logic and ZFC set theory.
 *)
 
 (*
+*)
  p - PROPERTY
  s - SET
  c - CLASS
@@ -391,11 +854,14 @@ of the first-order logic and ZFC set theory.
  mc - CLASS from Metamath set.mm
 *)
 
-(* TODO try to use constructible universe to avoid
+(*
+*) TODO try to use constructible universe to avoid
  axSFC and LEM *)
-(* (!) These notions (Pair, Union, Powerset) should not 
+(*
+*) (!) These notions (Pair, Union, Powerset) should not 
 be unfolded during the proofs in Part II. *)
-(* Is it possible not to use classes? *)
+(*
+*) Is it possible not to use classes? *)
 
 Require Import FunctionalExtensionality.
 Require Import Logic.Classical_Prop.
@@ -408,12 +874,14 @@ Definition ex2sig {A : Type} {P : A -> Prop}
  : (exists x : A, P x) -> {x : A | P x}
  := constructive_indefinite_description P.
 (*
+*)
 ==============================================
                      Part I
 ==============================================
 *)
 
-(* The type representing sets
+(*
+*) The type representing sets
   (Ensemble = french for set) *)
 
 Inductive Ens : Type :=
@@ -421,26 +889,42 @@ Inductive Ens : Type :=
 
 
 (*
-(* Pair: Constructs a set containing exactly two elements A and B
+*)
 (*
-(* This is a fundamental set operation that forms the basis for ordered pairs
-(* and other set constructions. The Pair is implemented using the boolean type
-(* to distinguish between the two elements.
+*) Pair: Constructs a set containing exactly two elements A and B
 (*
-(* Parameters:
-(*   A, B: The two sets to be paired
+*)
 (*
-(* Returns:
-(*   A set containing exactly A and B as elements
+*) This is a fundamental set operation that forms the basis for ordered pairs
 (*
-(* Example:
-(*   Pair {1} {2} constructs a set containing 1 and 2
+*) and other set constructions. The Pair is implemented using the boolean type
+(*
+*) to distinguish between the two elements.
+(*
+*)
+(*
+*) Parameters:
+(*
+*)   A, B: The two sets to be paired
+(*
+*)
+(*
+*) Returns:
+(*
+*)   A set containing exactly A and B as elements
+(*
+*)
+(*
+*) Example:
+(*
+*)   Pair {1} {2} constructs a set containing 1 and 2
 *)
 Definition Pair (A B:Ens) : Ens
  := sup bool (fun b : bool => if b then A else B).
 
 
-(* Extensional equality of sets *)
+(*
+*) Extensional equality of sets *)
 Fixpoint EQ (E1 E2: Ens) {struct E2}: Prop :=
   match E1, E2 with
   | sup A f, sup B g =>
@@ -448,19 +932,22 @@ Fixpoint EQ (E1 E2: Ens) {struct E2}: Prop :=
            (forall y : B, exists x : A, EQ (f x) (g y))
   end.
 
-(* Membership on sets *)
+(*
+*) Membership on sets *)
 Definition IN (E1 E2 : Ens) : Prop :=
   match E2 with
   | sup A f => exists y : A, EQ E1 (f y)
   end.
 
-(* INCLUSION *)
+(*
+*) INCLUSION *)
 Definition INC : Ens -> Ens -> Prop
  := (fun E1 E2 : Ens =>
       forall E : Ens, IN E E1 -> IN E E2
     ).
 
-(* EQ is an equivalence relation  *)
+(*
+*) EQ is an equivalence relation  *)
 Fixpoint EQ_refl (E : Ens) : EQ E E.
 Proof.
 destruct E as [A f].
@@ -521,7 +1008,8 @@ Definition EQ_sound_right (a b c : Ens) (aeqb : EQ b c)
 Definition SoundPred
 := (fun (P:Ens->Prop)=>(forall w1 w2 : Ens, EQ w1 w2 -> P w1 -> P w2)).
 
-(* Membership is extentional (i.e. is stable w.r.t. EQ)   *)
+(*
+*) Membership is extentional (i.e. is stable w.r.t. EQ)   *)
 Theorem IN_sound_left' :
  forall E E' E'' : Ens, EQ E E' -> IN E E'' -> IN E' E''.
 Proof.
@@ -609,12 +1097,14 @@ Qed.
 
 Hint Resolve EQ_sym EQ_refl EQ_INC: zfc.
 
-(* Inclusion is a sound, reflexive, antisymmetric and
+(*
+*) Inclusion is a sound, reflexive, antisymmetric and
    transitive relation. *)
 
 Definition INC_refl : forall E : Ens, INC E E
  := fun (E a : Ens) (H : IN a E) => H.
-(*Proof.
+(*
+*)Proof.
 unfold INC in |- *; auto with zfc.
 Qed.*)
 
@@ -637,6 +1127,7 @@ Qed.
 Hint Resolve INC_antisym: zfc.
 
 (*
+*)
 Definition INC_EQ : forall a b : Ens,
   INC a b -> INC b a -> EQ a b
  := INC_antisym.
@@ -662,31 +1153,38 @@ eapply IN_sound_right.
   exact ZinA.
 Qed.
 
-(************ Remastered Axioms.v ***************)
+(*
+*)*********** Remastered Axioms.v ***************)
 
-(* Definitions of the empty set, pair, union, intersection, comprehension  *)
-(*  axiom and powerset, together with their properties                     *)
+(*
+*) Definitions of the empty set, pair, union, intersection, comprehension  *)
+(*
+*)  axiom and powerset, together with their properties                     *)
 
-(* The empty set *)
+(*
+*) The empty set *)
 Definition Vide : Ens :=
   sup False (fun x : False => match x return Ens with
                               end).
 
-(* The axioms of the empty set *)
+(*
+*) The axioms of the empty set *)
 Definition Vide_est_vide : forall E : Ens, IN E Vide -> False.
 Proof.
 intro E.
 intro H.
 destruct H.
 exact x.
-Abort. (* nothing_IN_Vide = Vide_est_vide *)
+Abort. (*
+*) nothing_IN_Vide = Vide_est_vide *)
 
 Definition nothing_IN_Vide (E : Ens) (H:IN E Vide) : False
 := match H with
    | ex_intro _ x _ => x
    end.
 
-(*tout_vide_est_Vide*)
+(*
+*)tout_vide_est_Vide*)
 Theorem empty_set_EQ_Vide :
  forall E : Ens, (forall E' : Ens, IN E' E -> False) -> EQ E Vide.
 Proof.
@@ -702,7 +1200,8 @@ split.
 + intro y. destruct y.
 Qed.
 
-(*Theorem tout_vide_est_Vide' :
+(*
+*)Theorem tout_vide_est_Vide' :
  forall E : Ens, (forall E' : Ens, IN E' E -> False) -> EQ E Vide.
 Proof.
  unfold Vide in |- *; simple induction E; simpl in |- *; intros A e H H0;
@@ -712,28 +1211,45 @@ exists x; auto with zfc.
 simple induction y.
 Qed.*)
 
-(* Pair *)
+(*
+*) Pair *)
 
 (*
-(* Pair: Constructs a set containing exactly two elements A and B
+*)
 (*
-(* This is a fundamental set operation that forms the basis for ordered pairs
-(* and other set constructions. The Pair is implemented using the boolean type
-(* to distinguish between the two elements.
+*) Pair: Constructs a set containing exactly two elements A and B
 (*
-(* Parameters:
-(*   A, B: The two sets to be paired
+*)
 (*
-(* Returns:
-(*   A set containing exactly A and B as elements
+*) This is a fundamental set operation that forms the basis for ordered pairs
 (*
-(* Example:
-(*   Pair {1} {2} constructs a set containing 1 and 2
+*) and other set constructions. The Pair is implemented using the boolean type
+(*
+*) to distinguish between the two elements.
+(*
+*)
+(*
+*) Parameters:
+(*
+*)   A, B: The two sets to be paired
+(*
+*)
+(*
+*) Returns:
+(*
+*)   A set containing exactly A and B as elements
+(*
+*)
+(*
+*) Example:
+(*
+*)   Pair {1} {2} constructs a set containing 1 and 2
 *)
 Definition Pair (A B:Ens) : Ens
  := sup bool (fun b : bool => if b then A else B).
 
-(* The pair construction is extensional *)
+(*
+*) The pair construction is extensional *)
 Theorem Pair_sound_left :
  forall A A' B : Ens, EQ A A' -> EQ (Pair A B) (Pair A' B).
 Proof.
@@ -759,7 +1275,8 @@ Qed.
 
 Hint Resolve Pair_sound_right Pair_sound_left: zfc.
 
-(* The axioms of the pair *)
+(*
+*) The axioms of the pair *)
 Theorem IN_Pair_left : forall E E' : Ens, IN E (Pair E E').
 Proof.
 unfold Pair in |- *. simpl in |- *. exists true. simpl in |- *.
@@ -782,10 +1299,12 @@ Qed.
 
 Hint Resolve IN_Pair_left IN_Pair_right nothing_IN_Vide: zfc.
 
-(* The singleton set  *)
+(*
+*) The singleton set  *)
 Definition Sing (E : Ens) := Pair E E.
 
-(* The axioms  *)
+(*
+*) The axioms  *)
 Theorem IN_Sing : forall E : Ens, IN E (Sing E).
 Proof.
 unfold Sing in |- *; auto with zfc.
@@ -820,13 +1339,16 @@ Qed.
 
 Hint Resolve EQ_Sing_EQ: zfc.
 
-(* We here need sigma types -- i.e. computational existentials *)
 (*
+*) We here need sigma types -- i.e. computational existentials *)
+(*
+*)
 Inductive sig (A : Type) (P : A -> Prop) : Type :=
     exist : forall x : A, P x -> sig A P.
 *)
 
-(* The set obtained by the comprehension (or separation) axiom *)
+(*
+*) The set obtained by the comprehension (or separation) axiom *)
 
 Definition Comp : Ens -> (Ens -> Prop) -> Ens.
 Proof.
@@ -846,7 +1368,8 @@ intros [x _].
 exact (f x).
 Qed.
 
-(* The comprehension/separation axioms *)
+(*
+*) The comprehension/separation axioms *)
 Theorem Comp_INC : forall (E : Ens) (P : Ens -> Prop), INC (Comp E P) E.
 Proof.
 intros E P z zinCompEP.
@@ -867,7 +1390,8 @@ apply H with (2:=p).
 apply EQ_sym. assumption.
 Qed.
 
-(* I2AST p.13, thm 4.12, (<-) *)
+(*
+*) I2AST p.13, thm 4.12, (<-) *)
 Theorem IN_P_Comp :
  forall (E A : Ens) (P : Ens -> Prop),
  (SoundPred P) ->
@@ -885,25 +1409,30 @@ simpl.
 exact p.
 Qed.
 
-(* Again, extentionality is not stated, but easy 
+(*
+*) Again, extentionality is not stated, but easy 
    only if P preserves EQ.
    see CompR_sound
 *)
 
-(* Projections of a set: *)
-(*  1: its base type     *)
+(*
+*) Projections of a set: *)
+(*
+*)  1: its base type     *)
 Definition pi1 (X:Ens):Type
  := match X with
     | sup A _ => A
     end.
 
-(*  2: the function      *)
+(*
+*)  2: the function      *)
 Definition pi2 (X:Ens) (m:pi1 X):Ens 
 := match X as E return (pi1 E -> Ens) with
    | sup A f => fun k : pi1 (sup A f) => f k
    end m.
 
-(* The Union set   *)
+(*
+*) The Union set   *)
 Definition Union : forall E : Ens, Ens.
 Proof.
 intros [A f].
@@ -931,7 +1460,8 @@ intros [A f]. simpl.
 intros [A' f']. trivial.
 Qed.
 
-(* The union axioms *)
+(*
+*) The union axioms *)
 Theorem IN_Union :
  forall E E' E'' : Ens, IN E' E -> IN E'' E' -> IN E'' (Union E).
 Proof.
@@ -973,7 +1503,8 @@ destruct (IN_EXType (sup A f) E' i) as [a e].
 simpl in a, e.
 destruct (IN_EXType E' E'' i') as [a' e''].
 assert (i'': IN E'' (f a)).
-{ apply IN_sound_right with E'; auto with zfc. (* e i' *) }
+{ apply IN_sound_right with E'; auto with zfc. (*
+*) e i' *) }
 eapply IN_EXType in i'' as [aa ee].
 exists (existT (fun x : A => pi1 (f x)) a aa).
 exact ee.
@@ -998,7 +1529,8 @@ split.
   exists b. auto with zfc.
 Qed.
 
-(* extentionality of union  *)
+(*
+*) extentionality of union  *)
 Theorem Union_sound : forall E E' : Ens, EQ E E' -> EQ (Union E) (Union E').
 Proof.
 unfold Union in |- *.
@@ -1020,7 +1552,8 @@ intros [A f] [A' f'].
 Qed.
 
 
-(* The union construction is monotone w.r.t. inclusion   *)
+(*
+*) The union construction is monotone w.r.t. inclusion   *)
 Theorem Union_mon : forall E E' : Ens, INC E E' -> INC (Union E) (Union E').
 Proof.
 unfold INC in |- *; intros E E' IEE E'' IEE''.
@@ -1029,7 +1562,8 @@ destruct (Union_IN E E'') as [E''' [I1 I2]].
 + apply IN_Union with E'''; auto with zfc.
 Qed.
 
-(*  The powerset and its axioms   *)
+(*
+*)  The powerset and its axioms   *)
 Definition Power (E : Ens) : Ens :=
   match E with
   | sup A f =>
@@ -1108,7 +1642,8 @@ apply INC_sound_right with E'; auto with zfc.
 apply IN_Power_INC; assumption.
 Qed.
 
-(* small lemma *)
+(*
+*) small lemma *)
 Theorem not_EQ_Sing_Vide : forall E : Ens, EQ (Sing E) Vide -> False.
 Proof.
 intros E e.
@@ -1128,7 +1663,8 @@ apply IN_sound_right with (Sing E).
 + auto with zfc.
 Qed.
 
-(*=== Omega.v ===*)
+(*
+*)=== Omega.v ===*)
 
 Definition succ (E : Ens) := Union (Pair E (Sing E)).
 
@@ -1236,6 +1772,7 @@ apply INC_antisym; unfold INC in |- *.
 Qed.
 
 (*
+*)
 Theorem Omega_Ord : (Ord Omega).
 
 apply Eo with (Union Omega).
@@ -1261,6 +1798,7 @@ Fixpoint Vee (E : Ens) : Ens :=
   end.
 
 (*
+*)
 Definition Alpha : (E:Ens)Ens.
 (Induction E; Intros A f r).
 apply Union.
@@ -1272,7 +1810,8 @@ Save.
 Transparent Alpha.
 *)
 
-(*=== AXIOMS
+(*
+*)=== AXIOMS
 
 Theorem axInfty: exists Omega : Ens, (forall n : nat, IN (Nat n) Omega) /\ (forall E : Ens, IN E Omega -> exists n : nat, EQ (Nat n) E).
 Proof.
@@ -1326,8 +1865,10 @@ split.
   apply zina.
 Qed.
 
-(* page 3 *)
-(* axExt see above *)
+(*
+*) page 3 *)
+(*
+*) axExt see above *)
 Theorem axPair : forall a b : Ens, exists w:Ens,
    forall z, (IN z w <-> EQ z a \/ EQ z b).
 Proof.
@@ -1371,9 +1912,11 @@ intro z; split; intro H.
   exact H.
 Qed.
 
-(*=== 3_Regularity.v ===*)
+(*
+*)=== 3_Regularity.v ===*)
 
-(* Epsilon induction. *)
+(*
+*) Epsilon induction. *)
 Theorem eps_ind (R:Ens->Prop)
 (Sou_R:forall a b, EQ a b -> (R a -> R b))
 : (forall x:Ens, (forall y, IN y x -> R y) -> R x)
@@ -1385,30 +1928,36 @@ apply H.
 simpl.
 intros y q.
 destruct q as [a G].
-(*rewrite  *)
+(*
+*)rewrite  *)
 apply (Sou_R (e a) y).
 apply EQ_sym, G.
 apply H0.
 Qed.
 
-(* (regular_over x) means
+(*
+*) (regular_over x) means
 "Every set that contains x as an element is regular." *)
 (*
+*)
 Definition regular_over x := forall u : Ens, (IN x u -> exists y,
 IN y u /\ forall z, IN z u -> ~ IN z y).
 *)
-(*Definition Epsmin t z := forall s, IN s z -> ~IN s t.*)
+(*
+*)Definition Epsmin t z := forall s, IN s z -> ~IN s t.*)
 Definition epsmin a b := IN a b /\ forall c, IN c b -> ~ IN c a.
 Definition regular_over x := 
 forall u : Ens, (IN x u -> exists y, epsmin y u).
-(* Soundness of the definition of regular_over. *)
+(*
+*) Soundness of the definition of regular_over. *)
 Theorem regular_over_sound : forall a b : Ens, 
  EQ a b -> regular_over a <-> regular_over b.
 Proof.
 intros.
 unfold regular_over.
 split; intros.
-+ (*apply IN_sound_left with (E':=a) in H1.*)
++ (*
+*)apply IN_sound_left with (E':=a) in H1.*)
   eapply IN_sound_left in H1.
   apply H0. apply H1.
   apply EQ_sym. exact H.
@@ -1417,14 +1966,17 @@ split; intros.
   exact H.
 Qed.
 
-(* Here I follow Zuhair's proof from source.
+(*
+*) Here I follow Zuhair's proof from source.
 https://math.stackexchange.com/users/489784/zuhair *)
 
-(* Unending chain *)
+(*
+*) Unending chain *)
 Definition UC c := forall m, IN m c -> exists n, IN n m /\ IN n c.
 Definition WF x := ~(exists c, UC c /\ IN x c).
 
-(* Inductive step *)
+(*
+*) Inductive step *)
 Theorem Zuhair_1 (a:Ens): (forall x, IN x a -> WF x) -> WF a.
 Proof.
 unfold WF.
@@ -1441,33 +1993,41 @@ exact M1.
 exact ninc.
 Qed.
 
-(* Soundness of WF *)
+(*
+*) Soundness of WF *)
 Theorem WF_sound : SoundPred WF.
-(*forall a b : Ens, EQ a b -> WF a -> WF b.*)
+(*
+*)forall a b : Ens, EQ a b -> WF a -> WF b.*)
 Proof.
 unfold WF, SoundPred in *|-*.
 intros.
 intro B.
 apply H0.
-+ (*intros A B.*)
-  (*apply A.*)
++ (*
+*)intros A B.*)
+  (*
+*)apply A.*)
   destruct B as [c [a1 a2]].
   exists c.
   split. exact a1.
-  eapply IN_sound_left. (*with (E:=b).*)
+  eapply IN_sound_left. (*
+*)with (E:=b).*)
   apply EQ_sym. exact H.
   exact a2.
-(*+ intros A B.
+(*
+*)+ intros A B.
   apply A.
   destruct B as [c [a1 a2]].
   exists c.
   split. exact a1.
-  eapply IN_sound_left. (* with (E:=a).*)
+  eapply IN_sound_left. (*
+*) with (E:=a).*)
   exact H.
   exact a2.*)
 Qed.
 
-(* Induction. "Every set is well-founded." *)
+(*
+*) Induction. "Every set is well-founded." *)
 Theorem Zuhair_2 (y:Ens): WF y.
 Proof.
 apply eps_ind.
@@ -1475,7 +2035,8 @@ apply eps_ind.
 - intros a. exact (Zuhair_1 a).
 Qed.
 
-(* Formalization of Andreas Blass variant of proof. 
+(*
+*) Formalization of Andreas Blass variant of proof. 
 https://math.stackexchange.com/users/48510/andreas-blass *)
 
 Theorem Blass x : regular_over x.
@@ -1483,7 +2044,8 @@ Proof.
 unfold regular_over.
 pose (A:=Zuhair_2 x); unfold WF in A.
 intros u xinu.
-(* Series of the equivalent tranformations.*)
+(*
+*) Series of the equivalent tranformations.*)
 apply not_ex_all_not with (n:=u) in A.
 apply not_and_or in A.
  destruct A as [H1|H2].
@@ -1503,7 +2065,8 @@ apply not_and_or in Hb.
  destruct (L1 v).
 Qed.
 
-(* Standard formulation of the regularity axiom. *)
+(*
+*) Standard formulation of the regularity axiom. *)
 Theorem axReg (x:Ens) :
 (exists a, IN a x)->(exists y, IN y x /\ ~ exists z, IN z y /\ IN z x)
 .
@@ -1523,42 +2086,50 @@ split.
   exact (G2 w W2 W1).
 Qed.
 
-(* Other theorems *)
+(*
+*) Other theorems *)
 
-(* every set is a class *)
-(* 1) function *)
+(*
+*) every set is a class *)
+(*
+*) 1) function *)
 Theorem esiacf : Ens -> (Ens -> Prop).
 Proof.
 intro e.
 exact (fun x => IN x e).
 Qed.
 
-(* "is a set" predicate *)
+(*
+*) "is a set" predicate *)
 Definition ias1 (s: Ens -> Prop) : Prop.
 Proof.
 exact (exists x:Ens, forall w, s w <-> esiacf x w).
 Qed.
 
-(* class must respect extensional equality
+(*
+*) class must respect extensional equality
    sree is a witness of the soundness of class' definition *)
 Section TheoremsAboutClasses.
 Context (s:Ens->Prop)
         (sree : SoundPred s).
 (*
+*)
 Theorem rewr (w1 w2:Ens) (J:s w1) (H : EQ w1 w2) : s w2.
 Proof.
 rewrite <- (sree w1 w2); assumption.
 Qed.
 *)
 
-(* subclass of a set is a set *)
+(*
+*) subclass of a set is a set *)
 Theorem scosias1 (m:Ens) 
 (sc : forall x, s x -> (esiacf m) x) 
 : ias1 s.
 Proof.
 unfold ias1.
 unfold esiacf in * |- *.
-(* { x e. m | s x }*)
+(*
+*) { x e. m | s x }*)
 exists (Comp m s).
 intro w.
 split.
@@ -1567,7 +2138,8 @@ split.
   unfold esiacf in * |- *.
   apply IN_P_Comp.
   * apply sree.
-(* intros w1 w2 K H.    apply (rewr _ _  K H).*)
+(*
+*) intros w1 w2 K H.    apply (rewr _ _  K H).*)
   * exact y.
   * exact u.
 + intro u.
@@ -1579,7 +2151,8 @@ Qed.
 
 Section Part_III.
 
-(* First-order logic definitions and derivations *)
+(*
+*) First-order logic definitions and derivations *)
 
 Inductive Fo : Type := 
 | Var : string -> Fo 
@@ -1622,7 +2195,8 @@ Inductive Fo : Type :=
 
  TheoremsAboutClasses.
 
-(*Require Import ZFC.Ordinal_theory.*)
+(*
+*)Require Import ZFC.Ordinal_theory.*)
 Theorem succ_sound X Y (H: EQ X Y) :
 EQ (succ X) (succ Y).
 Proof.
@@ -1650,19 +2224,23 @@ split.
   assert (as1: EQ (succ (Nat x)) (succ Y)).
   apply succ_sound. exact H.
   apply (IN_sound_left _ _ _ as1).
-  (*Eval simpl in (Nat (S x)).*)
+  (*
+*)Eval simpl in (Nat (S x)).*)
   apply (Nat_IN_Omega (S x)).
 Qed.
 
 Definition sOmega : Ens := proj1_sig (ex2sig axInf).
 
-(*============================================
+(*
+*)============================================
                      Part II
 ==============================================*)
 
-(* Traditional Product needs Kuratowski ordered pair *)
+(*
+*) Traditional Product needs Kuratowski ordered pair *)
 
-(* Kuratowski construction *)
+(*
+*) Kuratowski construction *)
 Definition OrdPair (x y : Ens) := Pair (Sing x) (Pair x y).
 
 Theorem OrdPair_sound_left (x1 x2 y : Ens) (H : EQ x1 x2)
@@ -1692,10 +2270,12 @@ EQ x y1 /\ EQ x y2.
 Proof.
 apply EQ_sym in J.
 assert(i1:=IN_Pair_left y1 y2).
-eapply IN_sound_right (*with (1:=J)*) in i1.
+eapply IN_sound_right (*
+*)with (1:=J)*) in i1.
 apply IN_Sing_EQ, EQ_sym in i1.
 assert(i2:=IN_Pair_right y1 y2).
-eapply IN_sound_right (*with (1:=J)*) in i2.
+eapply IN_sound_right (*
+*)with (1:=J)*) in i2.
 apply IN_Sing_EQ, EQ_sym in i2.
 split. exact i1. exact i2.
 exact J. exact J.
@@ -1733,8 +2313,10 @@ split.
    apply EQ_Sing_EQ. assumption.
    apply SingEqPair in B as [n1 n2]. assumption.
 + destruct K1 as [A|B], K2 as [C|D].
- (*as [[A|B] [C|D]].*)
-- (*split. apply EQ_Sing_EQ. assumption.*)
+ (*
+*)as [[A|B] [C|D]].*)
+- (*
+*)split. apply EQ_Sing_EQ. assumption.*)
   apply EQ_sym in C.
   apply SingEqPair in C as [J1 J2].
   assert(i: EQ (Pair (Sing a) (Pair a b))
@@ -1786,7 +2368,8 @@ Proof.
 intros. apply OrdPair_inj in H as [a b]. exact b.
 Qed.
 
-(* technical theorem for rewrite tactic *)
+(*
+*) technical theorem for rewrite tactic *)
 Theorem two_sided (C : Ens -> Prop) :
 (forall a b : Ens, EQ a b -> C a -> C b)
 ->
@@ -1848,7 +2431,8 @@ Qed.
 Definition SoundCongl (A:(Ens->Prop)->Prop) :=
 forall P R:Ens->Prop, SoundPred P  ->
 (forall w : Ens, P w <-> R w)-> (A P -> A R).
-(* maybe add P_sound *)
+(*
+*) maybe add P_sound *)
 
 Theorem cEQ_works (P R:Ens->Prop)
 (A:(Ens->Prop)->Prop)
@@ -1860,7 +2444,8 @@ Proof.
 split; intro J.
 Abort.
 
-(* Predicate which equivalent to sound predicate is also sound. *)
+(*
+*) Predicate which equivalent to sound predicate is also sound. *)
 Theorem pred_sou (P R:Ens->Prop)
 (H:forall w : Ens, P w <-> R w)
 (P_sound:(SoundPred P))
@@ -1887,7 +2472,8 @@ Abort.
 
 Section Part_III.
 
-(* First-order logic definitions and derivations *)
+(*
+*) First-order logic definitions and derivations *)
 
 Inductive Fo : Type := 
 | Var : string -> Fo 
@@ -1937,10 +2523,13 @@ Theorem Comp_sound_right (P R:Ens->Prop)
 Proof.
 apply axExt.
 intro z.
-(*revert P R H. simpl.*)
- split; intro q. (*TODO: REDUCE PROOF BY REMOVING SPLIT *)
+(*
+*)revert P R H. simpl.*)
+ split; intro q. (*
+*)TODO: REDUCE PROOF BY REMOVING SPLIT *)
 + apply IN_P_Comp.
-  - (*eapply cEQ_pres_soundness. exact H.*)
+  - (*
+*)eapply cEQ_pres_soundness. exact H.*)
     apply (pred_sou P R H P_sound).
   - apply (Comp_INC X P z q).
   - apply (proj1 (H z)).
@@ -1964,7 +2553,8 @@ eapply EQ_tran with (E2:= (Comp Y P)).
 + apply Comp_sound_right; assumption.
 Qed.
 
-(* The Intersection of a nonempty set.  *)
+(*
+*) The Intersection of a nonempty set.  *)
 Definition Inter (E : Ens) : Ens :=
   Comp (Union E) (fun e : Ens => forall a : Ens, IN a E -> IN e a).
 
@@ -2016,11 +2606,13 @@ intros; apply IN_sound_left with w1; auto with zfc.
 + auto.
 Qed.
 
-(* predicate for separation of the product *)
+(*
+*) predicate for separation of the product *)
 Definition inProduct (X Y u:Ens) :=
  exists (x y:Ens), (EQ u (OrdPair x y)) /\ IN x X /\ IN y Y.
 
-(* Product of sets *)
+(*
+*) Product of sets *)
 Definition Product (X Y:Ens) :=
 Comp
  (Power (Power (Union (OrdPair X Y))))
@@ -2069,19 +2661,26 @@ Comp
  (fun e => exists x y, EQ e (OrdPair x y) /\ IN x X)
 .
 
-(* Here we use epsilon-induction. *)
+(*
+*) Here we use epsilon-induction. *)
 Theorem snis Y : ~(IN Y Y).
 Proof.
 apply (eps_ind (fun Y => ~(IN Y Y))).
 + intros a b aeqb.
-  (*split;*)intros H K.
-    eapply IN_sound_right (*with (E'':=a)*) in K.
-    eapply IN_sound_left (*with (E':=a)*) in K.
+  (*
+*)split;*)intros H K.
+    eapply IN_sound_right (*
+*)with (E'':=a)*) in K.
+    eapply IN_sound_left (*
+*)with (E':=a)*) in K.
     exact (H K).
     apply EQ_sym; assumption.
     apply EQ_sym; assumption.
-  (*- eapply IN_sound_right (*with (E'':=b)*) in K.
-    eapply IN_sound_left (*with (E':=b) *) in K.
+  (*
+*)- eapply IN_sound_right (*
+*)with (E'':=b)*) in K.
+    eapply IN_sound_left (*
+*)with (E':=b) *) in K.
     exact (H K).
     assumption.
     assumption.*)
@@ -2090,7 +2689,8 @@ apply (eps_ind (fun Y => ~(IN Y Y))).
   exact (Q xinx).
 Qed.
 
-(* ex.1.2 p.22 *)
+(*
+*) ex.1.2 p.22 *)
 Theorem ex_1_2 : ~( exists X:Ens, INC (Power X) X).
 Proof.
 intros [X H].
@@ -2100,19 +2700,24 @@ exact H.
 Qed.
 
 Definition XNotInX (X:Ens) : Prop := ~ IN X X.
-(* it's for Comp ax *)
+(*
+*) it's for Comp ax *)
 Lemma ex_1_2_lem : SoundPred XNotInX.
-(*forall w1 w2 : Ens, ~ IN w1 w1 -> EQ w1 w2 -> ~ IN w2 w2*)
+(*
+*)forall w1 w2 : Ens, ~ IN w1 w1 -> EQ w1 w2 -> ~ IN w2 w2*)
 Proof.
 intros w1 w2 H1 H2 Y.
   apply H2.
   apply EQ_sym in H1.
-  eapply IN_sound_left (*with (E':=w1)*) in Y.
-  eapply IN_sound_right (*with (E'':=w1)*) in Y.
+  eapply IN_sound_left (*
+*)with (E':=w1)*) in Y.
+  eapply IN_sound_right (*
+*)with (E'':=w1)*) in Y.
   exact Y. assumption. assumption.
 Qed.
 
-(* Here we will not use epsilon-induction. *)
+(*
+*) Here we will not use epsilon-induction. *)
 Theorem ex_1_2' : ~( exists X:Ens, INC (Power X) X).
 Proof.
 intros [X H].
@@ -2137,7 +2742,8 @@ exact (H1 H0).
 apply ex_1_2_lem.
 Qed.
 
-(* Here we will not use both epsilon-induction
+(*
+*) Here we will not use both epsilon-induction
  and the law of the excluded middle. *)
 Theorem ex_1_2'' : ~( exists X:Ens, INC (Power X) X).
 Proof.
@@ -2161,7 +2767,8 @@ assert (R1:~(IN S S)).
  + exact (R1 R). }
 Qed.
 
-(* Subset of X which consist of subsets of X. *)
+(*
+*) Subset of X which consist of subsets of X. *)
 Definition SoS (X:Ens) : Ens := Comp X (fun x => INC x X).
 
 Definition Ind (X:Ens) : Prop := 
@@ -2173,7 +2780,8 @@ unfold INC. intros E IN_E_Vide.
 destruct (nothing_IN_Vide E IN_E_Vide).
 Qed.
 
-(* it's for Comp ax *)
+(*
+*) it's for Comp ax *)
 Lemma ex_1_3_lem : 
 forall Y w1 w2 : Ens,
 IN (succ Y) w1 -> EQ w1 w2 -> IN (succ Y) w2.
@@ -2184,11 +2792,13 @@ exact H2.
 exact H1.
 Qed.
 
-(* SoS is inductive *)
+(*
+*) SoS is inductive *)
 Theorem ex_1_3 (X:Ens) (H: Ind X) : Ind (SoS X).
 Proof.
 unfold SoS, Ind in * |- *.
-constructor. (*split.*)
+constructor. (*
+*)split.*)
 + apply IN_P_Comp.
   - intros w1 w2 EQ_w1_w2 INC_w1_X.
     eapply INC_sound_left. exact EQ_w1_w2. exact INC_w1_X.
@@ -2199,24 +2809,28 @@ constructor. (*split.*)
   unshelve eapply IN_Comp_P with (E:=X) in H1.
 2 : { unfold SoundPred. intros.
  apply INC_sound_left with (1:=H2). exact H3. }
-(*(E:=w1). exact H3. exact H2. }*)
+(*
+*)(E:=w1). exact H3. exact H2. }*)
   apply Comp_INC in H0.
   destruct H as [Ha Hb].
   assert (xusxinX : IN (succ x) X).
    apply Hb. exact H0.
   apply IN_P_Comp.
   { unfold SoundPred. intros.
- unshelve eapply INC_sound_left (*with (E:=w1)*).
+ unshelve eapply INC_sound_left (*
+*)with (E:=w1)*).
  exact w1. exact H. exact H2. }
   exact xusxinX.
   intros M J.
   apply IN_succ_or in J as [L1|L2].
-  - eapply IN_sound_left (*with (E:=x)*). exact L1. exact H0.
+  - eapply IN_sound_left (*
+*)with (E:=x)*). exact L1. exact H0.
   - apply H1. assumption.
 Qed.
 
 Lemma ex_1_4_lem :
-SoundPred (fun w1 => forall z : Ens, IN z w1 -> INC z w1) (* ->
+SoundPred (fun w1 => forall z : Ens, IN z w1 -> INC z w1) (*
+*) ->
 EQ w1 w2 -> forall z : Ens, IN z w2 -> INC z w2*).
 Proof.
   { unfold SoundPred; intros.
@@ -2226,11 +2840,13 @@ Proof.
   }
 Qed.
 
-(* PROPERTY ON SET : transitivity of a set *)
+(*
+*) PROPERTY ON SET : transitivity of a set *)
 Definition pTr (T:Ens) : Prop := forall z, IN z T -> INC z T.
 
 Theorem pTr_sound : SoundPred pTr.
-(*(w1 w2:Ens) (eqw1w2 : EQ w1 w2) (H1 : pTr w1)
+(*
+*)(w1 w2:Ens) (eqw1w2 : EQ w1 w2) (H1 : pTr w1)
  : pTr w2.*)
 Proof.
 unfold SoundPred; intros w1 w2 eqw1w2 H1.
@@ -2281,7 +2897,8 @@ split.
 Qed.
 
 Lemma ex_1_5_lem1 : SoundPred (fun w=> pTr w /\ ~ IN w w).
-(*forall w1 w2 : Ens,
+(*
+*)forall w1 w2 : Ens,
 pTr w1 /\ ~ IN w1 w1 -> EQ w1 w2 -> pTr w2 /\ ~ IN w2 w2.*)
 Proof.
 intros w1 w2 eqw1w2 [H1 H2].
@@ -2326,7 +2943,8 @@ split.
    destruct H1 as [H1 H1'].
   apply sutra in H1 as pTr_succ_Y.
   apply IN_P_Comp.
-  exact ex_1_5_lem1. (*exact lem_ex_1_4.*)
+  exact ex_1_5_lem1. (*
+*)exact lem_ex_1_4.*)
   exact H0.
    split.
   exact pTr_succ_Y.
@@ -2342,7 +2960,8 @@ split.
     exact (H1' J).
 Qed.
 
-(* useless lemma: *)
+(*
+*) useless lemma: *)
 Lemma lem2_l1 E Y (B:~EQ E Y): IN E (succ Y) -> IN E Y.
 Proof.
 intro r.
@@ -2352,7 +2971,8 @@ apply EQ_sym in G1.
 destruct (B G1).
 Qed.
 
-(* unfinished: NN - natural numbers.
+(*
+*) unfinished: NN - natural numbers.
 Theorem : forall x:Ens, IN x NN -> ~ IN x x.
 Abort.
 
@@ -2368,13 +2988,17 @@ Definition prop_1_6 (x:Ens) := (pTr x)/\
  (forall z,
   Inhab z /\ INC z x -> exists t, epsmin t z ).
 (*
-(*IN t z /\ (Epsmin.*)
-(*Search epsmin.*)
+*)
+(*
+*)IN t z /\ (Epsmin.*)
+(*
+*)Search epsmin.*)
 regular_over
 *)
 Search regular_over.
 
-Lemma ex_1_6_lem1 : SoundPred prop_1_6. (* prop_1_6. *)
+Lemma ex_1_6_lem1 : SoundPred prop_1_6. (*
+*) prop_1_6. *)
 Proof.
 intros w1 w2 eqw1w2 [H1 H2].
 split.
@@ -2400,7 +3024,8 @@ Lemma subunsi z w q :
 INC z (Union (Pair q (Sing w))) -> (INC z q \/ IN w z).
 Proof.
 intro Q.
-(*destruct (classic (EQ w z)) as [O1|O2].
+(*
+*)destruct (classic (EQ w z)) as [O1|O2].
 2 : {*)
 destruct (classic (IN w z)) as [O1|O2].
 + right. exact O1.
@@ -2427,7 +3052,8 @@ intro Q.
 destruct (classic (IN w z)) as [O1|O2].
 + right. split.
   exact O1.
-  (* exists (SUBSTRUCT q' ) *)
+  (*
+*) exists (SUBSTRUCT q' ) *)
   admit.
 + left. intros u uinz.
   assert(G:=Q u uinz).
@@ -2454,8 +3080,10 @@ destruct H1 as [H1 H2].
   assumption.
   split.
 apply pTr_Vide.
-(*  apply pTr_Vide. *)
-(* Либо вытащить : *)
+(*
+*)  apply pTr_Vide. *)
+(*
+*) Либо вытащить : *)
   { pose (W := ex_1_5 X H).
     destruct W as [P1 P2].
     apply IN_Comp_P in P1 as [P1' P1''].
@@ -2502,7 +3130,8 @@ intro L.
 apply (ex_1_6_lem2 (J0 a B _ L)).
 Qed.
 
-(*Context .*)
+(*
+*)Context .*)
 Lemma ex_1_6_lem4 (z : Ens) (K1 : Inhab z)
 (P : INC z y) m (N:epsmin m z)
  : epsmin m (Union (Pair z (Sing y))).
@@ -2546,7 +3175,8 @@ exact G2.
 exact ciny.
 Qed.
 
-(* Part III: First-Order Logic (Syntax, Derivations, Soundness) *)
+(*
+*) Part III: First-Order Logic (Syntax, Derivations, Soundness) *)
 Section Part_III.
 
 Definition sat (M : Ens) (f : Fo) : Prop :=
@@ -2614,7 +3244,8 @@ Inductive Derivation : Type :=
 
 
 
-(* Inductive definition of first-order formulas *)
+(*
+*) Inductive definition of first-order formulas *)
 
 Inductive term : Type := 
 | Var (n : nat) 
@@ -2637,7 +3268,8 @@ Inductive formula : Type :=
 
 Section Part_III.
 
-(* First-order logic definitions and derivations *)
+(*
+*) First-order logic definitions and derivations *)
 
 Inductive Fo : Type := 
 | Var : string -> Fo 
@@ -2690,7 +3322,8 @@ assert (U:= J1 z).
 destruct Cz as [O1|O2].
 + apply U.
   split;assumption.
-+ (* assert (M:= J1 (Sing y)). *)
++ (*
+*) assert (M:= J1 (Sing y)). *)
   clear U.
   destruct O2 as [O2 [j [O3 O4]]].
   unfold epsmin.
@@ -2718,6 +3351,7 @@ destruct M as [t MI].
 exists t.
 unfold epsmin in MI.
 (*
+*)
 destruct (classic (Inhab y)).
 2 : {
   exists y.
@@ -2730,7 +3364,8 @@ exists c. exact ciny.
 }
  exists ()
 
-(* z= {y} U z' *)
+(*
+*) z= {y} U z' *)
 
 unfold epsmin in M, U.
   exists y.
@@ -2758,7 +3393,8 @@ Admitted.
 
 Section Part_III.
 
-(* First-order logic definitions and derivations *)
+(*
+*) First-order logic definitions and derivations *)
 
 Inductive Fo : Type := 
 | Var : string -> Fo 
@@ -2819,8 +3455,10 @@ split.
     * apply sutra, J0.
     * intros z [K1 K2].
       unfold epsmin.
-      (*exists (Sing y).*)
+      (*
+*)exists (Sing y).*)
 (*
+*)
 epsmin = 
 fun a b : Ens =>
 IN a b /\ (forall c : Ens, IN c b -> ~ IN c a)
@@ -2831,7 +3469,8 @@ Abort.
 
 Section Part_III.
 
-(* First-order logic definitions and derivations *)
+(*
+*) First-order logic definitions and derivations *)
 
 Inductive Fo : Type := 
 | Var : string -> Fo 
@@ -2873,28 +3512,35 @@ Inductive Fo : Type :=
 
 
  ex_1_6.
-(*============================================
+(*
+*)============================================
                      Part III
 ==============================================*)
 
 
 
-(*============================================
+(*
+*)============================================
                      Part IV
 ==============================================*)
 
-(* TODO Определить операцию на классе и перенести её на множества. *)
-(* Каждый класс, по определению, это некоторое свойство множеств. *)
-(* Определение n-классов:
+(*
+*) TODO Определить операцию на классе и перенести её на множества. *)
+(*
+*) Каждый класс, по определению, это некоторое свойство множеств. *)
+(*
+*) Определение n-классов:
  0-класс - это множество.
  (n+1)-класс - это некоторое свойство n-классов.
 *)
 
-(* 'class' is the type of well-defined classes. *)
+(*
+*) 'class' is the type of well-defined classes. *)
 Record class := Build_class {
  prty :> Ens->Prop;
  sound : SoundPred prty;
-(*forall (a b : Ens), EQ a b -> (prty a -> prty b);*)
+(*
+*)forall (a b : Ens), EQ a b -> (prty a -> prty b);*)
 }.
 
 
@@ -2908,7 +3554,8 @@ unshelve eapply Build_class.
   apply (H a b aeqb).
 Qed.
 
-(* little transformation of a soundness predicate *)
+(*
+*) little transformation of a soundness predicate *)
 Theorem sound_transf (T:class) (s:
 forall (a b : Ens), EQ a b -> T a <-> T b ) :
 forall w1 w2 : Ens, T w1 -> EQ w1 w2 -> T w2 .
@@ -2922,6 +3569,7 @@ Qed.
 Definition cEQ (A B:class) := forall z:Ens, (prty A) z <-> (prty B) z.
 
 (*
+*)
 Theorem Comp_sound X1 X2 P1 P2:
 (SoundPred P1)/\(SoundPred P2)->
 cEQ P1 P2 ->
@@ -2939,15 +3587,18 @@ Proof.
 Abort.
 
 (*
+*)
 Definition cEQ (A B: Ens->Prop) := forall z:Ens, A z <-> B z.
 *)
-(* "is a set" predicate on classes *)
+(*
+*) "is a set" predicate on classes *)
 Definition ias (s: class) : Prop.
 Proof.
 exact (exists (x:Ens), forall w, s w <-> IN w x).
 Qed.
 
-(* "is a set" is a sound property on classes. *)
+(*
+*) "is a set" is a sound property on classes. *)
 Definition ias_sound (A B: class)
 (w:cEQ A B) (H:ias A): ias B.
 Proof.
@@ -2960,7 +3611,8 @@ rewrite <- w.
 apply eqv.
 Qed.
 
-(* the class of transitive sets *)
+(*
+*) the class of transitive sets *)
 Definition cTr : class.
 Proof.
 unshelve eapply Build_class.
@@ -2987,7 +3639,8 @@ apply K.
 exact P.
 Qed.
 
-(*Lemma sousym (K:Ens->Prop)
+(*
+*)Lemma sousym (K:Ens->Prop)
 (H:forall (a b : Ens), EQ a b -> (K a -> K b))
 : forall (a b : Ens), EQ a b -> (K a <-> K b).
 Proof.
@@ -2999,7 +3652,8 @@ Check two_sided.
 *)
 
 
-(* Class of all sets *)
+(*
+*) Class of all sets *)
 Definition cV : class.
 Proof.
 unshelve eapply Build_class.
@@ -3007,7 +3661,8 @@ unshelve eapply Build_class.
 + simpl. intros a b H1 H2. exact H2.
 Qed.
 
-(* Empty class *)
+(*
+*) Empty class *)
 Definition cE : class.
 Proof.
 unshelve eapply Build_class.
@@ -3015,7 +3670,8 @@ unshelve eapply Build_class.
 + simpl. intros a b H1 H2. exact H2.
 Qed.
 
-(* I2AST p.13, thm 4.12, (->) *)
+(*
+*) I2AST p.13, thm 4.12, (->) *)
 Theorem Comp_elim x y (K:Ens->Prop) (K_sound: SoundPred K)
 : IN x (Comp y K) -> (IN x y /\ K x).
 Proof.
@@ -3030,7 +3686,8 @@ Qed.
 Theorem Comp_elimC x y (K:class) : IN x (Comp y K) -> (IN x y /\ K x).
 Proof.
 apply Comp_elim.
-(** exact (sound_transf _ (sound K)). **)
+(*
+*)* exact (sound_transf _ (sound K)). **)
 intros a b aeqb q.
 eapply (sound K).
 exact aeqb.
@@ -3062,13 +3719,15 @@ intros g K.
 apply (K x H).
 Qed.
 Arguments IN _ _ : simpl nomatch.
-(* set to class *)
+(*
+*) set to class *)
 Definition stoc : Ens -> class.
 Proof.
 intro x.
 unshelve eapply Build_class.
 + intro y. exact (IN y x).
-+ (*intros a b aeqb.
++ (*
+*)intros a b aeqb.
   apply two_sided.*)
   intros a0 b0 H H0.
   eapply IN_sound_left. exact H. exact H0.
@@ -3098,6 +3757,7 @@ intro z. split; intro K.
   assumption.
 Qed.
 (*
+*)
 Theorem stoc_sound (e:Ens) : cEQ e (stoc e).
 Proof.
 intro z.
@@ -3119,25 +3779,31 @@ intros w1 w2 H1 H2.
 eapply (sound s). exact H1. exact H2.
 Qed.
 
-(* subclass of a set is a set *)
+(*
+*) subclass of a set is a set *)
 Theorem scosias (s:class) (m:Ens) 
 (sc : forall x, s x -> (stoc m) x) 
 : ias s.
 Proof.
 unfold ias.
-(*unfold  stoc in * |- *. esiacf*)
-(* { x e. m | s x }*)
+(*
+*)unfold  stoc in * |- *. esiacf*)
+(*
+*) { x e. m | s x }*)
 exists (Comp m s).
 intro w.
 split.
 + intro u.
   pose(y:=sc w u).
-  (*unfold esiacf in * |- *.*)
+  (*
+*)unfold esiacf in * |- *.*)
   apply IN_P_Comp.
   * intros w1 w2 H K.
     eapply (sound s). exact H. exact K.
-    (** rewrite <- (sound s). exact K. exact H. **)
-    (*apply (rewr _ _  K H).*)
+    (*
+*)* rewrite <- (sound s). exact K. exact H. **)
+    (*
+*)apply (rewr _ _  K H).*)
   * exact y.
   * exact u.
 + intro u.
@@ -3145,7 +3811,8 @@ split.
   apply sound2rewr.
   exact u.
 Qed.
-(* try the same proof through the powerset *)
+(*
+*) try the same proof through the powerset *)
 
 Theorem InterNonEmpty (c:class) (x:Ens) (H : c x) : ias (cInter c).
 Proof.
@@ -3179,7 +3846,8 @@ unshelve eapply Build_class.
      exact ainz. }
 Qed.
 
-(* Unionclass extends unionset *)
+(*
+*) Unionclass extends unionset *)
 Theorem UCextendsUS (e:Ens) (c:class) (p:cEQ e c)
 : cEQ (Union e) (cUnion c).
 Proof.
@@ -3201,7 +3869,8 @@ intro z; split; intro H.
   exact P1.
 Qed.
 
-(* Class of all subsets *)
+(*
+*) Class of all subsets *)
 Definition cPower (c:class) : class.
 Proof.
 unshelve eapply Build_class.
@@ -3217,7 +3886,8 @@ unshelve eapply Build_class.
   assumption. }
 Qed.
 
-(* The powerclass of V equals V. *)
+(*
+*) The powerclass of V equals V. *)
 Theorem PVeqV : cEQ (cPower cV) cV.
 Proof.
 intro z. split; intro H.
@@ -3226,7 +3896,8 @@ intro z. split; intro H.
 intros. constructor.
 Qed.
 
-(* Powerclass of set is a powerset of set. *)
+(*
+*) Powerclass of set is a powerset of set. *)
 Theorem PCextendsPS (e:Ens) (c:class) (p:cEQ e c)
 : cEQ (Power e) (cPower c).
 Proof.
@@ -3267,7 +3938,8 @@ forall w1 w2 : Ens, c w1 -> EQ w1 w2 -> c w2.
 Proof.
 intros w1 w2 cw1 eqw1w2.
 eapply (sound c). exact eqw1w2. exact cw1.
-(** rewrite (sound c).
+(*
+*)* rewrite (sound c).
 exact cw1.
 apply EQ_sym; assumption. **)
 Qed.
@@ -3282,14 +3954,17 @@ intro z; split; intro H.
   apply IN_Comp_P in H'.
   - eapply Comp_INC in H.
     firstorder.
-  - unfold SoundPred. exact (sound c). (*unfold SoundPred. apply schSepar_lem.*)
+  - unfold SoundPred. exact (sound c). (*
+*)unfold SoundPred. apply schSepar_lem.*)
 + apply IN_P_Comp.
-  - unfold SoundPred. apply (sound c). (*apply schSepar_lem*)
+  - unfold SoundPred. apply (sound c). (*
+*)apply schSepar_lem*)
   - firstorder.
   - firstorder.
 Qed.
 
-(* Omega is inductive set 
+(*
+*) Omega is inductive set 
 TODO: redefine Omega using set-theoretic approach.
 *)
 Theorem Omega_cInd : cInd Omega.
@@ -3318,20 +3993,24 @@ exact Omega.
 apply Omega_cInd.
 Qed.
 
-Definition sNN := Omega. (*?*)
+Definition sNN := Omega. (*
+*)?*)
 
-(* Equality of conglomerates *)
+(*
+*) Equality of conglomerates *)
 Definition EQK (k1 k2 : class -> Prop)
  := forall (c:class), k1 c <-> k2 c.
 
-(* "is a class" predicate on conglomerates *)
+(*
+*) "is a class" predicate on conglomerates *)
 Definition iac (k:class -> Prop) : Prop.
 Proof.
 exact (forall (c:class), (k c) -> (ias c)).
 Qed.
 
 Section sec_ex2sig.
-(*Context (ex2sig:forall (A:Type) (P:A->Prop), @ex A P -> @sig A P).*)
+(*
+*)Context (ex2sig:forall (A:Type) (P:A->Prop), @ex A P -> @sig A P).*)
 Definition ctos (c:class) (H:ias c) : Ens.
 Proof.
 apply ex2sig in H.
@@ -3341,7 +4020,8 @@ Qed.
 
 Section Part_III.
 
-(* First-order logic definitions and derivations *)
+(*
+*) First-order logic definitions and derivations *)
 
 Inductive Fo : Type := 
 | Var : string -> Fo 
@@ -3392,21 +4072,24 @@ unshelve eapply Build_class.
 }
 Abort.
 
-(* OTHER POSSIBLE DEFINITIONS OF "iac"
+(*
+*) OTHER POSSIBLE DEFINITIONS OF "iac"
 exact (exists (m:class),
  forall (c:class), (exists (w:Ens), m ) <-> (k c)
 ).
 exact (exists (m:class), forall (w:Ens), m w <-> (k (stoc w))).
 *)
 
-(* UNDER CONSTRUCTION *)
+(*
+*) UNDER CONSTRUCTION *)
 
 
 
 Definition axExtC (x y:Ens) : EQ x y <-> cEQ x y
  := (axExt x y).
 
-(* New comprehension *)
+(*
+*) New comprehension *)
 Definition Compr : Ens -> class -> Ens.
 Proof.
 intros e c.
@@ -3419,19 +4102,22 @@ intros A B.
 unshelve eapply Build_class.
 + intro e. exact (A e /\ B e).
 + simpl. intros. unfold SoundPred.
-  (* apply EQ_sym in H. *)
+  (*
+*) apply EQ_sym in H. *)
   firstorder.
   - eapply (sound). exact H. exact H0.
   - eapply (sound). exact H. exact H1.
 Qed.
 
-(* Transitive closure *)
+(*
+*) Transitive closure *)
 Definition trcl : Ens -> Ens.
 Proof.
 intro x.
 eapply Inter.
 eapply Comp.
-Admitted. (* we need transfinite recursion *)
+Admitted. (*
+*) we need transfinite recursion *)
 
 Theorem trcl_tran (y:Ens) 
 : forall x:Ens, IN x (trcl y) -> INC x (trcl y).
@@ -3442,11 +4128,13 @@ Theorem trcl_subs (y:Ens) : INC y (trcl y).
 Proof.
 Admitted.
 
-(* Gödel stated regularity for classes rather than for
+(*
+*) Gödel stated regularity for classes rather than for
 sets in his 1940 monograph, which was based on lectures
 given in 1938. In 1939, he proved that regularity for
  sets implies regularity for classes. see  Kanamori 2009 *)
-(* ST p.64, Lemma 6.2 *)
+(*
+*) ST p.64, Lemma 6.2 *)
 Definition caxReg : forall T : class,
        (exists a : Ens, T a ) ->
        exists y : Ens, T y /\ ~ (exists z : Ens, IN z y /\ T z).
@@ -3456,7 +4144,9 @@ pose (t:=trcl (Sing x)).
 pose (X:=Comp t T).
 assert (inhX:exists x':Ens, IN x' X).
 + exists x. unfold X.
-(* OR change X with (Comp t T). (*replace X with (Comp t T).*)*)
+(*
+*) OR change X with (Comp t T). (*
+*)replace X with (Comp t T).*)*)
 apply IN_P_Comp.
 - exact (sound T).
 - unfold t.
@@ -3487,25 +4177,30 @@ apply IN_P_Comp.
     * exact Tz.
 Qed.
 
-(*Search Comp.*)
+(*
+*)Search Comp.*)
 
-(*Definition nComp_sound_left x y C (H:EQ x y)
+(*
+*)Definition nComp_sound_left x y C (H:EQ x y)
 : EQ (Compr x C) (Compr y C).
 Proof.
 apply axExtC.
 intro z. split.
 + intro a. simpl in * |- *.
-  (*unfold Compr in * |- *. *)
+  (*
+*)unfold Compr in * |- *. *)
  auto with zfc.*)
 
 
-(* Product of classes *)
+(*
+*) Product of classes *)
 Definition cProduct (X Y : class) : class.
 Proof.
 unshelve eapply Build_class.
 intro z.
 exact (exists (x y:Ens), (EQ z (OrdPair x y)) /\ X x /\ Y y).
-(*apply two_sided.*)
+(*
+*)apply two_sided.*)
 intros a b aeqb e.
 destruct e as [x [y [aeq [xx yy]]]].
 exists x, y.
@@ -3517,7 +4212,8 @@ exact xx.
 exact yy.
 Qed.
 
-(* Product of sets *)
+(*
+*) Product of sets *)
 Definition eProduct (x y:Ens) :=
 Comp
  (Power (Power (Union (OrdPair x y))))
@@ -3537,10 +4233,12 @@ apply Pair_IN in H as [H|H];
  assumption.
 Qed.
 
-(* Theorem thm (x a:Ens) : (prty (stoc x) a) = IN a x.
+(*
+*) Theorem thm (x a:Ens) : (prty (stoc x) a) = IN a x.
 Proof. firstorder. Qed. *)
 
-(* Product of sets as classes is a subclass of set. *)
+(*
+*) Product of sets as classes is a subclass of set. *)
 Theorem prodissc: forall (X1 X2:Ens),
  issubclass
  (cProduct X1 X2)
@@ -3559,15 +4257,18 @@ apply INC_IN_Power.
 intros s1 U1.
 apply INC_IN_Power.
 intros s2 U2.
-eapply IN_sound_right (*with (1:=A)*) in U1.
+eapply IN_sound_right (*
+*)with (1:=A)*) in U1.
 apply Pair_IN in U1 as [V1|V2].
 + apply IN_Union with (E':=X1).
   apply IN_Pair_left.
-  eapply IN_sound_right (*with (1:=V1)*) in U2.
+  eapply IN_sound_right (*
+*)with (1:=V1)*) in U2.
   apply IN_Sing_EQ, EQ_sym in U2.
   apply IN_sound_left with (1:=U2), B1.
   exact V1.
-+ eapply IN_sound_right (*with (2:=V2)*) in U2. 2 : exact V2.
++ eapply IN_sound_right (*
+*)with (2:=V2)*) in U2. 2 : exact V2.
   apply Pair_IN in U2 as [c1|c2].
   - apply IN_Union with (E':=X1).
     apply IN_Pair_left.
@@ -3583,16 +4284,19 @@ apply Pair_IN in U1 as [V1|V2].
 Qed.
 
 
-(*_________________________________*)
+(*
+*)_________________________________*)
 
-(* (n+1)th power of A *)
+(*
+*) (n+1)th power of A *)
 Fixpoint cp1Pow (A:class) (n:nat) : class :=
 match n with
  | O => A
  | S x => cProduct (cp1Pow A x) A 
 end.
 
-(* Relations *)
+(*
+*) Relations *)
 Definition sound'
      : forall (c : class) (a b : Ens),
        EQ a b -> c a <-> c b.
@@ -3606,28 +4310,35 @@ Proof.
 unshelve eapply Build_class.
 intro u.
 exact (exists v, R (OrdPair u v)).
-(*apply two_sided.*)
+(*
+*)apply two_sided.*)
 intros a b aeqb H.
 destruct H as [x w].
 exists x.
 rewrite (sound' R).
 exact w.
 apply OrdPair_sound_left.
-auto with zfc. (*apply EQ_sym; exact aeqb.*)
+auto with zfc. (*
+*)apply EQ_sym; exact aeqb.*)
 Qed.
 
 Definition exampleproperclass : class.
 Proof.
 Abort.
 
-(*Definition ias (s: class) : Prop.*)
-(* Proof. firstorder. (* Show Proof. *) . Qed. *)
+(*
+*)Definition ias (s: class) : Prop.*)
+(*
+*) Proof. firstorder. (*
+*) Show Proof. *) . Qed. *)
 
 Definition cprty_sound (cprty:class->Prop) (A B: class)
 (w:cEQ A B) (H:cprty A): cprty B.
-Proof. unfold cEQ in w. firstorder. (*impossible*) Abort.
+Proof. unfold cEQ in w. firstorder. (*
+*)impossible*) Abort.
 
-(* ToDo: Find unsound class property. *)
+(*
+*) ToDo: Find unsound class property. *)
 Definition cprty_unsound : exists (cprty : class->Prop) 
 (A B : class) (w : cEQ A B) (HA : cprty A) (HB : cprty B), False.
 Proof. Abort.
@@ -3636,7 +4347,8 @@ Proof. Abort.
 
 
 
-(* Cartesian product of sets is a set. *)
+(*
+*) Cartesian product of sets is a set. *)
 Theorem cpss (x y : Ens) : ias (cProduct x y).
 Proof.
 eapply scosias.
@@ -3645,15 +4357,18 @@ apply prodissc.
 exact H.
 Qed.
 
-(* Cartesian product as an operation on sets *)
+(*
+*) Cartesian product as an operation on sets *)
 Definition CProduct (x y:Ens): Ens.
 Proof.
 exact (Compr (Power (Power (Union (Pair x y)))) (cProduct x y)).
-(* pose (w:=(cpss x y)). unfold ias in w.
+(*
+*) pose (w:=(cpss x y)). unfold ias in w.
    fails when destruct w. *)
 Qed.
 
-(* Now I will define extraction of the first and the 
+(*
+*) Now I will define extraction of the first and the 
 second element of a couple. *)
 
 Theorem unionsing (M : Ens) : EQ (Union (Sing M)) M.
@@ -3663,7 +4378,8 @@ intro z; split; intro y.
 + apply Union_IN in y.
   destruct y as [w [K1 K2]].
   apply IN_Sing_EQ in K1.
-  eapply IN_sound_right(* with (E':=w); assumption.*).
+  eapply IN_sound_right(*
+*) with (E':=w); assumption.*).
   exact K1. exact K2.
 + unshelve eapply IN_Union.
   exact M.
@@ -3736,7 +4452,8 @@ Qed.
 
 Definition cIN (A B:class):Prop := exists x:Ens, cEQ x A /\ B x.
 
-(* PROPERTY ON CLASS : transitivity1 *)
+(*
+*) PROPERTY ON CLASS : transitivity1 *)
 Definition cpTr1 (T : class) : Prop
  := forall z : Ens, T z -> cINC z T.
 Definition cpTr1_sound (T1 T2 : class)
@@ -3757,7 +4474,8 @@ Record congl := Build_congl {
 
 Definition kTr1 : congl := Build_congl cpTr1 cpTr1_sound.
 
-(* PROPERTY ON CLASS : transitivity2 *)
+(*
+*) PROPERTY ON CLASS : transitivity2 *)
 Definition cpTr2 (T : class) : Prop
  := forall z : Ens, cIN z T -> cINC z T.
 
@@ -3768,7 +4486,8 @@ simpl.
 try reflexivity.
 Abort.
 
-(* PROPERTY ON CLASS : transitivity3 *)
+(*
+*) PROPERTY ON CLASS : transitivity3 *)
 Definition cpTr3 (T : class) : Prop
  := forall z : class, cIN z T -> cINC z T.
 
@@ -3787,7 +4506,8 @@ Qed.
 Theorem cIN_sound_right (Z B1 B2 : class)
 (H : cEQ B1 B2) (K : cIN Z B1) : cIN Z B2.
 Proof.
-(*revert B1 B2 H K.
+(*
+*)revert B1 B2 H K.
 apply (two_sidedC _ ).*)
 unfold cIN in *|-*.
 destruct K as [x [P1 P2]].
@@ -3905,7 +4625,8 @@ unfold in2term.
 destruct US.
 simpl.
 simpl in binUS.
-destruct (ex2sig binUS). (* A (fun y : A => EQ b (e y)) *)
+destruct (ex2sig binUS). (*
+*) A (fun y : A => EQ b (e y)) *)
 assumption.
 Qed.
 
@@ -3929,15 +4650,21 @@ Definition AC_A:=pi1 S.
 Definition AC_B:=pi1 (Union S).
 Definition AC_T:AC_A->AC_B->Prop 
  := fun a b => IN (pi2 (Union S) b) (pi2 S a).
-(*Definition AC_P:= fun ts tus => IN (pi2 (Union S) tus) (pi2 S ts).*)
+(*
+*)Definition AC_P:= fun ts tus => IN (pi2 (Union S) tus) (pi2 S ts).*)
 Theorem AC_hyp : forall a : AC_A, (exists b : AC_B, AC_T a b).
 Proof.
 intro a.
 unfold AC_A, AC_B, AC_T in *|-*.
-pose (XinS := lem4 S a). (*apply (lem4 S) in a as XinS.???*) (* 'IN X S' *)
-pose (X:=pi2 S a). (* Множество 'X' соответствует терму 'a'.*)
-(*'X' is nonempty *) 
-(* so there exists q, 'IN q X' *)
+pose (XinS := lem4 S a). (*
+*)apply (lem4 S) in a as XinS.???*) (*
+*) 'IN X S' *)
+pose (X:=pi2 S a). (*
+*) Множество 'X' соответствует терму 'a'.*)
+(*
+*)'X' is nonempty *) 
+(*
+*) so there exists q, 'IN q X' *)
 pose (J:=lem3 S H X XinS).
 destruct J as [b binX].
 pose (binUS := IN_Union S X b XinS binX).
@@ -3968,7 +4695,8 @@ exact Rx1x2.
 exact Txy.
 Qed.
 
-(*Axiom (SFC:SetoidFunctionalChoice_on AC_A AC_B).*)
+(*
+*)Axiom (SFC:SetoidFunctionalChoice_on AC_A AC_B).*)
 Definition SFC:= axSFC AC_A AC_B.
 
 Definition Afp := ex2sig (SFC AC_R AC_T AC_eqvR T_sound AC_hyp).
@@ -3976,20 +4704,24 @@ Definition Afu := fun v : pi1 S =>
  OrdPair (pi2 S v) (pi2 (Union S) ((proj1_sig Afp) v)).
 Definition Achfu : Ens := (sup (pi1 S) Afu).
 
-(*Search Power.*)
+(*
+*)Search Power.*)
 
 Theorem Achfu_total (X:Ens) (G:IN X S): exists Q, IN (OrdPair X Q) Achfu /\ IN Q X.
 Proof.
 pose (t:=in2term S X G).
 pose (p:=Afu t).
-(*&pose (p:=t). *)
+(*
+*)&pose (p:=t). *)
 unfold Afu in p.
 exists (pi2 (Union S) (proj1_sig Afp t)).
 split.
-(*exists p.*)
+(*
+*)exists p.*)
 { unfold Achfu.
   unfold IN.
-exists t. (*!*)
+exists t. (*
+*)!*)
 unfold t.
 
 apply OrdPair_sound_both.
@@ -4016,7 +4748,8 @@ intros X W Q1 Q2 [K1 K2].
 unfold Achfu, IN in K1,K2.
 unfold Afu in K1,K2.
 destruct K1 as [y1 K1], K2 as [y2 K2].
-(*Search OrdPair.*)
+(*
+*)Search OrdPair.*)
 apply OrdPair_inj in K1 as [L1 R1].
 apply OrdPair_inj in K2 as [L2 R2].
 eapply EQ_tran. exact R1.
@@ -4034,7 +4767,8 @@ eapply EQ_tran. apply EQ_sym. exact L1. exact L2.
 Qed.
 
 Theorem axChoice : exists f:Ens,
-forall X, IN X S -> (* '<->' for the restriction of f on S *)
+forall X, IN X S -> (*
+*) '<->' for the restriction of f on S *)
 ((exists Q, IN (OrdPair X Q) f /\ IN Q X) /\
  (forall Q1 Q2, IN (OrdPair X Q1) f /\ IN (OrdPair X Q2) f -> EQ Q1 Q2)).
 Proof.
@@ -4042,16 +4776,19 @@ exists Achfu.
 intros X.
  intro G.
 + split.
-  - (* totality of the relation: existence of the ordered pair *)
+  - (*
+*) totality of the relation: existence of the ordered pair *)
     apply Achfu_total with (1:=G).
-  - (* functionality of the relation *)
+  - (*
+*) functionality of the relation *)
     apply Achfu_func with (1:=G).
 Qed.
 
 
 Section Part_III.
 
-(* First-order logic definitions and derivations *)
+(*
+*) First-order logic definitions and derivations *)
 
 Inductive Fo : Type := 
 | Var : string -> Fo 
@@ -4098,14 +4835,16 @@ Definition uniqueEns : (Ens -> Prop) -> Ens -> Prop
 := fun (P : Ens -> Prop) (x : Ens) =>
    P x /\ (forall x' : Ens, P x' -> EQ x x').
 
-(* Projections for ordered pairs. *)
+(*
+*) Projections for ordered pairs. *)
 Definition Pi1 (p : Ens) : Ens
 := Union (Inter p).
 
 Definition Pi2_P (p:Ens) := (fun x => 
 ~(EQ (Union p) (Inter p))->~(IN x (Inter p)) ).
 
-(* Projections for ordered pairs. *)
+(*
+*) Projections for ordered pairs. *)
 Definition Pi2 (p : Ens) : Ens
 := Union (Comp (Union p) (Pi2_P p)).
 
@@ -4126,9 +4865,11 @@ apply (EQ_tran _ X2); auto with zfc.
 Qed.
 
 Theorem Pi2_sound_lem1 X : SoundPred (Pi2_P X).
-(*Theorem Pi2_sound_lem1 (X: Ens) : forall w1 w2 : Ens,
+(*
+*)Theorem Pi2_sound_lem1 (X: Ens) : forall w1 w2 : Ens,
 Pi2_P X w1 -> EQ w1 w2 -> Pi2_P X w2.*)
-(*(~ EQ (Union X) (Inter X) -> ~ IN w1 (Inter X)) ->
+(*
+*)(~ EQ (Union X) (Inter X) -> ~ IN w1 (Inter X)) ->
 EQ w1 w2 -> ~ EQ (Union X) (Inter X) -> ~ IN w2 (Inter X).*)
 Proof.
  intros w1 w2 H0 H1 H2 H3.
@@ -4137,10 +4878,12 @@ Proof.
   apply H1; assumption.
 Qed.
 
-Theorem Pi2_sound_lem2 (*: SoundPred (Pi2_P X).*)
+Theorem Pi2_sound_lem2 (*
+*): SoundPred (Pi2_P X).*)
 (X Y : Ens) (H : EQ X Y) :
 forall w : Ens, (Pi2_P X w) <-> (Pi2_P Y w).
-(*(~ EQ (Union X) (Inter X) -> ~ IN w (Inter X)) <->
+(*
+*)(~ EQ (Union X) (Inter X) -> ~ IN w (Inter X)) <->
 (~ EQ (Union Y) (Inter Y) -> ~ IN w (Inter Y)).*)
 Proof.
 intro w. revert X Y H.
@@ -4198,7 +4941,8 @@ apply axExt_left.
 intro z. split; intro q.
 + apply Union_IN in q as [E [q0 q1]].
   apply Pair_IN in q0 as [q2|q2].
-  - eapply IN_sound_right (*with (1:=q2)*) in q1.
+  - eapply IN_sound_right (*
+*)with (1:=q2)*) in q1.
     apply IN_Sing_EQ in q1.
     eapply IN_sound_left.
     1 : apply EQ_sym, q1.
@@ -4211,7 +4955,8 @@ intro z. split; intro q.
   auto with zfc.
 Qed.
 
-(* computation of Pi1 *)
+(*
+*) computation of Pi1 *)
 Theorem Pi1_comput (A B:Ens): EQ (Pi1 (OrdPair A B)) A.
 Proof.
 unfold Pi1.
@@ -4228,12 +4973,14 @@ exact H1.
 destruct (H H1 H0).
 Qed.
 
-(* computation of Pi2 *)
+(*
+*) computation of Pi2 *)
 Theorem Pi2_comput (A B:Ens): EQ (Pi2 (OrdPair A B)) B.
 Proof.
 unfold Pi2.
 apply axExt. intro z. split; intro q.
-+ (* -> *)
++ (*
+*) -> *)
 apply Union_IN in q as [w [q1 q2]].
 eapply Comp_elim in q1 as [q3 q4].
 2 : { unfold SoundPred.
@@ -4262,7 +5009,8 @@ apply Pair_IN in q5 as [q8|q8].
 - eapply IN_sound_right in q6. 2 : exact q8.
   apply Pair_IN in q6 as [q6|q6].
   2 : {eapply IN_sound_right. exact q6. exact q2. }
-  (* the next is a copy *)
+  (*
+*) the next is a copy *)
     assert (q9:IN w (Inter (OrdPair A B))).
   { eapply IN_sound_right.
     apply EQ_sym, InterOP.
@@ -4285,7 +5033,8 @@ apply Pair_IN in q5 as [q8|q8].
     2 : apply IN_Pair_right.
     apply IN_Pair_right.
   - unfold Pi2_P.
-    intros q1 q2; apply q1; clear q1. (*apply anticontrap.*)
+    intros q1 q2; apply q1; clear q1. (*
+*)apply anticontrap.*)
     eapply EQ_tran.
     apply UnionOP.
     apply EQ_sym.
@@ -4298,10 +5047,12 @@ apply Pair_IN in q5 as [q8|q8].
     apply EQ_sym, q2.
 Qed.
 
-(* http://us.metamath.org/mpegif/df-iota.html *)
+(*
+*) http://us.metamath.org/mpegif/df-iota.html *)
 Definition riota (X S:Ens) (P:Ens->Prop) : Ens
  := Union (Comp X (fun y : Ens => EQ (Comp S P) (Sing y))).
-(*Proof.
+(*
+*)Proof.
 apply Union.
 eapply Comp.
 + exact X.
@@ -4313,21 +5064,26 @@ eapply Comp.
   - exact (Sing y).
 Qed.*)
 
-(* http://us.metamath.org/mpegif/df-fv.html *)
+(*
+*) http://us.metamath.org/mpegif/df-fv.html *)
 Definition AT (F: Ens) (X:Ens) : Ens.
 Proof.
-(*intros F A.*)
+(*
+*)intros F A.*)
 Check riota.
 Admitted.
 
-(*(AT f Vide)*)
+(*
+*)(AT f Vide)*)
 Theorem AT_sound_right (F X Y:Ens) (H:EQ X Y)
 : EQ (AT F X) (AT F Y).
 Proof.
 Abort.
 
-(*** Recursion theorem ***)
-(* IST p.46 *)
+(*
+*)** Recursion theorem ***)
+(*
+*) IST p.46 *)
 Theorem rec_thm (a A g:Ens) (H1:IN a A) 
 (H2: IN g (functions (Product A Omega) A)) 
 : ex (uniqueEns (fun f:Ens=>
@@ -4339,9 +5095,11 @@ Theorem rec_thm (a A g:Ens) (H1:IN a A)
     )
   )).
 Proof.
-(*unique
+(*
+*)unique
 exists ().
-(*ex (unique ... )*)
+(*
+*)ex (unique ... )*)
 constructor.
 "exists!"*)
 Abort.
@@ -4369,7 +5127,8 @@ assert (J0:RelationClasses.Equivalence (@eq A)).
   induction xeqy. exact yeqz. }
 assert (J1:(forall (x x' : A) (y : B), x = x' -> P x y -> P x' y)).
 { intros x x' y xeqx'. induction xeqx'. trivial. }
-(*Check (axSFC A B (@eq A) P J0 J1 H).*)
+(*
+*)Check (axSFC A B (@eq A) P J0 J1 H).*)
 destruct (axSFC A B (@eq A) P J0 J1 H) as [f Q].
 exists f. firstorder.
 Qed.
@@ -4395,8 +5154,10 @@ Qed.
 Theorem thm_collection : collection.
 Proof. apply Choice_Collection. exact thm_choice. Qed.
 
-(* If we also assume the excluded middle, we can derive         *)
-(* the usual replacement schemata.                              *)
+(*
+*) If we also assume the excluded middle, we can derive         *)
+(*
+*) the usual replacement schemata.                              *)
 
 Definition functional (P : Ens -> Ens -> Prop) :=
   forall x y y' : Ens, P x y -> P x y' -> EQ y y'.
@@ -4429,6 +5190,7 @@ apply
  auto with zfc.
 unfold SoundPred.
 (*
+*)
 intros w1 w2; simple induction 1; intros x; simple induction 2;
  intros Ix Px e.
 exists x; split; auto with zfc.
@@ -4437,6 +5199,7 @@ apply comp_r with w1; auto with zfc.
 intros He.
 apply IN_P_Comp.
 (*
+*)
 intros w1 w2; simple induction 1; intros x; simple induction 1;
  intros Ix Px e.
 exists x; split; auto with zfc.
@@ -4494,9 +5257,12 @@ exact thm_collection.
 Qed.
 
 
-(* ===================================== *)
-(*    START OF THE METAMATH SECTION      *)
-(* ===================================== *)
+(*
+*) ===================================== *)
+(*
+*)    START OF THE METAMATH SECTION      *)
+(*
+*) ===================================== *)
 
 
 Definition cPair : class -> class -> class.
@@ -4512,7 +5278,8 @@ Qed.
 
 Definition cSing (A:class) : class := cPair A A.
 
-(* http://us.metamath.org/mpegif/df-op.html *)
+(*
+*) http://us.metamath.org/mpegif/df-op.html *)
 Definition cOrdPair (A B:class):class.
 Proof.
 unshelve eapply Build_class.
@@ -4587,7 +5354,8 @@ revert B1 B2 H.
 apply (two_sidedC _ ).
 intros.
 simpl in *|-*.
-destruct H0, H1. (*hack instead of repeat destruct H0.*)
+destruct H0, H1. (*
+*)hack instead of repeat destruct H0.*)
 repeat split.
 + assumption.
 + eapply cIN_sound_left.
@@ -4613,7 +5381,8 @@ Proof.
 revert A1 A2 H. apply two_sidedC.
 intros.
 simpl in *|-*.
-destruct H0, H1. (*hack instead of repeat destruct H0.*)
+destruct H0, H1. (*
+*)hack instead of repeat destruct H0.*)
 repeat split.
 + eapply cIN_sound_left.
   exact H.
@@ -4626,7 +5395,8 @@ repeat split.
   eapply cPair_sound_left. exact H.
 Qed.
 
-(* http://us.metamath.org/mpegif/df-tr.html *)
+(*
+*) http://us.metamath.org/mpegif/df-tr.html *)
 Definition mcTr (A:class) : Prop := cINC (cUnion A) A.
 
 Theorem cUnion_sound : forall (A B : class) (aeqb : cEQ A B),
@@ -4653,10 +5423,12 @@ apply H.
 assumption.
 Qed.
 
-(* predicate of the nonemptiness TODO: make class *)
+(*
+*) predicate of the nonemptiness TODO: make class *)
 Definition inhab (x:Ens) : Prop := exists y:Ens, IN y x.
 
-(* "Fr" is the well-founded relation predicate.
+(*
+*) "Fr" is the well-founded relation predicate.
 http://us.metamath.org/mpegif/df-fr.html *)
 Definition Fr (R A:class) : Prop :=
 forall x:Ens, ((forall y, IN y x -> A y) /\ inhab x) ->
@@ -4688,7 +5460,8 @@ intros x Bx y By z Bz.
 apply H; apply p; assumption.
 Qed.
 
-(* the strict partial order predicate
+(*
+*) the strict partial order predicate
  similar with http://us.metamath.org/mpegif/df-po.html *)
 Definition Po (R A:class) : Prop := (IrrR R A)/\(TranR R A)
 .
@@ -4708,7 +5481,8 @@ split.
 Qed.
 
 
-(* strict complete (linear) order predicate 
+(*
+*) strict complete (linear) order predicate 
  similar with http://us.metamath.org/mpegif/df-so.html *)
 Definition Or (R A:class) : Prop := Po R A /\
 (forall x, A x -> forall y, A y ->
@@ -4730,7 +5504,8 @@ apply p in Qy.
 exact (H2 x Qx y Qy).
 Qed.
 
-(* http://us.metamath.org/mpegif/df-we.html *)
+(*
+*) http://us.metamath.org/mpegif/df-we.html *)
 Definition We (R A:class) : Prop := (Fr R A /\ Or R A).
 
 Theorem Fr_sound_right (R A B:class)
@@ -4766,15 +5541,19 @@ split.
 Qed.
 
 (*
-Opaque EQ. (* forbid "simpl" to unfold "EQ" *) Transparent EQ.
+*)
+Opaque EQ. (*
+*) forbid "simpl" to unfold "EQ" *) Transparent EQ.
 The following also disables simpl, but EQ can still be unfolded.
 *)
 Arguments EQ _ _ : simpl nomatch.
 
-(* TODO: EQ_sound_left *)
+(*
+*) TODO: EQ_sound_left *)
 
 
-(* http://us.metamath.org/mpegif/df-eprel.html *)
+(*
+*) http://us.metamath.org/mpegif/df-eprel.html *)
 Definition cEps : class.
 Proof.
 unshelve eapply Build_class.
@@ -4787,7 +5566,8 @@ unshelve eapply Build_class.
   - exact xiny.
 Qed.
 
-(* http://us.metamath.org/mpegif/df-ord.html *)
+(*
+*) http://us.metamath.org/mpegif/df-ord.html *)
 Definition cOrd (A:class) : Prop := (mcTr A /\ We cEps A).
 
 Definition cOrd_sound (A B:class) (AeqB:cEQ A B) (H:cOrd A) : cOrd B.
@@ -4807,7 +5587,8 @@ apply EQ2cEQ.
 assumption.
 Qed.
 
-(* ordinal numbers *)
+(*
+*) ordinal numbers *)
 Definition On : class.
 Proof.
 unshelve eapply Build_class.
@@ -4817,7 +5598,8 @@ Qed.
 
 Definition Rel (A:class) : Prop := cINC A (cProduct cV cV).
 
-(* http://us.metamath.org/mpegif/df-cnv.html *)
+(*
+*) http://us.metamath.org/mpegif/df-cnv.html *)
 Definition invR (A:class) : class.
 Proof.
 unshelve eapply Build_class.
@@ -4833,7 +5615,8 @@ unshelve eapply Build_class.
   exact W2.
 Qed.
 
-(* composition *)
+(*
+*) composition *)
 Definition compos (A B:class):class.
 Proof.
 unshelve eapply Build_class.
@@ -4857,11 +5640,13 @@ unshelve eapply Build_class.
   exact p.
 Qed.
 
-(* http://us.metamath.org/mpegif/df-fun.html *)
+(*
+*) http://us.metamath.org/mpegif/df-fun.html *)
 Definition Fun (A:class): Prop 
  := (Rel A) /\ (cINC (compos A (invR A)) cI).
 
-(* Check cIN.
+(*
+*) Check cIN.
 Context (Q1 Q2:class).
 Parameter ap : forall A : class, class -> Prop.
 Coercion  : ap >-> Funclass.
@@ -4869,14 +5654,16 @@ Parameter ap : forall A B:Set, class -> class -> Prop.
 Coercion cIN : class >-> Funclass.
 Check Q1 Q2. *)
 
-(* http://us.metamath.org/mpegif/df-dm.html *)
+(*
+*) http://us.metamath.org/mpegif/df-dm.html *)
 Definition cdom (A:class) : class.
 Proof.
 unshelve eapply Build_class.
 + intro e. exact (exists y, cIN (cOrdPair e y) A).
 + simpl. intros a b aeqb [y Aop].
   exists y.
-  (*eapply (sound' A).*)
+  (*
+*)eapply (sound' A).*)
   eapply cIN_sound_left.
   2 : exact Aop.
   apply cOrdPair_sound_left.
@@ -4884,16 +5671,19 @@ unshelve eapply Build_class.
   apply  aeqb.
 Qed.
 
-(* http://us.metamath.org/mpegif/df-fn.html *)
+(*
+*) http://us.metamath.org/mpegif/df-fn.html *)
 Definition Fn (A B:class): Prop := (Fun A)/\(cEQ (cdom A) B).
 
-(* here we use "F:class" instead of "ph:wff" *)
+(*
+*) here we use "F:class" instead of "ph:wff" *)
 Definition iota_cl (F:class) : class.
 Proof.
 unshelve eapply Build_class.
 + intro y. exact (cEQ F (cSing y)).
 + simpl.
 (*
+*)
 pose (W:=sound (cSing F)).
 unfold cSing in W.
 simpl in W.
@@ -4914,19 +5704,23 @@ intros a b aeqb; intro H.
       exact aeqb. exact zheqb.
     * eapply cEQ_sound_right. apply EQ2cEQ, EQ_sym.
       exact aeqb. exact zheqb.
-(* TODO: reduce repetitions! *)
+(*
+*) TODO: reduce repetitions! *)
 Qed.
 
-(* http://us.metamath.org/mpegif/df-iota.html *)
+(*
+*) http://us.metamath.org/mpegif/df-iota.html *)
 Definition iota (F:class) : class
  := cUnion (iota_cl F).
 
 
 
-(*  Show Proof.
+(*
+*)  Show Proof.
 IN_sound_left
 
-eapply cIN_sound_right. (*TODO!*)
+eapply cIN_sound_right. (*
+*)TODO!*)
 unfold cEQ.
 
 unfold cOrdPair.
@@ -4934,7 +5728,8 @@ fold cPair.
 apply cPair_sound_right.
 Admitted.*)
 
-(* http://us.metamath.org/mpegif/df-fv.html *)
+(*
+*) http://us.metamath.org/mpegif/df-fv.html *)
 Definition cAT (F:class) (A:class) : class.
 Proof.
 apply iota.
@@ -4948,7 +5743,8 @@ unshelve eapply Build_class.
   exact aeqb.
 Qed.
 
-(* Later, change every soundness proof with this.
+(*
+*) Later, change every soundness proof with this.
    keeping "<->" for "rewrite" tactic is useless. *)
 Definition soundf : forall (c : class) (a b : Ens),
        EQ a b -> c a -> c b.
@@ -4973,7 +5769,8 @@ intros.
 eapply (two_sidedC (fun z => (compos z B))).
 2 : exact H.
 intros.
-rename z into e. (*cbn delta in H1.*)
+rename z into e. (*
+*)cbn delta in H1.*)
 simpl in H1|-*.
 destruct H1 as [x [y [zeqp [z [P1 P2]]]]].
 exists x.
@@ -5082,11 +5879,13 @@ split.
 + exact P2.
 Qed.
 
-(* wff   ->  Prop
+(*
+*) wff   ->  Prop
    set   ->  Ens
    class ->  class *)
 
-(* Constructing the class of an acceptable functions. *)
+(*
+*) Constructing the class of an acceptable functions. *)
 Definition cAccept (F:class) : class.
 Proof.
 unshelve eapply Build_class.
@@ -5110,15 +5909,20 @@ unshelve eapply Build_class.
     apply EQ2cEQ. exact H.
 Qed.
 
-(* http://us.metamath.org/mpegif/df-recs.html *)
-(* transfinite recursion "functor". *)
+(*
+*) http://us.metamath.org/mpegif/df-recs.html *)
+(*
+*) transfinite recursion "functor". *)
 Definition recs (F:class) := cUnion (cAccept F).
 
-(* LEM implies proof irrelevance:
+(*
+*) LEM implies proof irrelevance:
    see proof_irrelevance in Classical_Prop.v *)
 
-(* http://us.metamath.org/mpegif/df-iun.html *)
-Definition iun (A:class) (B:Ens->class) : class. (*A:Ens->class*)
+(*
+*) http://us.metamath.org/mpegif/df-iun.html *)
+Definition iun (A:class) (B:Ens->class) : class. (*
+*)A:Ens->class*)
 Proof.
 unshelve eapply Build_class.
 + intro y. exact (exists x, A x /\ (B x) y).
@@ -5127,7 +5931,8 @@ unshelve eapply Build_class.
   eapply (sound (B x)). exact aeqb. exact P2.
 Qed.
 
-(* http://us.metamath.org/mpegif/uniiun.html *)
+(*
+*) http://us.metamath.org/mpegif/uniiun.html *)
 Theorem uniiun (A:class): cEQ (cUnion A) (iun A (id)).
 Proof.
 intro z.
@@ -5135,13 +5940,15 @@ simpl.
 split; intro q.
 + destruct q as [w [P1 P2]].
   exists w. split. exact P1.
-  exact P2. (* compute. ? *)
+  exact P2. (*
+*) compute. ? *)
 + destruct q as [w [P1 P2]].
   exists w. split. exact P1.
   exact P2.
 Qed.
 
-(* http://us.metamath.org/mpegif/reliun.html *)
+(*
+*) http://us.metamath.org/mpegif/reliun.html *)
 Theorem reliun (A:class) (B:Ens->class) :
  Rel (iun A B) <-> (forall x, A x -> Rel (B x)).
 Proof.
@@ -5160,9 +5967,11 @@ split; intro H.
   exact Ax.
   exact Bxz.
 Qed.
-(* TODO: define "-->" - functions which respect extensional equality. *)
+(*
+*) TODO: define "-->" - functions which respect extensional equality. *)
 
-(* http://us.metamath.org/mpegif/reluni.html *)
+(*
+*) http://us.metamath.org/mpegif/reluni.html *)
 Theorem reluni (A:class) : (Rel (cUnion A)) <-> (forall x, A x -> Rel x).
 Proof.
 split; intro H1.
@@ -5179,7 +5988,8 @@ split; intro H1.
   exact H1.
 Qed.
 
-(* http://us.metamath.org/mpegif/tfr1.html *)
+(*
+*) http://us.metamath.org/mpegif/tfr1.html *)
 Theorem recs_is_rel (F:class) : Rel (recs F).
 Proof.
 unfold recs.
@@ -5193,7 +6003,8 @@ destruct FnxA as [[Q _] _].
 exact Q.
 Qed.
 
-(* http://us.metamath.org/mpegif/zfpair2.html *)
+(*
+*) http://us.metamath.org/mpegif/zfpair2.html *)
 Lemma Pair_extends (x y:Ens): cEQ (Pair x y) (cPair x y).
 Proof.
 intro w. split; simpl; intro H.
@@ -5210,7 +6021,8 @@ Proof.
 exists (Pair x y). apply Pair_extends.
 Qed.
 
-(* http://us.metamath.org/mpegif/prex.html *)
+(*
+*) http://us.metamath.org/mpegif/prex.html *)
 Lemma cPair_exists (A B:class): exists a:Ens, cEQ a (cPair A B).
 Proof.
 destruct (classic (exists a : Ens, cEQ a A) ) as [[a ae]|],
@@ -5269,6 +6081,7 @@ exists w. split. exact p. exact (EnsInV w).
 Qed.
 
 (*
+*)
 "Our df-op 3902 was chosen because it often
  makes proofs shorter by eliminating unnecessary sethood hypotheses."
 http://us.metamath.org/mpegif/dfopif.html
@@ -5297,9 +6110,11 @@ unfold cIN.
   - exists w2. split. apply cEQ_sym. exact L2.
     simpl. right. exact P2.
 +
-(* DEVELOPMENT *)
+(*
+*) DEVELOPMENT *)
 Admitted.
-(*  eapply Pair_extends.
+(*
+*)  eapply Pair_extends.
 unfold cOrdPair.
 exists (Pair a b). *)
 
@@ -5311,7 +6126,8 @@ destruct (cPair_exists y x) as [w P].
 exists w.
 split.
 + eapply cEQ_sound_right.
-(*  eapply Pair_extends.
+(*
+*)  eapply Pair_extends.
   try exists (cOrdPair y x).
   simpl. *)
   2 : exact P.
@@ -5332,6 +6148,7 @@ destruct yias as [ys yexs].
 exists ys.
 
 (*
+*)
 exists y.
 eapply EQ_sound_left.
 apply EQ_sym. exact eqxop.
@@ -5339,14 +6156,18 @@ eapply OrdPair_sound_left.
 
 simpl in P1.*)
 Abort.
-(*unfold compos in H.
+(*
+*)unfold compos in H.
 cbv beta in H|-*.
 simpl in *|-*.*)
 
-(* http://us.metamath.org/mpegif/df-rdg.html *)
-(* Definition rec (F I:class) := recs F. *)
+(*
+*) http://us.metamath.org/mpegif/df-rdg.html *)
+(*
+*) Definition rec (F I:class) := recs F. *)
 
 (*
+*)
  * Part III: First-Order Logic
  *
  * This section defines the syntax of first-order formulas and implements a derivation calculus.
@@ -5500,6 +6321,7 @@ Inductive Derivation : Type :=
 
 
 (*
+*)
  * Inductive definition of first-order formulas
  *)
 
@@ -5515,6 +6337,7 @@ Inductive Fo : Type :=
 | Exists (x : nat) (f : Fo) : Fo.
 
 (*
+*)
  * Hilbert-style derivation calculus
  *)
 
@@ -5532,14 +6355,18 @@ Inductive Derivation : Fo -> Type :=
 | Ax11 : forall x f, Derivation (Implies (Subst x x f) (Exists x f))
 | MP : forall f g, Derivation (Implies (Implies f g) (Implies f g)).
 
-(* ===================================== *)
-(*     END OF THE METAMATH SECTION       *)
-(* ===================================== *)
+(*
+*) ===================================== *)
+(*
+*)     END OF THE METAMATH SECTION       *)
+(*
+*) ===================================== *)
 
 
 Section Part_III.
 
-(* First-order logic definitions and derivations *)
+(*
+*) First-order logic definitions and derivations *)
 
 Inductive Fo : Type := 
 | Var : string -> Fo 
@@ -5582,13 +6409,15 @@ Inductive Fo : Type :=
 
  stoc_sec.
 
-(** BEGINning of the tiny experiments with ensembles **)
+(*
+*)* BEGINning of the tiny experiments with ensembles **)
 Require Import ClassicalFacts.
 Module ExperimentsWithEnsembles.
 Axiom axPE:prop_extensionality.
 Axiom axPI : proof_irrelevance.
 Definition U := Ens.
-Definition Ensemble := class. (*U -> Prop.*)
+Definition Ensemble := class. (*
+*)U -> Prop.*)
 Definition In (A:Ensemble) (x:U) : Prop := A x.
 Definition Included (B C:Ensemble) : Prop := forall x:U, In B x -> In C x.
 Definition Same_set (B C:Ensemble) : Prop 
@@ -5618,7 +6447,8 @@ eapply functional_extensionality.
 intro Hx.
 eapply axPI.
 Qed.
-(*Require Import Coq.Sets.Ensembles.
+(*
+*)Require Import Coq.Sets.Ensembles.
 Check Extensionality_Ensembles.
 Axiom Extensionality_Ensembles : forall A B:Ensemble, 
 Same_set A B -> A = B.
@@ -5626,7 +6456,8 @@ Same_set A B -> A = B.
 
 Section Part_III.
 
-(* First-order logic definitions and derivations *)
+(*
+*) First-order logic definitions and derivations *)
 
 Inductive Fo : Type := 
 | Var : string -> Fo 
@@ -5669,11 +6500,13 @@ Inductive Fo : Type :=
 
  ExperimentsWithEnsembles.
 
-(** END of the tiny experiments with ensembles **)
+(*
+*)* END of the tiny experiments with ensembles **)
 
 
 
-(** BEGIN: Formulas for automatization of soundness proofs. **)
+(*
+*)* BEGIN: Formulas for automatization of soundness proofs. **)
 Section Fo.
 Definition SetVars := nat.
 
@@ -5707,7 +6540,8 @@ match f with
  | Exis x f => (exists m:Ens, foI (cng val x m) f)
 end.
 
-(* foI respects the pointwise
+(*
+*) foI respects the pointwise
  extensional equality of valuations: *)
 Theorem ptws val1 val2 (K:forall v, EQ (val1 v) (val2 v) )
  f : (foI val1 f) -> foI val2 f.
@@ -5756,7 +6590,8 @@ intros val1 val2 K H;
     - right. eapply IHf2. 2 : exact H2.  exact K.
 Qed.
 
-(* Build a class: *)
+(*
+*) Build a class: *)
 Definition BC (f:Fo) : class.
 Proof.
 unshelve eapply Build_class.
@@ -5770,23 +6605,29 @@ intros _.
 exact H.
 Qed.
 
-(*Check BC (Impl Bot Bot).  (* _V *)*)
+(*
+*)Check BC (Impl Bot Bot).  (*
+*) _V *)*)
 Theorem all_in_V (x:Ens) : BC (Impl Bot Bot) x.
 Proof.
 simpl. trivial.
 Qed.
-(* \forall x, x \in y <->  (x=\varempty) *)
+(*
+*) \forall x, x \in y <->  (x=\varempty) *)
 Definition Iff (f1 f2:Fo) := (Conj (Impl f1 f2) (Impl f2 f1)).
 
-(*Definition Subs (x y:SetVars) : Fo
+(*
+*)Definition Subs (x y:SetVars) : Fo
  := (Fora 9 (Impl (In 9 x) (In 9 y))).*)
 
-(*Definition Eqs (x y:SetVars) : Fo
+(*
+*)Definition Eqs (x y:SetVars) : Fo
  := Conj (Subs x y) (Subs y x).*)
 
 Definition Neg q := (Impl q Bot).
 
-(* Let's define a singletone *)
+(*
+*) Let's define a singletone *)
 Definition isEmpty (x:SetVars)
 : Fo := (Fora 1 (Neg (In 1 x))).
 
@@ -5847,18 +6688,22 @@ eapply IN_sound_right in W.
 eapply nothing_IN_Vide, W.
 Qed.
 
-(* Definition isOne (x:SetVars)
+(*
+*) Definition isOne (x:SetVars)
 : Fo := (Fora 1 (Neg (In 1 x))).*) 
 
 (*
+*)
 Definition pair (BC (Fora 1 (In 1 2))) : .
 Definition subclass (BC (Fora 1 (In 1 2))) : .
 *)
 
-(* TODO: Need to enrich the language.
+(*
+*) TODO: Need to enrich the language.
 cPair
 cEQ_sound_left
-Check BC (Impl Bot Bot).  (* _V *)
+Check BC (Impl Bot Bot).  (*
+*) _V *)
 Theorem all_in_V (A B:class): c INC (BC (Conj 1 )).
 Proof.
 simpl. trivial.
@@ -5867,7 +6712,8 @@ Qed. *)
 
 Section Part_III.
 
-(* First-order logic definitions and derivations *)
+(*
+*) First-order logic definitions and derivations *)
 
 Inductive Fo : Type := 
 | Var : string -> Fo 
@@ -5909,9 +6755,11 @@ Inductive Fo : Type :=
 
 
  Fo.
-(** END: Formulas for automatization of soundness proofs. **)
+(*
+*)* END: Formulas for automatization of soundness proofs. **)
 
-(** BEGIN  nclass generalization **)
+(*
+*)* BEGIN  nclass generalization **)
 Fixpoint nPrty (n:nat) : Type :=
 match n with
 | 0 => Ens
@@ -5995,17 +6843,20 @@ Definition plift {n:nat} (x:nPrty n) : nPrty (S n).
 Proof.
 simpl.
 induction n;simpl in *|-*.
-+ exact (fun y : Ens => IN y x). (* stoc *)
++ exact (fun y : Ens => IN y x). (*
+*) stoc *)
 + intro A.
   exact (exists w:nPrty n, @nEQ (S n) (IHn w) A /\ x w).
 Qed.
 
-(* generalized stoc without soundness *)
+(*
+*) generalized stoc without soundness *)
 Coercion plift : nPrty >-> nPrty.
 Definition coe : Ens -> nPrty 0 := id.
 Coercion coe : Ens >-> nPrty.
 
-(* TODO: change here "stoc" to "lift" *)
+(*
+*) TODO: change here "stoc" to "lift" *)
 Example in_plift (a b:Ens) : IN a b <-> plift b a.
 Proof.
 reflexivity.
@@ -6021,7 +6872,8 @@ unshelve eapply Build_nClass.
   - intros p1 p2.
     apply IN_sound_left.
   - intros. destruct H0 as [x [J1 J2]].
-    (* firstorder. *)
+    (*
+*) firstorder. *)
     exists x.
     split.
     2 : exact J2.
@@ -6030,19 +6882,23 @@ unshelve eapply Build_nClass.
     * apply J1, H, w.
 Qed.
 
-(* generalization of EQ2cEQ *)
+(*
+*) generalization of EQ2cEQ *)
 Definition lift_EQ {n:nat} (x y:nPrty n) (H:nEQ x y)
  : nEQ (plift x) (plift y).
 Proof.
 simpl.
 intro q. split; intro w.
-+ (* unfold lift in *|-*. *)
++ (*
+*) unfold lift in *|-*. *)
 Abort.
-(*Coercion lift_EQ : nEQ >-> nEQ. *)
+(*
+*)Coercion lift_EQ : nEQ >-> nEQ. *)
 
 Definition nIN {n:nat} (a b : nPrty n) : Prop := plift b a.
 
-(* Here the motivation of the previous definition: *)
+(*
+*) Here the motivation of the previous definition: *)
  Definition IN' a b : Prop := stoc b a.
  Theorem thm0 a b : IN a b <-> IN' a b.
  Proof.
@@ -6050,10 +6906,12 @@ Definition nIN {n:nat} (a b : nPrty n) : Prop := plift b a.
  simpl.
  reflexivity.
  Qed.
-(* 
+(*
+*) 
 Section Part_III.
 
-(* First-order logic definitions and derivations *)
+(*
+*) First-order logic definitions and derivations *)
 
 Inductive Fo : Type := 
 | Var : string -> Fo 
@@ -6110,14 +6968,17 @@ unshelve eapply Build_nClass.
 + exact (max (level a) (level b)).
 +
 Abort.
-(* abstractions instead of real math... *)
+(*
+*) abstractions instead of real math... *)
 
 (*
+*)
 Definition nINC {n:nat} (a b : nPrty n) : Prop := lift b a.
 pTr
 *)
 
 (*
+*)
 Inductive nclass :=
 | constru (level:nat)
   (P:nPrty level) (S:nSound level P) : nclass
@@ -6126,9 +6987,11 @@ with nSound (level:nat) (P:nPrty level):=
 .
 *)
 
-(** END    nclass generalization **)
+(*
+*)* END    nclass generalization **)
 
-(** BEGIN  Exercises from Jech: **)
+(*
+*)* BEGIN  Exercises from Jech: **)
 
 Definition pInd (X : class) :=
 X Vide /\ (forall Y : Ens, X Y -> X (succ Y)).
@@ -6148,7 +7011,8 @@ Qed.
 Lemma cNNincOmega (x:Ens) : cNN x -> IN x Omega.
 Proof.
 apply (InterSS cInd Omega Omega_cInd).
-(* intro H.
+(*
+*) intro H.
 Search Omega.
 simpl in H.
 assert (oi:=Omega_cInd).
@@ -6239,35 +7103,42 @@ apply D in H.
 unfold SoS in H.
 Search Comp.
 apply Comp_elim in H as [H1 H2].
-2 : { unfold SoundPred. (*eapply INC_sound_left.*)
+2 : { unfold SoundPred. (*
+*)eapply INC_sound_left.*)
 intros. eapply INC_sound_left. exact H0. exact H1. }
 exact H2.
 Qed.
 
 Arguments Omega : simpl nomatch.
-(* ex.1.3 part 2*)
+(*
+*) ex.1.3 part 2*)
 Theorem TrNN : cpTr1 cNN.
 Proof.
 unfold cpTr1.
 Search pTr.
-(* forall x:Ens, cNN x -> cINC (stoc x) cNN. *)
+(*
+*) forall x:Ens, cNN x -> cINC (stoc x) cNN. *)
 intros x xNN.
 apply Omega_cEQ_cNN in xNN.
 rename xNN into u.
 Opaque IN.
 simpl in u.
 (*
+*)
 Transparent IN.
 unfold IN in u.
 *)
 (*
+*)
 replace ((stoc Omega) x) with (IN x Omega) in u.
 *)
-(* change ((stoc Omega) x) with (IN x Omega) in u. OK! *)
+(*
+*) change ((stoc Omega) x) with (IN x Omega) in u. OK! *)
 eapply cINC_sound_right.
 exact  Omega_cEQ_cNN.
 intro z.
 (*
+*)
 change ((stoc x) z) with (IN z x).
 change ((stoc Omega) z) with (IN z Omega).
 *)
@@ -6280,7 +7151,8 @@ Definition less := IN.
 Notation " x < y " := (less x y).
 Check Vide < Vide.
 
-(* Doesn't work!
+(*
+*) Doesn't work!
 Arguments Comp  : simpl nomatch.
 Arguments stoc  : simpl nomatch.
 Arguments Omega : simpl nomatch.
@@ -6356,20 +7228,27 @@ Search Pair.
 apply IN_Pair_right.
 Qed.
 
-(* ex_1_6 *)
-
-(******************************)
+(*
+*) ex_1_6 *)
 
 (*
-(* Kuratowski construction *)
+*)*****************************)
+
+(*
+*)
+(*
+*) Kuratowski construction *)
 Definition OrdPair (x y : Ens) := Pair (Sing x) (Pair x y).
 *)
 (*
+*)
 Type corresponds to the current Universe
 is it possible to define classes in this way?
 *)
-(* Class-ordered pair construction *)
 (*
+*) Class-ordered pair construction *)
+(*
+*)
 remark: Inductive Ens : Type :=
     sup : forall A : Type, (A -> Ens) -> Ens.
 
@@ -6387,6 +7266,7 @@ Definition to_type (E: Ens) : Type :=
   end.
 
 (*
+*)
 Axiom ax: forall (B: Ens), ((to_type B) -> Ens) -> Ens.
 
 Theorem th : forall (B: Ens), ((to_type B) -> Ens) -> Ens.
@@ -6429,15 +7309,18 @@ Proof.
    destruct x.
 Qed.
 
-(* binary union *)
+(*
+*) binary union *)
 Definition bu A B := Union (Pair A B).
 
 
 
-(*Infix Notation "(A ’u.’ B)" := (bu A B).*)
+(*
+*)Infix Notation "(A ’u.’ B)" := (bu A B).*)
 
 
-(*https://coq.inria.fr/doc/v8.13/refman/language/core/inductive.html#recursive-functions-fix*)
+(*
+*)https://coq.inria.fr/doc/v8.13/refman/language/core/inductive.html#recursive-functions-fix*)
 Require Import Coq.Program.Wf.
 
 Fail Program Fixpoint OPair (a b: Ens) {struct b}: Ens :=
@@ -6451,12 +7334,14 @@ Check prod.
 Check @proj1.
 Check @fst.
 
-(* variant of replacement, where the first argument is treated as family/class-function. *)
+(*
+*) variant of replacement, where the first argument is treated as family/class-function. *)
 Axiom replvar : Ens -> Ens -> Ens.
 
 Unset Guard Checking.
 
-(* simultaneous with Cart definition *)
+(*
+*) simultaneous with Cart definition *)
 Program Fixpoint OPair (a b: Ens) {struct b}: Ens :=
    bu (Cart (Sing Zero) a) (Cart (Sing One) b)
 with Cart (a b: Ens) {struct b}: Ens :=
@@ -6475,7 +7360,8 @@ Proof.
 Abort.
 
 
-(* separate definition *)
+(*
+*) separate definition *)
 Reset OPair.
 Program Fixpoint OPair (a b: Ens) {struct b}: Ens :=
   match a, b with
@@ -6520,7 +7406,9 @@ Proof.
    destruct x.
 Qed.
 
-(* (*unfold One,Zero,Sing,Pair,Vide,bu,pi1,Union,Pair,pi1 in H.*)
+(*
+*) (*
+*)unfold One,Zero,Sing,Pair,Vide,bu,pi1,Union,Pair,pi1 in H.*)
  simpl in H.
  unfold OPair in H.
  simpl in H.
@@ -6529,17 +7417,20 @@ Qed.
 Abort.
 *)
 
-(* Timeout 1 Compute (OPair Zero Zero). *)
+(*
+*) Timeout 1 Compute (OPair Zero Zero). *)
 Timeout 1 Eval lazy in (OPair Zero Zero).
 Timeout 1 Eval lazy in (OPair Zero One).
 Timeout 1 Eval lazy in (OPair One Zero).
 Timeout 1 Eval lazy in (OPair One One).
 
-(*HERE!*)
+(*
+*)HERE!*)
 Check Ens_ind.
 Check Ens_rect.
 Check Ens_rect (fun _ => Ens).
 (*
+*)
 Ens_rect
      : forall P : Ens -> Type,
        (forall (A : Type) (e : A -> Ens), (forall a : A, P (e a)) -> P (sup A e)) ->
@@ -6570,7 +7461,8 @@ Set Guard Checking.
 
 Definition OPair_Zero_Zero := Vide.
 
-(*Good! *)
+(*
+*)Good! *)
 Program Fixpoint OPair_Zero (c : Ens) : Ens :=
 match c with
 | sup C h => (sup C (fun c1 => OPair_One (h c1)) )
@@ -6590,13 +7482,15 @@ match c with
 | sup C h => sup _ (fun d => f (h d))
 end.
 
-(* if pair starts with zero then ..., with one then ... *)
+(*
+*) if pair starts with zero then ..., with one then ... *)
 
 Fail
 Program Fixpoint  OPair_Zero (c : Ens) : Ens := bu (img OPair_Zero Zero) (img OPair_One c)
             with  OPair_One  (c : Ens) : Ens := bu (img OPair_Zero One ) (img OPair_One c)
 .
 (*
+*)
 Fail
 Program Fixpoint  OPair_Zero (c : Ens) : Ens := bu (img_OPair_Zero_on_Zero) (img OPair_One c)
             with  OPair_One  (c : Ens) : Ens := bu (img_OPair_Zero_on_One ) (img OPair_One c)
@@ -6611,19 +7505,26 @@ with OPair_Zero_One  := (Sing OPair_Zero_Zero).
 Infix "u" := bu (at level 60, right associativity).
 
 
-Definition img_OPair_Zero_on_Zero := Vide.      (* (img OPair_Zero Zero) === {(0,k)|k in 0}                        =  emptyset *)
-Definition        OPair_Zero_Zero := Vide.      (*      OPair Zero Zero  === (0,0) = {(0,j)|j in 0}u{(1,k)|k in 0} =  emptyset *)
-Definition img_OPair_Zero_on_One  := Sing Vide. (* (img OPair_Zero One)  === {(0,k)|k in 1} = {(0,0)}              = {emptyset}*)
-Definition        OPair_Zero_One  := Sing Vide. (*      OPair Zero One   === (0,1)={(0,k)|k in 0}u{(0,k)|k in 1} = {} u {(0,0)} = {0} = {emptyset} *)
+Definition img_OPair_Zero_on_Zero := Vide.      (*
+*) (img OPair_Zero Zero) === {(0,k)|k in 0}                        =  emptyset *)
+Definition        OPair_Zero_Zero := Vide.      (*
+*)      OPair Zero Zero  === (0,0) = {(0,j)|j in 0}u{(1,k)|k in 0} =  emptyset *)
+Definition img_OPair_Zero_on_One  := Sing Vide. (*
+*) (img OPair_Zero One)  === {(0,k)|k in 1} = {(0,0)}              = {emptyset}*)
+Definition        OPair_Zero_One  := Sing Vide. (*
+*)      OPair Zero One   === (0,1)={(0,k)|k in 0}u{(0,k)|k in 1} = {} u {(0,0)} = {0} = {emptyset} *)
 
 
-Program Fixpoint  OPair_Zero (c : Ens) : Ens :=               (img OPair_One c) (* = (img OPair_Zero   Zero) u (img OPair_One c) *)
-            with  OPair_One  (c : Ens) : Ens := (Sing Vide) u (img OPair_One c) (* = (img_OPair_Zero_on_One) u (img OPair_One c) *)
+Program Fixpoint  OPair_Zero (c : Ens) : Ens :=               (img OPair_One c) (*
+*) = (img OPair_Zero   Zero) u (img OPair_One c) *)
+            with  OPair_One  (c : Ens) : Ens := (Sing Vide) u (img OPair_One c) (*
+*) = (img_OPair_Zero_on_One) u (img OPair_One c) *)
 .
 
 Definition OPair (a b: Ens) : Ens := (img OPair_Zero a) u (img OPair_One b).
 
-(* WIP *)
+(*
+*) WIP *)
 Theorem th2 X : EQ (Zero u X) X.
 Proof.
 apply axExt.
@@ -6735,12 +7636,14 @@ end
 .
 (sup C (fun c1 => OPair_One (h c1)) )
 
-  (*(sup  (fun a1 => OPair_Zero Zero) )
+  (*
+*)(sup  (fun a1 => OPair_Zero Zero) )
 
   bu (sup A (fun a1 => OPair_Zero Zero) )
      (sup B (fun b1 => OPair_One b1) )*)
 
-  (*bu (sup A (fun a1 => OPair_Zero One) )
+  (*
+*)bu (sup A (fun a1 => OPair_Zero One) )
      (sup B (fun b1 => OPair_One c) )*)
 
 Program Fixpoint OPair (a b: Ens) {measure (size a b)}: Ens :=
@@ -6750,6 +7653,7 @@ Program Fixpoint OPair (a b: Ens) {measure (size a b)}: Ens :=
   end
 
 (*
+*)
 Program Fixpoint OPair (p: Ens*Ens) : Ens :=
   match p with
   | (a,b) => (
@@ -6796,17 +7700,21 @@ Fail Next Obligation.
 
 Timeout 1 Eval lazy in (OPair Zero sOmega).
 
-(* {b|(0,b) in p} *)
+(*
+*) {b|(0,b) in p} *)
 
-(* for [a,b] it would be replvar, but here we need something else or not?*)
+(*
+*) for [a,b] it would be replvar, but here we need something else or not?*)
 Definition pr1 (p:Ens) := replvar p Zero.
 
 
-(*Fail Timeout 1 Eval lazy in OPair Zero Zero.*)
+(*
+*)Fail Timeout 1 Eval lazy in OPair Zero Zero.*)
 
 Set Guard Checking.
 Definition size (a b:Ens) := 0.
 (*
+*)
 Fixpoint size (a b: Ens) : nat :=
   match a, b with
   | sup A f, sup B g => (size Zero (f a1))
@@ -6825,7 +7733,8 @@ Check size.
 Next Obligation.
 
 
-(*c (top -> top) (fun x => x) c.*)
+(*
+*)c (top -> top) (fun x => x) c.*)
 
 Proof
 Admitted.
@@ -6842,24 +7751,30 @@ Next Obligation.
 Fail Timeout 1 Eval lazy in c (top -> top) (fun x => x) c.
 
 
-(*assert (ex_1_4  
- pInd_cNN *)
-(* END *)
-
-
-
-(** TRASH SECTION **)
 (*
+*)assert (ex_1_4  
+ pInd_cNN *)
+(*
+*) END *)
+
+
+
+(*
+*)* TRASH SECTION **)
+(*
+*)
 Check 0.
 Add LoadPath "/home/user/0my/GITHUB/VerifiedMathFoundations/library".
-(*From VerifiedMathFoundations.library*)
+(*
+*)From VerifiedMathFoundations.library*)
 Require Export PredicateCalculus.
 Module PredicateCalculusClasses.
 
 
 Section Part_III.
 
-(* First-order logic definitions and derivations *)
+(*
+*) First-order logic definitions and derivations *)
 
 Inductive Fo : Type := 
 | Var : string -> Fo 
@@ -6902,4 +7817,5 @@ Inductive Fo : Type :=
 
  PredicateCalculusClasses.
 *)
-(** END OF TRASH SECTION-**)
+(*
+*)* END OF TRASH SECTION-**)
