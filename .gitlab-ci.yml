@@ -1,3 +1,4 @@
+# This file configures GitLab CI to run the build check for Jech.v
 stages:
   - build
 
