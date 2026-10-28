@@ -13,6 +13,8 @@ The `Jech` repository lacks automated tests. Adding automated tests will ensure 
 
 ## Assigned Zone Model
 
+`mistral/mistral-medium-latest` (via `mistral`)
+
 `opencode/glm-5.3-flash-free` (via `opencode`)
 
 ## Author / Signed by
