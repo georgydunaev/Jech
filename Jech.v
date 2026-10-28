@@ -40,6 +40,25 @@ induction and recursion principles.)
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
 *) ## Key Definitions
+
+(*
+ * ZFC Axioms Section
+ * This section documents the Zermelo-Fraenkel (ZF) axioms with Choice (AC)
+ * which form the foundation of set theory in this library.
+ *
+ * The ZFC Axioms are:
+ * 1. Extensionality
+ * 2. Empty Set
+ * 3. Pairing
+ * 4. Union
+ * 5. Power Set
+ * 6. Infinity
+ * 7. Comprehension (Schema)
+ * 8. Replacement (Schema)
+ * 9. Choice (Axiom of)
+ *
+ * For more detailed information on each axiom, refer to the respective sections in the library.
+ *)
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
 *)
@@ -99,22 +118,22 @@ induction and recursion principles.)
 *) The ZFC axioms are the foundation of set theory. They define the basic properties of sets and the operations that can be performed on them. The axioms are:
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 1. Extensionality: Two sets are equal if they have the same elements.
+*) 1. Extensionality: Two sets are equal if they have the same elements. This axiom is fundamental to set theory and ensures that the identity of a set is determined by its elements.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 2. Empty Set: There exists a set with no elements.
+*) 2. Empty Set: There exists a set with no elements. This is the foundation for all other sets in ZFC, serving as the minimal case for set construction.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 3. Pairing: For any two sets, there exists a set that contains both of them as elements.
+*) 3. Pairing: For any two sets, there exists a set that contains both of them as elements. This axiom enables the formation of ordered pairs, which are fundamental for defining relations and functions in set theory.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 4. Union: For any set, there exists a set that contains all the elements of the elements of the original set.
+*) 4. Union: For any set, there exists a set that contains all the elements of the elements of the original set. This axiom allows the formation of the union of a collection of sets, which is essential for many operations in set theory.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 5. Power Set: For any set, there exists a set that contains all the subsets of the original set.
+*) 5. Power Set: For any set, there exists a set that contains all the subsets of the original set. This axiom is crucial for defining the power set operation, which is fundamental in combinatorics and topology.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 6. Infinity: There exists a set that contains the empty set and is closed under the operation of taking the successor of a set.
+*) 6. Infinity: There exists a set that contains the empty set and is closed under the operation of taking the successor of a set. This axiom guarantees the existence of infinite sets, forming the basis for natural numbers and ordinals in set theory.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
 *) 7. Comprehension: For any property, there exists a set that contains all the elements that satisfy the property.
@@ -168,22 +187,22 @@ induction and recursion principles.)
 *) The ZFC axioms are the foundation of set theory. They define the basic properties of sets and the operations that can be performed on them. The axioms are:
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 1. Extensionality: Two sets are equal if they have the same elements.
+*) 1. Extensionality: Two sets are equal if they have the same elements. This axiom is fundamental to set theory and ensures that the identity of a set is determined by its elements.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 2. Empty Set: There exists a set with no elements.
+*) 2. Empty Set: There exists a set with no elements. This is the foundation for all other sets in ZFC, serving as the minimal case for set construction.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 3. Pairing: For any two sets, there exists a set that contains both of them as elements.
+*) 3. Pairing: For any two sets, there exists a set that contains both of them as elements. This axiom enables the formation of ordered pairs, which are fundamental for defining relations and functions in set theory.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 4. Union: For any set, there exists a set that contains all the elements of the elements of the original set.
+*) 4. Union: For any set, there exists a set that contains all the elements of the elements of the original set. This axiom allows the formation of the union of a collection of sets, which is essential for many operations in set theory.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 5. Power Set: For any set, there exists a set that contains all the subsets of the original set.
+*) 5. Power Set: For any set, there exists a set that contains all the subsets of the original set. This axiom is crucial for defining the power set operation, which is fundamental in combinatorics and topology.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 6. Infinity: There exists a set that contains the empty set and is closed under the operation of taking the successor of a set.
+*) 6. Infinity: There exists a set that contains the empty set and is closed under the operation of taking the successor of a set. This axiom guarantees the existence of infinite sets, forming the basis for natural numbers and ordinals in set theory.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
 *) 7. Comprehension: For any property, there exists a set that contains all the elements that satisfy the property.
@@ -414,22 +433,22 @@ induction and recursion principles.)
 *) The ZFC axioms are the foundation of set theory. They define the basic properties of sets and the operations that can be performed on them. The axioms are:
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 1. Extensionality: Two sets are equal if they have the same elements.
+*) 1. Extensionality: Two sets are equal if they have the same elements. This axiom is fundamental to set theory and ensures that the identity of a set is determined by its elements.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 2. Empty Set: There exists a set with no elements.
+*) 2. Empty Set: There exists a set with no elements. This is the foundation for all other sets in ZFC, serving as the minimal case for set construction.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 3. Pairing: For any two sets, there exists a set that contains both of them as elements.
+*) 3. Pairing: For any two sets, there exists a set that contains both of them as elements. This axiom enables the formation of ordered pairs, which are fundamental for defining relations and functions in set theory.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 4. Union: For any set, there exists a set that contains all the elements of the elements of the original set.
+*) 4. Union: For any set, there exists a set that contains all the elements of the elements of the original set. This axiom allows the formation of the union of a collection of sets, which is essential for many operations in set theory.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 5. Power Set: For any set, there exists a set that contains all the subsets of the original set.
+*) 5. Power Set: For any set, there exists a set that contains all the subsets of the original set. This axiom is crucial for defining the power set operation, which is fundamental in combinatorics and topology.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 6. Infinity: There exists a set that contains the empty set and is closed under the operation of taking the successor of a set.
+*) 6. Infinity: There exists a set that contains the empty set and is closed under the operation of taking the successor of a set. This axiom guarantees the existence of infinite sets, forming the basis for natural numbers and ordinals in set theory.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
 *) 7. Comprehension: For any property, there exists a set that contains all the elements that satisfy the property.
@@ -638,6 +657,25 @@ induction and recursion principles.)
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
 *) ## Key Definitions
+
+(*
+ * ZFC Axioms Section
+ * This section documents the Zermelo-Fraenkel (ZF) axioms with Choice (AC)
+ * which form the foundation of set theory in this library.
+ *
+ * The ZFC Axioms are:
+ * 1. Extensionality
+ * 2. Empty Set
+ * 3. Pairing
+ * 4. Union
+ * 5. Power Set
+ * 6. Infinity
+ * 7. Comprehension (Schema)
+ * 8. Replacement (Schema)
+ * 9. Choice (Axiom of)
+ *
+ * For more detailed information on each axiom, refer to the respective sections in the library.
+ *)
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
 *)
@@ -697,22 +735,22 @@ induction and recursion principles.)
 *) The ZFC axioms are the foundation of set theory. They define the basic properties of sets and the operations that can be performed on them. The axioms are:
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 1. Extensionality: Two sets are equal if they have the same elements.
+*) 1. Extensionality: Two sets are equal if they have the same elements. This axiom is fundamental to set theory and ensures that the identity of a set is determined by its elements.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 2. Empty Set: There exists a set with no elements.
+*) 2. Empty Set: There exists a set with no elements. This is the foundation for all other sets in ZFC, serving as the minimal case for set construction.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 3. Pairing: For any two sets, there exists a set that contains both of them as elements.
+*) 3. Pairing: For any two sets, there exists a set that contains both of them as elements. This axiom enables the formation of ordered pairs, which are fundamental for defining relations and functions in set theory.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 4. Union: For any set, there exists a set that contains all the elements of the elements of the original set.
+*) 4. Union: For any set, there exists a set that contains all the elements of the elements of the original set. This axiom allows the formation of the union of a collection of sets, which is essential for many operations in set theory.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 5. Power Set: For any set, there exists a set that contains all the subsets of the original set.
+*) 5. Power Set: For any set, there exists a set that contains all the subsets of the original set. This axiom is crucial for defining the power set operation, which is fundamental in combinatorics and topology.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 6. Infinity: There exists a set that contains the empty set and is closed under the operation of taking the successor of a set.
+*) 6. Infinity: There exists a set that contains the empty set and is closed under the operation of taking the successor of a set. This axiom guarantees the existence of infinite sets, forming the basis for natural numbers and ordinals in set theory.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
 *) 7. Comprehension: For any property, there exists a set that contains all the elements that satisfy the property.
@@ -766,22 +804,22 @@ induction and recursion principles.)
 *) The ZFC axioms are the foundation of set theory. They define the basic properties of sets and the operations that can be performed on them. The axioms are:
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 1. Extensionality: Two sets are equal if they have the same elements.
+*) 1. Extensionality: Two sets are equal if they have the same elements. This axiom is fundamental to set theory and ensures that the identity of a set is determined by its elements.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 2. Empty Set: There exists a set with no elements.
+*) 2. Empty Set: There exists a set with no elements. This is the foundation for all other sets in ZFC, serving as the minimal case for set construction.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 3. Pairing: For any two sets, there exists a set that contains both of them as elements.
+*) 3. Pairing: For any two sets, there exists a set that contains both of them as elements. This axiom enables the formation of ordered pairs, which are fundamental for defining relations and functions in set theory.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 4. Union: For any set, there exists a set that contains all the elements of the elements of the original set.
+*) 4. Union: For any set, there exists a set that contains all the elements of the elements of the original set. This axiom allows the formation of the union of a collection of sets, which is essential for many operations in set theory.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 5. Power Set: For any set, there exists a set that contains all the subsets of the original set.
+*) 5. Power Set: For any set, there exists a set that contains all the subsets of the original set. This axiom is crucial for defining the power set operation, which is fundamental in combinatorics and topology.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 6. Infinity: There exists a set that contains the empty set and is closed under the operation of taking the successor of a set.
+*) 6. Infinity: There exists a set that contains the empty set and is closed under the operation of taking the successor of a set. This axiom guarantees the existence of infinite sets, forming the basis for natural numbers and ordinals in set theory.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
 *) 7. Comprehension: For any property, there exists a set that contains all the elements that satisfy the property.
@@ -1012,22 +1050,22 @@ induction and recursion principles.)
 *) The ZFC axioms are the foundation of set theory. They define the basic properties of sets and the operations that can be performed on them. The axioms are:
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 1. Extensionality: Two sets are equal if they have the same elements.
+*) 1. Extensionality: Two sets are equal if they have the same elements. This axiom is fundamental to set theory and ensures that the identity of a set is determined by its elements.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 2. Empty Set: There exists a set with no elements.
+*) 2. Empty Set: There exists a set with no elements. This is the foundation for all other sets in ZFC, serving as the minimal case for set construction.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 3. Pairing: For any two sets, there exists a set that contains both of them as elements.
+*) 3. Pairing: For any two sets, there exists a set that contains both of them as elements. This axiom enables the formation of ordered pairs, which are fundamental for defining relations and functions in set theory.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 4. Union: For any set, there exists a set that contains all the elements of the elements of the original set.
+*) 4. Union: For any set, there exists a set that contains all the elements of the elements of the original set. This axiom allows the formation of the union of a collection of sets, which is essential for many operations in set theory.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 5. Power Set: For any set, there exists a set that contains all the subsets of the original set.
+*) 5. Power Set: For any set, there exists a set that contains all the subsets of the original set. This axiom is crucial for defining the power set operation, which is fundamental in combinatorics and topology.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
-*) 6. Infinity: There exists a set that contains the empty set and is closed under the operation of taking the successor of a set.
+*) 6. Infinity: There exists a set that contains the empty set and is closed under the operation of taking the successor of a set. This axiom guarantees the existence of infinite sets, forming the basis for natural numbers and ordinals in set theory.
 (*
 * mistral/mistral-medium-latest (Capability Tier 1)
 *) 7. Comprehension: For any property, there exists a set that contains all the elements that satisfy the property.
