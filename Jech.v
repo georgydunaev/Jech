@@ -4,7 +4,7 @@
 
 (* Example Section *)
 (* Example 1: Using the Jech Library to Prove a Theorem *)
-Require Import Jech.Theorems.
+Require Import Jech.
 Theorem example_theorem : forall x, P x -> Q x.
 Proof.
   intros x H.
