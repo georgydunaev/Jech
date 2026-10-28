@@ -36,7 +36,21 @@ def main():
 # It takes a string representing the formula as an argument.
 # The formula string can include logical operators, quantifiers, and predicates.
 # For example, "∀x P(x) → P(a)" represents a formula stating that for all x, if P(x) is true, then P(a) is true.
+# Creates a formula and prints it to the console
+# This demonstrates how to create a formula using the Formula class
+# and print it to the console.
+# The Formula class is used to represent a first-order logic formula.
+# It takes a string representing the formula as an argument.
+# The formula string can include logical operators, quantifiers, and predicates.
+# For example, "∀x P(x) → P(a)" represents a formula stating that for all x, if P(x) is true, then P(a) is true.
     # Example usage of the Formula class
+# This demonstrates how to create a formula using the Formula class
+# and print it to the console.
+# The Formula class is used to represent a first-order logic formula.
+# It takes a string representing the formula as an argument.
+# The formula string can include logical operators, quantifiers, and predicates.
+# For example, "∀x P(x) → P(a)" represents a formula stating that for all x, if P(x) is true, then P(a) is true.
+# Creates a formula and prints it to the console
     # Creates a formula and prints it to the console
     formula = Formula("∀x P(x) → P(a)")
     print(f"Formula: {formula}")
