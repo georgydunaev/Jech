@@ -6,7 +6,7 @@ This library contains formalizations of key set theory concepts and first-order 
 
 ### Axiom of Infinity (axInfty)
 
-The Axiom of Infinity states that there exists a set (omega) that is inductive and contains the empty set.
+The Axiom of Infinity states that there exists a set (omega) that is inductive and contains the empty set. An inductive set is a set that contains the empty set and is closed under the successor operation. The Axiom of Infinity ensures the existence of such a set, which is often referred to as the set of natural numbers.
 
 #### Example
 
@@ -21,11 +21,17 @@ assert omega.is_inductive()
 assert omega.contains_empty_set()
 ```
 
+#### Usage Instructions
+
+1. Import the `axInfty` function from the `jech` module.
+2. Call the `axInfty` function to obtain the set omega.
+3. Verify that omega is inductive and contains the empty set using the provided assertions.
+
 ### First-Order Logic Syntax
 
 #### Variables
 
-Variables are defined as strings.
+Variables are fundamental components in first-order logic. They are used to represent elements of sets and are typically denoted by lowercase letters such as x, y, and z. In the Jech library, variables are defined as strings.
 
 #### Example
 
@@ -39,9 +45,15 @@ x = Variable('x')
 assert x.name == 'x'
 ```
 
+#### Usage Instructions
+
+1. Import the `Variable` class from the `jech` module.
+2. Create a variable by instantiating the `Variable` class with a string representing the variable name.
+3. Verify the variable by accessing its `name` attribute.
+
 #### Terms
 
-Terms are defined as either variable terms or function terms.
+Terms are expressions that represent elements of a domain. In first-order logic, terms can be either variable terms or function terms. Variable terms are simply variables, while function terms are formed by applying a function symbol to a list of terms.
 
 #### Example
 
@@ -59,9 +71,16 @@ assert x.is_variable_term()
 assert f.is_function_term()
 ```
 
+#### Usage Instructions
+
+1. Import the `VariableTerm` and `FunctionTerm` classes from the `jech` module.
+2. Create a variable term by instantiating the `VariableTerm` class with a string representing the variable name.
+3. Create a function term by instantiating the `FunctionTerm` class with a string representing the function symbol and a list of terms representing the arguments.
+4. Verify the terms using the provided assertions.
+
 #### Formulas
 
-Formulas are defined as logical expressions.
+Formulas are logical expressions that can be either true or false. In first-order logic, formulas are built using logical connectives, quantifiers, and predicates. They are used to express statements about the elements of a domain.
 
 #### Example
 
@@ -74,6 +93,12 @@ formula = Formula('P(x)')
 # Verify the formula
 assert formula.is_formula()
 ```
+
+#### Usage Instructions
+
+1. Import the `Formula` class from the `jech` module.
+2. Create a formula by instantiating the `Formula` class with a string representing the logical expression.
+3. Verify the formula using the provided assertion.
 
 ### First-Order Logic Axioms
 
