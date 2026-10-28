@@ -38,21 +38,36 @@ Lemma ex_1_6_lem2 : forall y, R y -> S y.
  * Qed.
  *)
 
-Lemma ex_1_6_lem3 : ...
+Lemma ex_1_6_lem3 : forall z, P z -> Q z.
+  Proof.
+  intros z H.
+  apply R in H.
+  apply S.
+  Qed.
 
  * Proof:
  * ...
  * Qed.
  *)
 
-Lemma ex_1_6_lem4 : ...
+Lemma ex_1_6_lem4 : forall w, R w -> S w.
+  Proof.
+  intros w H.
+  apply T in H.
+  apply U.
+  Qed.
 
  * Proof:
  * ...
  * Qed.
  *)
 
-Lemma ex_1_6_lem5 : ...
+Lemma ex_1_6_lem5 : forall v, P v -> Q v.
+  Proof.
+  intros v H.
+  apply R in H.
+  apply S.
+  Qed.
 
  * Proof:
  * ...
