@@ -4,6 +4,40 @@
 
 ### Reporting Issues
 
+If you encounter any issues or bugs, please report them by creating a new issue in the GitHub repository. Provide as much detail as possible, including steps to reproduce the issue and any relevant error messages.
+
+### Creating Pull Requests
+
+1. Fork the repository and create a new branch for your changes.
+2. Make your changes and ensure they follow the code style guidelines.
+3. Write tests to cover your changes.
+4. Run the test suite to ensure all tests pass.
+5. Submit a pull request with a clear description of your changes.
+
+### Code Style Guidelines
+
+- Follow the existing code style and conventions used in the project.
+- Use meaningful variable and function names.
+- Write clear and concise comments to explain complex logic.
+- Ensure your code is well-documented.
+
+### Running Tests
+
+To run the test suite, use the following command:
+
+```bash
+python -m pytest
+```
+
+## Code of Conduct
+
+We expect all contributors to adhere to the [Code of Conduct](CODE_OF_CONDUCT.md). Please read and follow it to ensure a positive and inclusive environment for everyone.
+
+
+## How to Contribute
+
+### Reporting Issues
+
 1. **Check Existing Issues**: Before creating a new issue, please check if it has already been reported.
 2. **Create a New Issue**: If the issue is not already reported, create a new issue in the GitHub repository.
 3. **Provide Details**: Include a clear and concise description of the issue, steps to reproduce, and any relevant screenshots or code snippets.
