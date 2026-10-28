@@ -29,3 +29,7 @@ The Jech library provides several functions for working with first-order logic. 
 ## Examples
 
 The Jech library includes several examples demonstrating the usage of the classes and functions. These examples can be found in the `examples` directory.
+
+## Main Function
+
+The `main` function in the `main.py` file demonstrates the usage of the `Formula`, `Model`, and `Proof` classes. It creates instances of these classes and prints them to the console.

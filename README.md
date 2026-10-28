@@ -1,29 +1,39 @@
-# Jech
+# Jech Library Documentation
 
-This repository contains the implementation and proofs related to Jech's model of set theory. The main components include:
+This library contains formalizations of key set theory concepts and first-order logic.
 
-## Files
+## Key Definitions and Theorems
 
-- `Jech.v`: The main Coq implementation of Jech's model.
-- `Jech_temp.v`: Temporary file for experimental changes.
-- `Part_III.v`: Implementation of Part III of Jech's model.
-- `axInfty.ML`: ML file for the axiom of infinity.
-- `section_ex_1_6.ML`: ML file for section example 1.6.
-- `main.py`: Python script for running the proofs.
-- `verify.py`: Python script for verifying the proofs.
+### Axiom of Infinity (axInfty)
 
-## Directories
+The Axiom of Infinity states that there exists a set (omega) that is inductive and contains the empty set.
 
-- `examples`: Contains example proofs and implementations.
-- `proofs`: Contains detailed proofs and theorems.
-- `tickets`: Contains tickets for tasks and improvements.
+### First-Order Logic Syntax
+
+#### Variables
+
+Variables are defined as strings.
+
+#### Terms
+
+Terms are defined as either variable terms or function terms.
+
+#### Formulas
+
+Formulas are defined as logical expressions.
+
+### First-Order Logic Axioms
+
+The axioms of first-order logic include the axioms of equality, implication, conjunction, disjunction, negation, and universal quantification.
+
+### First-Order Logic Inference Rules
+
+The inference rules of first-order logic include modus ponens, generalization, and introduction of logical connectives.
 
 ## Getting Started
 
-1. Install the required dependencies using the `INSTALL.md` file.
-2. Run the proofs using the `main.py` script.
-3. Verify the proofs using the `verify.py` script.
+To use this library, you can import the required modules and apply the definitions and theorems in your proofs.
 
-## Contributing
+## License
 
-Please refer to the `CONTRIBUTING.md` file for guidelines on how to contribute to this repository.
+This library is licensed under the MIT License.
