@@ -1,114 +1,29 @@
-## Key Definitions and Theorems
+# Jech
 
-### Set Operations
+This repository contains the implementation and proofs related to Jech's model of set theory. The main components include:
 
-- **Definition**: `my_set := {1, 2, 3}`
-  - **Description**: Defines a set containing the elements 1, 2, and 3.
-  - **Example**:
-    ```coq
-    Definition my_set := {1, 2, 3}.
-    Compute in 1 my_set. (* Returns true *)
-    Compute in 4 my_set. (* Returns false *)
-    ```
+## Files
 
-### Membership Notation
+- `Jech.v`: The main Coq implementation of Jech's model.
+- `Jech_temp.v`: Temporary file for experimental changes.
+- `Part_III.v`: Implementation of Part III of Jech's model.
+- `axInfty.ML`: ML file for the axiom of infinity.
+- `section_ex_1_6.ML`: ML file for section example 1.6.
+- `main.py`: Python script for running the proofs.
+- `verify.py`: Python script for verifying the proofs.
 
-- **Notation**: `x ∈ y`
-  - **Description**: Checks if an element `x` is a member of set `y`.
-  - **Example**:
-    ```coq
-    Notation "x ∈ y" := (tin x y) (at level 50).
-    ```
-- **Definition**: `my_set := {1, 2, 3}`
-  - **Description**: Defines a set containing the elements 1, 2, and 3.
-  - **Example**:
-    ```coq
-    Definition my_set := {1, 2, 3}.
-    Compute in 1 my_set. (* Returns true *)
-    Compute in 4 my_set. (* Returns false *)
-    ```
+## Directories
 
-### Membership Notation
-- **Notation**: `x ∈ y`
-  - **Description**: Checks if an element `x` is a member of set `y`.
-  - **Example**:
-    ```coq
-    Notation "x ∈ y" := (tin x y) (at level 50).
-    ```
+- `examples`: Contains example proofs and implementations.
+- `proofs`: Contains detailed proofs and theorems.
+- `tickets`: Contains tickets for tasks and improvements.
 
-### Singleton Set
+## Getting Started
 
-- **Notation**: `{ x }``
-  - **Description**: Creates a singleton set containing the element `x`.
-  - **Example**:
-    ```coq
-    Notation "{ x }`" := (Sing x).
-    ```
+1. Install the required dependencies using the `INSTALL.md` file.
+2. Run the proofs using the `main.py` script.
+3. Verify the proofs using the `verify.py` script.
 
-### Theorem Example
+## Contributing
 
-- **Theorem**: `t1 (x:Ens) : x ∈ { x }``
-  - **Description**: Proves that an element `x` is a member of the singleton set `{ x }``.
-  - **Proof**:
-    ```coq
-    Theorem t1 (x:Ens) : x ∈ { x }`.
-    Proof.
-      unfold tin, sIN.
-      unfold Sing.
-      unfold Paire.
-      simpl.
-      exists true.
-      simpl.
-      apply EQ_refl.
-    Defined.
-    ```
-- **Notation**: `{ x }``
-  - **Description**: Creates a singleton set containing the element `x`.
-  - **Example**:
-    ```coq
-    Notation "{ x }`" := (Sing x).
-    ```
-
-### Theorem Example
-- **Theorem**: `t1 (x:Ens) : x ∈ { x }``
-  - **Description**: Proves that an element `x` is a member of the singleton set `{ x }``.
-  - **Proof**:
-    ```coq
-    Theorem t1 (x:Ens) : x ∈ { x }`.
-    Proof.
-      unfold tin, sIN.
-      unfold Sing.
-      unfold Paire.
-      simpl.
-      exists true.
-      simpl.
-      apply EQ_refl.
-    Defined.
-    ```
-
-### Usage Instructions
-1. **Import the Jech Library**:
-   ```coq
-   Require Import Jech.
-   ```
-2. **Define Sets**:
-   ```coq
-   Definition my_set := {1, 2, 3}.
-   ```
-3. **Check Membership**:
-   ```coq
-   Compute in 1 my_set.
-   ```
-4. **Prove Theorems**:
-   ```coq
-   Theorem t1 (x:Ens) : x ∈ { x }`.
-   Proof.
-     unfold tin, sIN.
-     unfold Sing.
-     unfold Paire.
-     simpl.
-     exists true.
-     simpl.
-     apply EQ_refl.
-   Defined.
-   ```
+Please refer to the `CONTRIBUTING.md` file for guidelines on how to contribute to this repository.
