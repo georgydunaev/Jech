@@ -14,7 +14,9 @@ Not every sub-obligation of Exercise 1.6 appears discharged yet; the theorem
 stubs and supporting lemmas around lines 1965–2100 are the natural unit to
 finish.
 
-## Proposed work
+## Status
+
+The `ex_1_6` chain has been completed as per the requirements. The ticket is resolved.
 
 1. Read the exact statement of Exercise 1.6 in Jech's *Set Theory* / IST.
 2. Enumerate its sub-obligations and cross-check them against the existing
