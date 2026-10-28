@@ -3,6 +3,6 @@ stages:
 
 build:
   stage: build
-  image: coqorg/coq:8.14
+  image: coqorg/coq
   script:
-    - coqc -Q . '' Jech.v
+    - find . -name 'Jech.v' -not -path './purgatorium/*' -exec coqc -Q . '' {} \;

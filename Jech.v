@@ -6,8 +6,8 @@ to increase readability. (IMHO, it is much easier to read
 Gallina's "match .. end" notation rather than discover 
 induction and recursion principles.)
 *)
-(* IST = "Introduction to Set Theory".(K.Hrbacek, T.Jech)
-(*
+(* IST = "Introduction to Set Theory".(K.Hrbacek, T.Jech) *)
+
 (* =============================================
 (* Jech Library Documentation
 (* =============================================
