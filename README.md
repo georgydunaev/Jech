@@ -41,6 +41,263 @@ Example derivation:
 
 ## Key Definitions
 
+### Formula
+
+A `Formula` is a syntactically valid expression in first-order logic. It is defined as follows:
+
+```coq
+Definition Formula : Type := ...
+```
+
+**Example Usage:**
+
+```coq
+Example formula_example : Formula := ...
+```
+
+### Model
+
+A `Model` is a structure that interprets the non-logical symbols of a language. It is defined as follows:
+
+```coq
+Definition Model : Type := ...
+```
+
+**Example Usage:**
+
+```coq
+Example model_example : Model := ...
+```
+
+### Proof
+
+A `Proof` is a sequence of formulas that follows the rules of inference. It is defined as follows:
+
+```coq
+Definition Proof : Type := ...
+```
+
+**Example Usage:**
+
+```coq
+Example proof_example : Proof := ...
+```
+
+### p (PROPERTY)
+
+A `PROPERTY` is a collection of sets that share a common characteristic. It is defined as follows:
+
+```coq
+Definition p : Type := ...
+```
+
+**Example Usage:**
+
+```coq
+Example property_example : p := ...
+```
+
+### s (SET)
+
+A `SET` is a collection of distinct objects, considered as an object in its own right. It is defined as follows:
+
+```coq
+Definition s : Type := ...
+```
+
+**Example Usage:**
+
+```coq
+Example set_example : s := ...
+```
+
+### c (CLASS)
+
+A `CLASS` is a collection of sets that is too large to be considered a set. It is defined as follows:
+
+```coq
+Definition c : Type := ...
+```
+
+**Example Usage:**
+
+```coq
+Example class_example : c := ...
+```
+
+## Key Theorems
+
+### Completeness Theorem
+
+The Completeness Theorem states that a formula is provable in first-order logic if and only if it is true in every model. It is defined as follows:
+
+```coq
+Theorem completeness_theorem : forall (F : Formula), provable F <-> forall (M : Model), M |= F.
+```
+
+**Example Usage:**
+
+```coq
+Example completeness_example : completeness_theorem := ...
+```
+
+### Zorn's Lemma
+
+Zorn's Lemma states that a partial order in which every chain has an upper bound contains a maximal element. It is defined as follows:
+
+```coq
+Theorem zorns_lemma : forall (P : Type) (R : P -> P -> Prop), partial_order R -> forall (C : set P), chain R C -> exists (M : P), maximal_element R M.
+```
+
+**Example Usage:**
+
+```coq
+Example zorns_lemma_example : zorns_lemma := ...
+```
+
+### Axiom of Choice
+
+The Axiom of Choice states that for every non-empty set of non-empty sets, there exists a function that selects exactly one element from each set. It is defined as follows:
+
+```coq
+Axiom axiom_of_choice : forall (X : Type) (Y : X -> Type), (forall x, nonempty (Y x)) -> exists (f : forall x, Y x), forall x, f x ∈ Y x.
+```
+
+**Example Usage:**
+
+```coq
+Example axiom_of_choice_example : axiom_of_choice := ...
+```
+
+### Well-Ordering Theorem
+
+The Well-Ordering Theorem states that every set can be well-ordered. It is defined as follows:
+
+```coq
+Theorem well_ordering_theorem : forall (X : Type), exists (R : X -> X -> Prop), well_order R.
+```
+
+**Example Usage:**
+
+```coq
+Example well_ordering_example : well_ordering_theorem := ...
+```
+
+
+### Completeness Theorem
+
+The Completeness Theorem states that a formula is provable in first-order logic if and only if it is true in every model. It is defined as follows:
+
+```coq
+Theorem completeness_theorem : forall (F : Formula), provable F <-> forall (M : Model), M |= F.
+```
+
+**Example Usage:**
+
+```coq
+Example completeness_example : completeness_theorem := ...
+```
+
+### Other Key Theorems
+
+- **Zorn's Lemma**: A partial order in which every chain has an upper bound contains a maximal element.
+- **Axiom of Choice**: For every non-empty set of non-empty sets, there exists a function that selects exactly one element from each set.
+- **Well-Ordering Theorem**: Every set can be well-ordered.
+
+**Example Usage:**
+
+```coq
+Example zorns_lemma_example : ...
+Example axiom_of_choice_example : ...
+Example well_ordering_example : ...
+```
+
+
+### Formula
+
+A `Formula` is a syntactically valid expression in first-order logic. It is defined as follows:
+
+```coq
+Definition Formula : Type := ...
+```
+
+**Example Usage:**
+
+```coq
+Example formula_example : Formula := ...
+```
+
+### Model
+
+A `Model` is a structure that interprets the non-logical symbols of a language. It is defined as follows:
+
+```coq
+Definition Model : Type := ...
+```
+
+**Example Usage:**
+
+```coq
+Example model_example : Model := ...
+```
+
+### Proof
+
+A `Proof` is a sequence of formulas that follows the rules of inference. It is defined as follows:
+
+```coq
+Definition Proof : Type := ...
+```
+
+**Example Usage:**
+
+```coq
+Example proof_example : Proof := ...
+```
+
+### p (PROPERTY)
+
+A `PROPERTY` is a collection of sets that share a common characteristic. It is defined as follows:
+
+```coq
+Definition p : Type := ...
+```
+
+**Example Usage:**
+
+```coq
+Example property_example : p := ...
+```
+
+### s (SET)
+
+A `SET` is a collection of distinct objects, considered as an object in its own right. It is defined as follows:
+
+```coq
+Definition s : Type := ...
+```
+
+**Example Usage:**
+
+```coq
+Example set_example : s := ...
+```
+
+### c (CLASS)
+
+A `CLASS` is a collection of sets that is too large to be considered a set. It is defined as follows:
+
+```coq
+Definition c : Type := ...
+```
+
+**Example Usage:**
+
+```coq
+Example class_example : c := ...
+```
+
+
 - `p`: PROPERTY - A property is a collection of sets that share a common characteristic. Properties are used to define classes and other constructs in set theory.
 - `s`: SET - A set is a collection of distinct objects, considered as an object in its own right. Sets are the fundamental building blocks of set theory.
 - `c`: CLASS - A class is a collection of sets that is too large to be considered a set. Classes are used to avoid the paradoxes associated with the naive theory of sets.
