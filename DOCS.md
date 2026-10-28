@@ -22,6 +22,21 @@ The library is divided into several parts:
 
 ## Key Definitions
 
+This section defines the basic concepts of set theory, including:
+
+- Sets and elements
+- Subsets and supersets
+- Cartesian products
+- Power sets
+- Unions and intersections
+- Functions and relations
+- Equivalence relations and partitions
+- Orderings and well-orderings
+- Cardinal numbers and ordinal numbers
+- Axioms of ZFC (Zermelo-Fraenkel set theory with the Axiom of Choice)
+
+The definitions are based on standard set theory notation and follow the conventions of Jech's "Set Theory" book.
+
 - `p`: PROPERTY
 - `s`: SET
 - `c`: CLASS

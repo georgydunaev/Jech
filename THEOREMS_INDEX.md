@@ -2,6 +2,25 @@
 
 ## Part I: ZFC Axioms and Basic Definitions
 
+### Key Definitions
+
+This section defines the basic concepts of set theory, including:
+
+- Sets and elements
+- Subsets and supersets
+- Cartesian products
+- Power sets
+- Unions and intersections
+- Functions and relations
+- Equivalence relations and partitions
+- Orderings and well-orderings
+- Cardinal numbers and ordinal numbers
+- Axioms of ZFC (Zermelo-Fraenkel set theory with the Axiom of Choice)
+
+The definitions are based on standard set theory notation and follow the conventions of Jech's "Set Theory" book.
+
+## Part I: ZFC Axioms and Basic Definitions
+
 1. **Axiom of Extensionality**: Two sets are equal if they have the same elements.
 2. **Axiom of Pairing**: For any two sets, there exists a set that contains both of them.
 3. **Axiom of Union**: For any collection of sets, there exists a set that contains all the elements of the sets in the collection.
