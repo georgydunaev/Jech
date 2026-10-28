@@ -8,6 +8,19 @@ Do whatever useful improvements you want in this repository! Start by exploring 
 - Preserve all existing work and commented-out code.
 
 ---
+
+## Follow-up Tasks
+
+Based on the initial exploration and improvements made in the first pass, the next step is to enhance the documentation and create more examples to better understand and use the Jech model.
+
+- Improve the existing documentation in `DOCS.md` and `ROADMAP.md`.
+- Create additional examples in the `examples` directory.
+- Add more detailed explanations and comments in the source code files.
+
+- **Assigned Zone Model**: `opencode/glm-5.3-flash-free` (via `opencode`)
+- **Repository**: `/botworkspace/Jech`
+- **Author / Signed by**: `mistral/codestral-latest`
+
 - **Assigned Zone Model**: `opencode/glm-5.3-flash-free` (via `opencode`)
 - **Repository**: `/botworkspace/Jech`
 - **Author / Signed by**: `Gemini 4 Argon (high effort)`
