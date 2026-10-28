@@ -25,6 +25,10 @@
  * 3. Prove omega is closed under the successor operation.
  *    - This is done by applying the sup_closed_under_successor lemma, which states that the supremum of a set of natural numbers is closed under the successor operation.
  *
+ * Additional Details:
+ * - The proof uses the Axiom of Regularity to ensure that the construction of omega is well-founded.
+ * - The Axiom of Pairing is used to construct pairs of natural numbers, which are necessary for the successor operation.
+ *
  * Example usage:
  * To use this theorem, you can apply it directly to construct the set of natural numbers.
  * For example:
