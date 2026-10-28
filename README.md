@@ -102,7 +102,7 @@ assert formula.is_formula()
 
 ### First-Order Logic Axioms
 
-The axioms of first-order logic include the axioms of equality, implication, conjunction, disjunction, negation, and universal quantification.
+The axioms of first-order logic provide the foundational rules for logical reasoning. They include the axioms of equality, implication, conjunction, disjunction, negation, and universal quantification. These axioms are essential for deriving logical consequences and proving theorems.
 
 #### Example
 
@@ -116,9 +116,15 @@ axiom = Axiom('equality')
 assert axiom.is_axiom()
 ```
 
+#### Usage Instructions
+
+1. Import the `Axiom` class from the `jech` module.
+2. Create an axiom by instantiating the `Axiom` class with a string representing the type of axiom (e.g., 'equality', 'implication').
+3. Verify the axiom using the provided assertion.
+
 ### First-Order Logic Inference Rules
 
-The inference rules of first-order logic include modus ponens, generalization, and introduction of logical connectives.
+The inference rules of first-order logic provide the mechanisms for deriving new formulas from existing ones. They include modus ponens, generalization, and introduction of logical connectives. These rules are essential for constructing proofs and logical arguments.
 
 #### Example
 
@@ -131,6 +137,18 @@ rule = InferenceRule('modus_ponens')
 # Verify the inference rule
 assert rule.is_inference_rule()
 ```
+
+#### Usage Instructions
+
+1. Import the `InferenceRule` class from the `jech` module.
+2. Create an inference rule by instantiating the `InferenceRule` class with a string representing the type of inference rule (e.g., 'modus_ponens', 'generalization').
+3. Verify the inference rule using the provided assertion.
+
+## Conclusion
+
+The Jech library provides a comprehensive formalization of key set theory concepts and first-order logic. It includes definitions for sets, functions, relations, and logical expressions, along with axioms and inference rules. The library is designed to support formal reasoning and theorem proving in mathematical logic.
+
+To get started with the Jech library, import the necessary classes and functions from the `jech` module, create instances of the relevant objects, and use the provided methods to verify and manipulate these objects. The library's documentation provides detailed examples and usage instructions for each component.
 
 ## Getting Started
 
