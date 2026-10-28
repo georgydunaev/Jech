@@ -30,7 +30,7 @@ The library is divided into several parts:
 
 ## Exercises
 
-- `snis`: 
+- `snis`:
 - `ex_1_2`, `ex_1_2'`, `ex_1_3''`: ex.1.2
 - `ex_1_3`: ex.1.3
 - `ex_1_4`: ex.1.4

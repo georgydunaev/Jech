@@ -11,6 +11,27 @@ induction and recursion principles.)
 (* =============================================
 (* Jech Library Documentation
 (* =============================================
+(^
+(* ## Overview
+(^
+(* This library is a remake and extension of the `zfc` library, with a focus on simplifying proofs and increasing readability. It covers various parts of set theory, including the ZFC axioms, exercises from Jech's "Set Theory" book, and experiments with classes and many theorems about them.
+(^
+(* ## Key Definitions
+(^
+(* - `p`: PROPERTY
+(* - `s`: SET
+(* - `c`: CLASS
+(* - `k`: CONGLOMERATE
+(* - `mc`: CLASS from Metamath set.mm
+(^
+(* ## Exercises
+(^
+(* - `snis`:
+(* - `ex_1_2`, `ex_1_2'`, `ex_1_3''`: ex.1.2
+(* - `ex_1_3`: ex.1.3
+(* - `ex_1_4`: ex.1.4
+(* - `ex_1_5`: ex.1.5
+(* - `ex_1_6`: ex.1.6 (completed)
 (*
 (* ## Overview
 (*
