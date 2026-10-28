@@ -24,6 +24,16 @@
 - Use meaningful variable and function names.
 - Write clear and concise comments to explain complex logic.
 - Ensure your code is well-documented.
+- Use type hints to improve code readability and maintainability.
+- Follow the PEP 8 style guide for Python code.
+- Use docstrings to document functions, classes, and modules.
+- Keep lines of code within 79 characters to improve readability.
+
+
+- Follow the existing code style and conventions used in the project.
+- Use meaningful variable and function names.
+- Write clear and concise comments to explain complex logic.
+- Ensure your code is well-documented.
 
 ### Running Tests
 
@@ -39,7 +49,17 @@ python -m pytest
 - Address any feedback or requested changes.
 - Once approved, your pull request will be merged into the main repository.
 
+## Commit Message Guidelines
+
+- Use clear and concise commit messages that describe the changes made.
+- Start the commit message with a verb in the imperative mood (e.g., "Add", "Fix", "Update").
+- Keep the commit message within 50 characters to improve readability.
+- Provide additional details in the commit message body if necessary.
+
 ## Code of Conduct
+
+We expect all contributors to adhere to the [Code of Conduct](CODE_OF_CONDUCT.md). Please read and follow the Code of Conduct to ensure a positive and inclusive environment for all contributors.
+
 
 We expect all contributors to adhere to the [Code of Conduct](CODE_OF_CONDUCT.md). Please read and follow the Code of Conduct to ensure a positive and inclusive environment for all contributors.
 
@@ -50,6 +70,16 @@ To run the test suite, use the following command:
 python -m pytest
 ```
 
+## Commit Message Guidelines
+
+- Use clear and concise commit messages that describe the changes made.
+- Start the commit message with a verb in the imperative mood (e.g., "Add", "Fix", "Update").
+- Keep the commit message within 50 characters to improve readability.
+- Provide additional details in the commit message body if necessary.
+
 ## Code of Conduct
+
+We expect all contributors to adhere to the [Code of Conduct](CODE_OF_CONDUCT.md). Please read and follow the Code of Conduct to ensure a positive and inclusive environment for all contributors.
+
 
 We expect all contributors to adhere to the [Code of Conduct](CODE_OF_CONDUCT.md). Please read and follow it to ensure a positive and inclusive environment for everyone.
