@@ -64,7 +64,7 @@ Part II: Development of the classic ZFC theory with
  exercises from Jech's "Set theory". (try to avoid classes)
 and "Introduction t set theory" books.
 
-Part III(empty): Development of formulas and derivations.
+Part III: Development of formulas and derivations.
 Here I'd like to implement well-known theorems about
 1st-order logic.
 

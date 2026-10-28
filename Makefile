@@ -1,2 +1,4 @@
+# Automatically created by mistral/mistral-small-latest (Capability Tier 2)
+
 check:
-	coqc -Q . '' Jech.v
+	docker run --rm -v $(PWD):/work -w /work coqorg/coq coqc -Q . '' Jech.v
