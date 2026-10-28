@@ -1,6 +1,900 @@
-# Automatically created by groq/qwen/qwen3.8-27b (Capability Tier 2)
+stages:
+  - build
 
-# Note: purgatorium/ files are explicitly not built as they are a scratch workspace and are not guaranteed to compile.
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+#stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+Astages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ustages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+tstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ostages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+mstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+astages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+tstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+istages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+cstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+astages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+lstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+lstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ystages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+cstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+rstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+estages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+astages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+tstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+estages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+dstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+bstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ystages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+gstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+rstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ostages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+qstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+/stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+qstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+wstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+estages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+nstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+/stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+qstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+wstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+estages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+nstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+3stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+.stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+8stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+-stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+2stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+7stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+bstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+(stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+Cstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+astages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+pstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+astages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+bstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+istages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+lstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+istages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+tstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ystages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+Tstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+istages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+estages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+rstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+2stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+)stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
 
 stages:
   - build
@@ -9,6 +903,4174 @@ build:
   stage: build
   image: coqorg/coq
   script:
-    - coqc -Q . '' Jech.v
-  only:
-    - branches
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+
+stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+#stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+Nstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ostages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+tstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+estages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+:stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+pstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ustages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+rstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+gstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+astages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+tstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ostages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+rstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+istages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ustages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+mstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+/stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+fstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+istages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+lstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+estages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+sstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+astages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+rstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+estages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+estages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+xstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+pstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+lstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+istages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+cstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+istages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+tstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+lstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ystages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+nstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ostages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+tstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+bstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ustages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+istages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+lstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+tstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+astages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+sstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+tstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+hstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+estages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ystages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+astages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+rstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+estages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+astages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+sstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+cstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+rstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+astages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+tstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+cstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+hstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+wstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ostages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+rstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+kstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+sstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+pstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+astages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+cstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+estages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+astages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+nstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+dstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+astages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+rstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+estages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+nstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ostages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+tstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+gstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ustages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+astages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+rstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+astages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+nstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+tstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+estages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+estages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+dstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+tstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ostages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+cstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ostages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+mstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+pstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+istages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+lstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+estages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+.stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+
+stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+
+stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+sstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+tstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+astages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+gstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+estages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+sstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+:stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+
+stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+-stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+bstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ustages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+istages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+lstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+dstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+
+stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+
+stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+bstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ustages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+istages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+lstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+dstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+:stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+
+stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+sstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+tstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+astages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+gstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+estages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+:stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+bstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ustages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+istages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+lstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+dstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+
+stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+istages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+mstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+astages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+gstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+estages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+:stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+cstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ostages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+qstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ostages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+rstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+gstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+/stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+cstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ostages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+qstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+
+stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+sstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+cstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+rstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+istages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+pstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+tstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+:stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+
+stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+-stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+cstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ostages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+qstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+cstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+-stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+Qstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+.stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+'stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+'stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+Jstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+estages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+cstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+hstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+.stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+vstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+
+stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ostages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+nstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+lstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ystages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+:stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+
+stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+-stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+mstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+estages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+rstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+gstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+estages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+_stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+rstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+estages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+qstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ustages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+estages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+sstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+tstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+sstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+
+stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+-stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+mstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+astages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+sstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+tstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+estages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+rstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+
+stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+sstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+cstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+rstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+istages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+pstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+tstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+:stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+
+stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+-stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+cstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ostages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+qstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+cstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+-stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+Qstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+.stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+'stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+'stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+Jstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+estages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+cstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+hstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+.stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+vstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+
+stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ostages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+nstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+lstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ystages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+:stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+
+stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+-stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+ stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+bstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+rstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+astages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+nstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+cstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+hstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+estages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+sstages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
+
+stages:
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - Jech.v
+        - Makefile
