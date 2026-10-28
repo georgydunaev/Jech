@@ -112,7 +112,60 @@ Definition Proof : Type := ...
 Example proof_example : Proof := ...
 ```
 
+**Detailed Explanation:**
+
+A proof in first-order logic is a sequence of formulas that follows the rules of inference. Each formula in the sequence must either be an axiom, a hypothesis, or derived from previous formulas using a rule of inference. The goal of the proof is to derive the desired conclusion from the given premises.
+
+**Example:**
+
+```coq
+Theorem example_theorem : forall x, P(x) -> Q(x).
+Proof.
+  intros x H.
+  apply Q_axiom with (x := x).
+  exact H.
+Qed.
+```
+
+This example demonstrates a simple proof in Coq, where we prove that for all x, if P(x) is true, then Q(x) is also true. The proof starts by introducing the variable x and the hypothesis H. It then applies the Q_axiom with x and uses the hypothesis H to complete the proof.
+
+A `Proof` is a sequence of formulas that follows the rules of inference. It is defined as follows:
+
+```coq
+Definition Proof : Type := ...
+```
+
+**Example Usage:**
+
+```coq
+Example proof_example : Proof := ...
+```
+
 ### p (PROPERTY)
+
+A `PROPERTY` is a collection of sets that share a common characteristic. It is defined as follows:
+
+```coq
+Definition p : Type := ...
+```
+
+**Example Usage:**
+
+```coq
+Example property_example : p := ...
+```
+
+**Detailed Explanation:**
+
+A property in set theory is a collection of sets that share a common characteristic. Properties are used to define and classify sets based on their characteristics. For example, the property of being a finite set can be used to classify sets as finite or infinite.
+
+**Example:**
+
+```coq
+Definition finite (A : Type) : Prop := exists n, {f | f <- A -> nat & inj f}.
+```
+
+This example defines a property for finite sets. A set A is finite if there exists a natural number n and an injective function f from A to the set of natural numbers up to n.
 
 A `PROPERTY` is a collection of sets that share a common characteristic. It is defined as follows:
 
@@ -140,7 +193,58 @@ Definition s : Type := ...
 Example set_example : s := ...
 ```
 
+**Detailed Explanation:**
+
+A set in set theory is a collection of distinct objects, considered as an object in its own right. Sets are fundamental to the study of mathematics and are used to define and classify other mathematical objects. Sets can be finite or infinite, and they can be defined using various notations and axioms.
+
+**Example:**
+
+```coq
+Definition empty_set : Type := {}. (* The empty set *)
+Definition singleton (x : Type) : Type := {x}. (* A singleton set containing x *)
+Definition union (A B : Type) : Type := {x | x <- A \/ x <- B}. (* The union of sets A and B *)
+```
+
+These examples demonstrate the definition of the empty set, a singleton set, and the union of two sets. The empty set contains no elements, a singleton set contains exactly one element, and the union of two sets contains all elements that are in either of the sets.
+
+A `SET` is a collection of distinct objects, considered as an object in its own right. It is defined as follows:
+
+```coq
+Definition s : Type := ...
+```
+
+**Example Usage:**
+
+```coq
+Example set_example : s := ...
+```
+
 ### c (CLASS)
+
+A `CLASS` is a collection of sets that is too large to be considered a set. It is defined as follows:
+
+```coq
+Definition c : Type := ...
+```
+
+**Example Usage:**
+
+```coq
+Example class_example : c := ...
+```
+
+**Detailed Explanation:**
+
+A class in set theory is a collection of sets that is too large to be considered a set. Classes are used to define and classify sets that are too large to be considered sets themselves. For example, the class of all sets is a proper class and cannot be considered a set.
+
+**Example:**
+
+```coq
+Definition all_sets : Type := {A | A : Type}. (* The class of all sets *)
+Definition ordinals : Type := {A | A : Type & is_ordinal A}. (* The class of all ordinals *)
+```
+
+These examples demonstrate the definition of the class of all sets and the class of all ordinals. The class of all sets contains all possible sets, and the class of all ordinals contains all ordinal numbers. These classes are too large to be considered sets and are therefore defined as classes.
 
 A `CLASS` is a collection of sets that is too large to be considered a set. It is defined as follows:
 
@@ -284,7 +388,60 @@ Definition Proof : Type := ...
 Example proof_example : Proof := ...
 ```
 
+**Detailed Explanation:**
+
+A proof in first-order logic is a sequence of formulas that follows the rules of inference. Each formula in the sequence must either be an axiom, a hypothesis, or derived from previous formulas using a rule of inference. The goal of the proof is to derive the desired conclusion from the given premises.
+
+**Example:**
+
+```coq
+Theorem example_theorem : forall x, P(x) -> Q(x).
+Proof.
+  intros x H.
+  apply Q_axiom with (x := x).
+  exact H.
+Qed.
+```
+
+This example demonstrates a simple proof in Coq, where we prove that for all x, if P(x) is true, then Q(x) is also true. The proof starts by introducing the variable x and the hypothesis H. It then applies the Q_axiom with x and uses the hypothesis H to complete the proof.
+
+A `Proof` is a sequence of formulas that follows the rules of inference. It is defined as follows:
+
+```coq
+Definition Proof : Type := ...
+```
+
+**Example Usage:**
+
+```coq
+Example proof_example : Proof := ...
+```
+
 ### p (PROPERTY)
+
+A `PROPERTY` is a collection of sets that share a common characteristic. It is defined as follows:
+
+```coq
+Definition p : Type := ...
+```
+
+**Example Usage:**
+
+```coq
+Example property_example : p := ...
+```
+
+**Detailed Explanation:**
+
+A property in set theory is a collection of sets that share a common characteristic. Properties are used to define and classify sets based on their characteristics. For example, the property of being a finite set can be used to classify sets as finite or infinite.
+
+**Example:**
+
+```coq
+Definition finite (A : Type) : Prop := exists n, {f | f <- A -> nat & inj f}.
+```
+
+This example defines a property for finite sets. A set A is finite if there exists a natural number n and an injective function f from A to the set of natural numbers up to n.
 
 A `PROPERTY` is a collection of sets that share a common characteristic. It is defined as follows:
 
@@ -312,7 +469,58 @@ Definition s : Type := ...
 Example set_example : s := ...
 ```
 
+**Detailed Explanation:**
+
+A set in set theory is a collection of distinct objects, considered as an object in its own right. Sets are fundamental to the study of mathematics and are used to define and classify other mathematical objects. Sets can be finite or infinite, and they can be defined using various notations and axioms.
+
+**Example:**
+
+```coq
+Definition empty_set : Type := {}. (* The empty set *)
+Definition singleton (x : Type) : Type := {x}. (* A singleton set containing x *)
+Definition union (A B : Type) : Type := {x | x <- A \/ x <- B}. (* The union of sets A and B *)
+```
+
+These examples demonstrate the definition of the empty set, a singleton set, and the union of two sets. The empty set contains no elements, a singleton set contains exactly one element, and the union of two sets contains all elements that are in either of the sets.
+
+A `SET` is a collection of distinct objects, considered as an object in its own right. It is defined as follows:
+
+```coq
+Definition s : Type := ...
+```
+
+**Example Usage:**
+
+```coq
+Example set_example : s := ...
+```
+
 ### c (CLASS)
+
+A `CLASS` is a collection of sets that is too large to be considered a set. It is defined as follows:
+
+```coq
+Definition c : Type := ...
+```
+
+**Example Usage:**
+
+```coq
+Example class_example : c := ...
+```
+
+**Detailed Explanation:**
+
+A class in set theory is a collection of sets that is too large to be considered a set. Classes are used to define and classify sets that are too large to be considered sets themselves. For example, the class of all sets is a proper class and cannot be considered a set.
+
+**Example:**
+
+```coq
+Definition all_sets : Type := {A | A : Type}. (* The class of all sets *)
+Definition ordinals : Type := {A | A : Type & is_ordinal A}. (* The class of all ordinals *)
+```
+
+These examples demonstrate the definition of the class of all sets and the class of all ordinals. The class of all sets contains all possible sets, and the class of all ordinals contains all ordinal numbers. These classes are too large to be considered sets and are therefore defined as classes.
 
 A `CLASS` is a collection of sets that is too large to be considered a set. It is defined as follows:
 
