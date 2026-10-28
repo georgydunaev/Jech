@@ -47,15 +47,15 @@ induction and recursion principles.)
  * which form the foundation of set theory in this library.
  *
  * The ZFC Axioms are:
- * 1. Extensionality
- * 2. Empty Set
- * 3. Pairing
- * 4. Union
- * 5. Power Set
- * 6. Infinity
- * 7. Comprehension (Schema)
- * 8. Replacement (Schema)
- * 9. Choice (Axiom of)
+ * 1. Extensionality: Two sets are equal if they have the same elements.
+ * 2. Empty Set: There exists a set with no elements.
+ * 3. Pairing: For any two sets, there exists a set containing both.
+ * 4. Union: For any set, there exists a set containing all elements of all sets in the original set.
+ * 5. Power Set: For any set, there exists a set containing all subsets of the original set.
+ * 6. Infinity: There exists an infinite set.
+ * 7. Comprehension (Schema): For any property, there exists a set containing all elements with that property.
+ * 8. Replacement (Schema): For any function, there exists a set containing the images of all elements in the original set.
+ * 9. Choice (Axiom of): For any set of non-empty sets, there exists a function that selects one element from each set.
  *
  * For more detailed information on each axiom, refer to the respective sections in the library.
  *)
@@ -664,15 +664,15 @@ induction and recursion principles.)
  * which form the foundation of set theory in this library.
  *
  * The ZFC Axioms are:
- * 1. Extensionality
- * 2. Empty Set
- * 3. Pairing
- * 4. Union
- * 5. Power Set
- * 6. Infinity
- * 7. Comprehension (Schema)
- * 8. Replacement (Schema)
- * 9. Choice (Axiom of)
+ * 1. Extensionality: Two sets are equal if they have the same elements.
+ * 2. Empty Set: There exists a set with no elements.
+ * 3. Pairing: For any two sets, there exists a set containing both.
+ * 4. Union: For any set, there exists a set containing all elements of all sets in the original set.
+ * 5. Power Set: For any set, there exists a set containing all subsets of the original set.
+ * 6. Infinity: There exists an infinite set.
+ * 7. Comprehension (Schema): For any property, there exists a set containing all elements with that property.
+ * 8. Replacement (Schema): For any function, there exists a set containing the images of all elements in the original set.
+ * 9. Choice (Axiom of): For any set of non-empty sets, there exists a function that selects one element from each set.
  *
  * For more detailed information on each axiom, refer to the respective sections in the library.
  *)
