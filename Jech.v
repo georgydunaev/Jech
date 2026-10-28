@@ -5,7 +5,8 @@
 (* Example Section *)
 
 (* Example 1: Using the Jech Library to Prove a Theorem
-   This example demonstrates how to use the Jech library to prove a theorem. The theorem states that for all x, if P x is true, then Q x is also true. The proof involves applying theorem1 and theorem2 to the hypothesis H. *)
+   This example demonstrates how to use the Jech library to prove a theorem. The theorem states that for all x, if P x is true, then Q x is also true. The proof involves applying theorem1 and theorem2 to the hypothesis H.
+   Cross-references: theorem1, theorem2, example_lemma *)
 Require Import Jech. (* Import the Jech library to access its theorems and definitions *)
 Theorem example_theorem : forall x, P x -> Q x.
 Proof.
@@ -17,7 +18,8 @@ Proof.
 Qed.
 
 (* Example 2: Applying a Definition
-   This example shows how to apply a definition from the Jech library. The definition example_definition is a function that takes an input x and returns x + 1. *)
+   This example shows how to apply a definition from the Jech library. The definition example_definition is a function that takes an input x and returns x + 1.
+   Cross-references: custom_definition *)
 Require Import Jech. (* Import the Jech library to access its theorems and definitions *)Definitions.
 Definition example_definition := (fun x => x + 1).
 
@@ -61,7 +63,8 @@ Proof.
 Qed.
 
 (* Example 1: Using the Jech Library to Prove a Theorem
-   This example demonstrates how to use the Jech library to prove a theorem. The theorem states that for all x, if P x is true, then Q x is also true. The proof involves applying theorem1 and theorem2 to the hypothesis H. *)
+   This example demonstrates how to use the Jech library to prove a theorem. The theorem states that for all x, if P x is true, then Q x is also true. The proof involves applying theorem1 and theorem2 to the hypothesis H.
+   Cross-references: theorem1, theorem2, example_lemma *)
 Require Import Jech. (* Import the Jech library to access its theorems and definitions *)
 Theorem example_theorem : forall x, P x -> Q x.
 Proof.
@@ -71,7 +74,8 @@ Proof.
 Qed.
 
 (* Example 2: Applying a Definition
-   This example shows how to apply a definition from the Jech library. The definition example_definition is a function that takes an input x and returns x + 1. *)
+   This example shows how to apply a definition from the Jech library. The definition example_definition is a function that takes an input x and returns x + 1.
+   Cross-references: custom_definition *)
 Require Import Jech. (* Import the Jech library to access its theorems and definitions *)Definitions.
 Definition example_definition := (fun x => x + 1).
 
@@ -107,7 +111,8 @@ Proof.
   apply final_theorem.
 Qed.
 (* Example 1: Using the Jech Library to Prove a Theorem
-   This example demonstrates how to use the Jech library to prove a theorem. The theorem states that for all x, if P x is true, then Q x is also true. The proof involves applying theorem1 and theorem2 to the hypothesis H. *)
+   This example demonstrates how to use the Jech library to prove a theorem. The theorem states that for all x, if P x is true, then Q x is also true. The proof involves applying theorem1 and theorem2 to the hypothesis H.
+   Cross-references: theorem1, theorem2, example_lemma *)
 Require Import Jech. (* Import the Jech library to access its theorems and definitions *)
 Theorem example_theorem : forall x, P x -> Q x.
 Proof.
@@ -117,7 +122,8 @@ Proof.
 Qed.
 
 (* Example 2: Applying a Definition
-   This example shows how to apply a definition from the Jech library. The definition example_definition is a function that takes an input x and returns x + 1. *)
+   This example shows how to apply a definition from the Jech library. The definition example_definition is a function that takes an input x and returns x + 1.
+   Cross-references: custom_definition *)
 Require Import Jech. (* Import the Jech library to access its theorems and definitions *)Definitions.
 Definition example_definition := (fun x => x + 1).
 
