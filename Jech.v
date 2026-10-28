@@ -4,8 +4,9 @@
 
 (* Example Section *)
 
-(* Example 1: Using the Jech Library to Prove a Theorem *)
-Require Import Jech.
+(* Example 1: Using the Jech Library to Prove a Theorem
+   This example demonstrates how to use the Jech library to prove a theorem. The theorem states that for all x, if P x is true, then Q x is also true. The proof involves applying theorem1 and theorem2 to the hypothesis H. *)
+Require Import Jech. (* Import the Jech library to access its theorems and definitions *)
 Theorem example_theorem : forall x, P x -> Q x.
 Proof.
   intros x H.
@@ -15,12 +16,13 @@ Proof.
   apply theorem2.
 Qed.
 
-(* Example 2: Applying a Definition *)
-Require Import Jech.Definitions.
+(* Example 2: Applying a Definition
+   This example shows how to apply a definition from the Jech library. The definition example_definition is a function that takes an input x and returns x + 1. *)
+Require Import Jech. (* Import the Jech library to access its theorems and definitions *)Definitions.
 Definition example_definition := (fun x => x + 1).
 
 (* Example 3: Using a Lemma *)
-Require Import Jech.Lemmas.
+Require Import Jech. (* Import the Jech library to access its theorems and definitions *)Lemmas.
 Lemma example_lemma : forall x, R x -> S x.
 Proof.
   intros x H.
@@ -31,7 +33,7 @@ Proof.
 Qed.
 
 (* Example 4: Advanced Theorem Proof *)
-Require Import Jech.Advanced.
+Require Import Jech. (* Import the Jech library to access its theorems and definitions *)Advanced.
 Theorem advanced_example : forall x y, (P x -> Q y) -> R x y.
 Proof.
   intros x y H.
@@ -42,11 +44,11 @@ Proof.
 Qed.
 
 (* Example 5: Using a Custom Definition *)
-Require Import Jech.CustomDefinitions.
+Require Import Jech. (* Import the Jech library to access its theorems and definitions *)CustomDefinitions.
 Definition custom_definition := (fun x y => x * y + x + y).
 
 (* Example 6: Combining Multiple Theorems *)
-Require Import Jech.Combined.
+Require Import Jech. (* Import the Jech library to access its theorems and definitions *)Combined.
 Theorem combined_example : forall x y, (P x -> Q y) -> (R x y -> S x).
 Proof.
   intros x y H1 H2.
@@ -58,8 +60,9 @@ Proof.
   apply final_theorem.
 Qed.
 
-(* Example 1: Using the Jech Library to Prove a Theorem *)
-Require Import Jech.
+(* Example 1: Using the Jech Library to Prove a Theorem
+   This example demonstrates how to use the Jech library to prove a theorem. The theorem states that for all x, if P x is true, then Q x is also true. The proof involves applying theorem1 and theorem2 to the hypothesis H. *)
+Require Import Jech. (* Import the Jech library to access its theorems and definitions *)
 Theorem example_theorem : forall x, P x -> Q x.
 Proof.
   intros x H.
@@ -67,12 +70,13 @@ Proof.
   apply theorem2.
 Qed.
 
-(* Example 2: Applying a Definition *)
-Require Import Jech.Definitions.
+(* Example 2: Applying a Definition
+   This example shows how to apply a definition from the Jech library. The definition example_definition is a function that takes an input x and returns x + 1. *)
+Require Import Jech. (* Import the Jech library to access its theorems and definitions *)Definitions.
 Definition example_definition := (fun x => x + 1).
 
 (* Example 3: Using a Lemma *)
-Require Import Jech.Lemmas.
+Require Import Jech. (* Import the Jech library to access its theorems and definitions *)Lemmas.
 Lemma example_lemma : forall x, R x -> S x.
 Proof.
   intros x H.
@@ -81,7 +85,7 @@ Proof.
 Qed.
 
 (* Example 4: Advanced Theorem Proof *)
-Require Import Jech.Advanced.
+Require Import Jech. (* Import the Jech library to access its theorems and definitions *)Advanced.
 Theorem advanced_example : forall x y, (P x -> Q y) -> R x y.
 Proof.
   intros x y H.
@@ -90,11 +94,11 @@ Proof.
 Qed.
 
 (* Example 5: Using a Custom Definition *)
-Require Import Jech.CustomDefinitions.
+Require Import Jech. (* Import the Jech library to access its theorems and definitions *)CustomDefinitions.
 Definition custom_definition := (fun x y => x * y + x + y).
 
 (* Example 6: Combining Multiple Theorems *)
-Require Import Jech.Combined.
+Require Import Jech. (* Import the Jech library to access its theorems and definitions *)Combined.
 Theorem combined_example : forall x y, (P x -> Q y) -> (R x y -> S x).
 Proof.
   intros x y H1 H2.
@@ -102,8 +106,9 @@ Proof.
   apply combined_lemma in H2.
   apply final_theorem.
 Qed.
-(* Example 1: Using the Jech Library to Prove a Theorem *)
-Require Import Jech.
+(* Example 1: Using the Jech Library to Prove a Theorem
+   This example demonstrates how to use the Jech library to prove a theorem. The theorem states that for all x, if P x is true, then Q x is also true. The proof involves applying theorem1 and theorem2 to the hypothesis H. *)
+Require Import Jech. (* Import the Jech library to access its theorems and definitions *)
 Theorem example_theorem : forall x, P x -> Q x.
 Proof.
   intros x H.
@@ -111,12 +116,13 @@ Proof.
   apply theorem2.
 Qed.
 
-(* Example 2: Applying a Definition *)
-Require Import Jech.Definitions.
+(* Example 2: Applying a Definition
+   This example shows how to apply a definition from the Jech library. The definition example_definition is a function that takes an input x and returns x + 1. *)
+Require Import Jech. (* Import the Jech library to access its theorems and definitions *)Definitions.
 Definition example_definition := (fun x => x + 1).
 
 (* Example 3: Using a Lemma *)
-Require Import Jech.Lemmas.
+Require Import Jech. (* Import the Jech library to access its theorems and definitions *)Lemmas.
 Lemma example_lemma : forall x, R x -> S x.
 Proof.
   intros x H.
