@@ -1348,7 +1348,51 @@ split.
   exact u.
 Qed.
 
-End TheoremsAboutClasses.
+
+Section Part_III.
+
+(* First-order logic definitions and derivations *)
+
+Inductive Fo : Type := 
+| Var : string -> Fo 
+| Pred : string -> list Fo -> Fo 
+| And : Fo -> Fo -> Fo 
+| Or : Fo -> Fo -> Fo 
+| Imp : Fo -> Fo -> Fo 
+| Not : Fo -> Fo 
+| Forall : string -> Fo -> Fo 
+| Exists : string -> Fo -> Fo.
+
+Inductive Derivation : list Fo -> Fo -> Type := 
+| Ax : forall A, Derivation [] A 
+| MP : forall A B, Derivation (A :: B :: []) (Imp A B) -> Derivation (A :: []) B 
+| AndI : forall A B, Derivation (A :: B :: []) (And A B) 
+| AndE1 : forall A B, Derivation (And A B :: []) A 
+| AndE2 : forall A B, Derivation (And A B :: []) B 
+| OrI1 : forall A B, Derivation (A :: []) (Or A B) 
+| OrI2 : forall A B, Derivation (B :: []) (Or A B) 
+| ImpI : forall A B, Derivation (A :: B :: []) (Imp A B) 
+| NotI : forall A, Derivation (A :: []) (Not A) -> Derivation [] (Imp A (Not A)) 
+| ForallI : forall x A, Derivation (A :: []) (Forall x A) 
+| ForallE : forall x A, Derivation (Forall x A :: []) A 
+| ExistsI : forall x A, Derivation (A :: []) (Exists x A) 
+| ExistsE : forall x A B, Derivation (Exists x A :: []) (Forall x (Imp A B)) -> Derivation (B :: []).
+
+
+
+Inductive Fo : Type := 
+| Var : string -> Fo 
+| Pred : string -> list Fo -> Fo 
+| And : Fo -> Fo -> Fo 
+| Or : Fo -> Fo -> Fo 
+| Imp : Fo -> Fo -> Fo 
+| Not : Fo -> Fo 
+| Forall : string -> Fo -> Fo 
+| Exists : string -> Fo -> Fo.
+
+
+
+ TheoremsAboutClasses.
 
 (*Require Import ZFC.Ordinal_theory.*)
 Theorem succ_sound X Y (H: EQ X Y) :
@@ -1612,7 +1656,51 @@ Proof.
 unfold SoundCongl.
 intros.
 Abort.
-End cngl_sec.
+
+Section Part_III.
+
+(* First-order logic definitions and derivations *)
+
+Inductive Fo : Type := 
+| Var : string -> Fo 
+| Pred : string -> list Fo -> Fo 
+| And : Fo -> Fo -> Fo 
+| Or : Fo -> Fo -> Fo 
+| Imp : Fo -> Fo -> Fo 
+| Not : Fo -> Fo 
+| Forall : string -> Fo -> Fo 
+| Exists : string -> Fo -> Fo.
+
+Inductive Derivation : list Fo -> Fo -> Type := 
+| Ax : forall A, Derivation [] A 
+| MP : forall A B, Derivation (A :: B :: []) (Imp A B) -> Derivation (A :: []) B 
+| AndI : forall A B, Derivation (A :: B :: []) (And A B) 
+| AndE1 : forall A B, Derivation (And A B :: []) A 
+| AndE2 : forall A B, Derivation (And A B :: []) B 
+| OrI1 : forall A B, Derivation (A :: []) (Or A B) 
+| OrI2 : forall A B, Derivation (B :: []) (Or A B) 
+| ImpI : forall A B, Derivation (A :: B :: []) (Imp A B) 
+| NotI : forall A, Derivation (A :: []) (Not A) -> Derivation [] (Imp A (Not A)) 
+| ForallI : forall x A, Derivation (A :: []) (Forall x A) 
+| ForallE : forall x A, Derivation (Forall x A :: []) A 
+| ExistsI : forall x A, Derivation (A :: []) (Exists x A) 
+| ExistsE : forall x A B, Derivation (Exists x A :: []) (Forall x (Imp A B)) -> Derivation (B :: []).
+
+
+
+Inductive Fo : Type := 
+| Var : string -> Fo 
+| Pred : string -> list Fo -> Fo 
+| And : Fo -> Fo -> Fo 
+| Or : Fo -> Fo -> Fo 
+| Imp : Fo -> Fo -> Fo 
+| Not : Fo -> Fo 
+| Forall : string -> Fo -> Fo 
+| Exists : string -> Fo -> Fo.
+
+
+
+ cngl_sec.
 
 Theorem Comp_sound_right (P R:Ens->Prop)
 (P_sound:(SoundPred P))
@@ -2318,7 +2406,51 @@ Inductive formula : Type :=
 | Forall (x : nat) (f : formula) 
 | Exists (x : nat) (f : formula).
 
-End Part_III.
+
+Section Part_III.
+
+(* First-order logic definitions and derivations *)
+
+Inductive Fo : Type := 
+| Var : string -> Fo 
+| Pred : string -> list Fo -> Fo 
+| And : Fo -> Fo -> Fo 
+| Or : Fo -> Fo -> Fo 
+| Imp : Fo -> Fo -> Fo 
+| Not : Fo -> Fo 
+| Forall : string -> Fo -> Fo 
+| Exists : string -> Fo -> Fo.
+
+Inductive Derivation : list Fo -> Fo -> Type := 
+| Ax : forall A, Derivation [] A 
+| MP : forall A B, Derivation (A :: B :: []) (Imp A B) -> Derivation (A :: []) B 
+| AndI : forall A B, Derivation (A :: B :: []) (And A B) 
+| AndE1 : forall A B, Derivation (And A B :: []) A 
+| AndE2 : forall A B, Derivation (And A B :: []) B 
+| OrI1 : forall A B, Derivation (A :: []) (Or A B) 
+| OrI2 : forall A B, Derivation (B :: []) (Or A B) 
+| ImpI : forall A B, Derivation (A :: B :: []) (Imp A B) 
+| NotI : forall A, Derivation (A :: []) (Not A) -> Derivation [] (Imp A (Not A)) 
+| ForallI : forall x A, Derivation (A :: []) (Forall x A) 
+| ForallE : forall x A, Derivation (Forall x A :: []) A 
+| ExistsI : forall x A, Derivation (A :: []) (Exists x A) 
+| ExistsE : forall x A B, Derivation (Exists x A :: []) (Forall x (Imp A B)) -> Derivation (B :: []).
+
+
+
+Inductive Fo : Type := 
+| Var : string -> Fo 
+| Pred : string -> list Fo -> Fo 
+| And : Fo -> Fo -> Fo 
+| Or : Fo -> Fo -> Fo 
+| Imp : Fo -> Fo -> Fo 
+| Not : Fo -> Fo 
+| Forall : string -> Fo -> Fo 
+| Exists : string -> Fo -> Fo.
+
+
+
+ Part_III.
 
 Theorem ex_1_6_lem6 : PP (Union (Pair y (Sing y))).
 Proof.
@@ -2395,7 +2527,51 @@ apply K1.
 *)
 Admitted.
 
-End lemma_1_6.
+
+Section Part_III.
+
+(* First-order logic definitions and derivations *)
+
+Inductive Fo : Type := 
+| Var : string -> Fo 
+| Pred : string -> list Fo -> Fo 
+| And : Fo -> Fo -> Fo 
+| Or : Fo -> Fo -> Fo 
+| Imp : Fo -> Fo -> Fo 
+| Not : Fo -> Fo 
+| Forall : string -> Fo -> Fo 
+| Exists : string -> Fo -> Fo.
+
+Inductive Derivation : list Fo -> Fo -> Type := 
+| Ax : forall A, Derivation [] A 
+| MP : forall A B, Derivation (A :: B :: []) (Imp A B) -> Derivation (A :: []) B 
+| AndI : forall A B, Derivation (A :: B :: []) (And A B) 
+| AndE1 : forall A B, Derivation (And A B :: []) A 
+| AndE2 : forall A B, Derivation (And A B :: []) B 
+| OrI1 : forall A B, Derivation (A :: []) (Or A B) 
+| OrI2 : forall A B, Derivation (B :: []) (Or A B) 
+| ImpI : forall A B, Derivation (A :: B :: []) (Imp A B) 
+| NotI : forall A, Derivation (A :: []) (Not A) -> Derivation [] (Imp A (Not A)) 
+| ForallI : forall x A, Derivation (A :: []) (Forall x A) 
+| ForallE : forall x A, Derivation (Forall x A :: []) A 
+| ExistsI : forall x A, Derivation (A :: []) (Exists x A) 
+| ExistsE : forall x A B, Derivation (Exists x A :: []) (Forall x (Imp A B)) -> Derivation (B :: []).
+
+
+
+Inductive Fo : Type := 
+| Var : string -> Fo 
+| Pred : string -> list Fo -> Fo 
+| And : Fo -> Fo -> Fo 
+| Or : Fo -> Fo -> Fo 
+| Imp : Fo -> Fo -> Fo 
+| Not : Fo -> Fo 
+| Forall : string -> Fo -> Fo 
+| Exists : string -> Fo -> Fo.
+
+
+
+ lemma_1_6.
 
 Theorem ex_1_6 : Ind (Comp X prop_1_6).
 Proof.
@@ -2424,7 +2600,51 @@ try apply H1, U1.
   simpl in U.
 Epsmin  *)
 Abort.
-End ex_1_6.
+
+Section Part_III.
+
+(* First-order logic definitions and derivations *)
+
+Inductive Fo : Type := 
+| Var : string -> Fo 
+| Pred : string -> list Fo -> Fo 
+| And : Fo -> Fo -> Fo 
+| Or : Fo -> Fo -> Fo 
+| Imp : Fo -> Fo -> Fo 
+| Not : Fo -> Fo 
+| Forall : string -> Fo -> Fo 
+| Exists : string -> Fo -> Fo.
+
+Inductive Derivation : list Fo -> Fo -> Type := 
+| Ax : forall A, Derivation [] A 
+| MP : forall A B, Derivation (A :: B :: []) (Imp A B) -> Derivation (A :: []) B 
+| AndI : forall A B, Derivation (A :: B :: []) (And A B) 
+| AndE1 : forall A B, Derivation (And A B :: []) A 
+| AndE2 : forall A B, Derivation (And A B :: []) B 
+| OrI1 : forall A B, Derivation (A :: []) (Or A B) 
+| OrI2 : forall A B, Derivation (B :: []) (Or A B) 
+| ImpI : forall A B, Derivation (A :: B :: []) (Imp A B) 
+| NotI : forall A, Derivation (A :: []) (Not A) -> Derivation [] (Imp A (Not A)) 
+| ForallI : forall x A, Derivation (A :: []) (Forall x A) 
+| ForallE : forall x A, Derivation (Forall x A :: []) A 
+| ExistsI : forall x A, Derivation (A :: []) (Exists x A) 
+| ExistsE : forall x A B, Derivation (Exists x A :: []) (Forall x (Imp A B)) -> Derivation (B :: []).
+
+
+
+Inductive Fo : Type := 
+| Var : string -> Fo 
+| Pred : string -> list Fo -> Fo 
+| And : Fo -> Fo -> Fo 
+| Or : Fo -> Fo -> Fo 
+| Imp : Fo -> Fo -> Fo 
+| Not : Fo -> Fo 
+| Forall : string -> Fo -> Fo 
+| Exists : string -> Fo -> Fo.
+
+
+
+ ex_1_6.
 (*============================================
                      Part III
 ==============================================*)
@@ -2890,7 +3110,51 @@ apply ex2sig in H.
 destruct H.
 exact x.
 Qed.
-End sec_ex2sig.
+
+Section Part_III.
+
+(* First-order logic definitions and derivations *)
+
+Inductive Fo : Type := 
+| Var : string -> Fo 
+| Pred : string -> list Fo -> Fo 
+| And : Fo -> Fo -> Fo 
+| Or : Fo -> Fo -> Fo 
+| Imp : Fo -> Fo -> Fo 
+| Not : Fo -> Fo 
+| Forall : string -> Fo -> Fo 
+| Exists : string -> Fo -> Fo.
+
+Inductive Derivation : list Fo -> Fo -> Type := 
+| Ax : forall A, Derivation [] A 
+| MP : forall A B, Derivation (A :: B :: []) (Imp A B) -> Derivation (A :: []) B 
+| AndI : forall A B, Derivation (A :: B :: []) (And A B) 
+| AndE1 : forall A B, Derivation (And A B :: []) A 
+| AndE2 : forall A B, Derivation (And A B :: []) B 
+| OrI1 : forall A B, Derivation (A :: []) (Or A B) 
+| OrI2 : forall A B, Derivation (B :: []) (Or A B) 
+| ImpI : forall A B, Derivation (A :: B :: []) (Imp A B) 
+| NotI : forall A, Derivation (A :: []) (Not A) -> Derivation [] (Imp A (Not A)) 
+| ForallI : forall x A, Derivation (A :: []) (Forall x A) 
+| ForallE : forall x A, Derivation (Forall x A :: []) A 
+| ExistsI : forall x A, Derivation (A :: []) (Exists x A) 
+| ExistsE : forall x A B, Derivation (Exists x A :: []) (Forall x (Imp A B)) -> Derivation (B :: []).
+
+
+
+Inductive Fo : Type := 
+| Var : string -> Fo 
+| Pred : string -> list Fo -> Fo 
+| And : Fo -> Fo -> Fo 
+| Or : Fo -> Fo -> Fo 
+| Imp : Fo -> Fo -> Fo 
+| Not : Fo -> Fo 
+| Forall : string -> Fo -> Fo 
+| Exists : string -> Fo -> Fo.
+
+
+
+ sec_ex2sig.
 
 Definition ktoc (k:class -> Prop) (H:iac k) : class.
 Proof.
@@ -3556,7 +3820,51 @@ intros X.
     apply Achfu_func with (1:=G).
 Qed.
 
-End AC_sec.
+
+Section Part_III.
+
+(* First-order logic definitions and derivations *)
+
+Inductive Fo : Type := 
+| Var : string -> Fo 
+| Pred : string -> list Fo -> Fo 
+| And : Fo -> Fo -> Fo 
+| Or : Fo -> Fo -> Fo 
+| Imp : Fo -> Fo -> Fo 
+| Not : Fo -> Fo 
+| Forall : string -> Fo -> Fo 
+| Exists : string -> Fo -> Fo.
+
+Inductive Derivation : list Fo -> Fo -> Type := 
+| Ax : forall A, Derivation [] A 
+| MP : forall A B, Derivation (A :: B :: []) (Imp A B) -> Derivation (A :: []) B 
+| AndI : forall A B, Derivation (A :: B :: []) (And A B) 
+| AndE1 : forall A B, Derivation (And A B :: []) A 
+| AndE2 : forall A B, Derivation (And A B :: []) B 
+| OrI1 : forall A B, Derivation (A :: []) (Or A B) 
+| OrI2 : forall A B, Derivation (B :: []) (Or A B) 
+| ImpI : forall A B, Derivation (A :: B :: []) (Imp A B) 
+| NotI : forall A, Derivation (A :: []) (Not A) -> Derivation [] (Imp A (Not A)) 
+| ForallI : forall x A, Derivation (A :: []) (Forall x A) 
+| ForallE : forall x A, Derivation (Forall x A :: []) A 
+| ExistsI : forall x A, Derivation (A :: []) (Exists x A) 
+| ExistsE : forall x A B, Derivation (Exists x A :: []) (Forall x (Imp A B)) -> Derivation (B :: []).
+
+
+
+Inductive Fo : Type := 
+| Var : string -> Fo 
+| Pred : string -> list Fo -> Fo 
+| And : Fo -> Fo -> Fo 
+| Or : Fo -> Fo -> Fo 
+| Imp : Fo -> Fo -> Fo 
+| Not : Fo -> Fo 
+| Forall : string -> Fo -> Fo 
+| Exists : string -> Fo -> Fo.
+
+
+
+ AC_sec.
 
 Definition uniqueEns : (Ens -> Prop) -> Ens -> Prop 
 := fun (P : Ens -> Prop) (x : Ens) =>
@@ -5000,7 +5308,51 @@ Inductive Derivation : Fo -> Type :=
 (*     END OF THE METAMATH SECTION       *)
 (* ===================================== *)
 
-End stoc_sec.
+
+Section Part_III.
+
+(* First-order logic definitions and derivations *)
+
+Inductive Fo : Type := 
+| Var : string -> Fo 
+| Pred : string -> list Fo -> Fo 
+| And : Fo -> Fo -> Fo 
+| Or : Fo -> Fo -> Fo 
+| Imp : Fo -> Fo -> Fo 
+| Not : Fo -> Fo 
+| Forall : string -> Fo -> Fo 
+| Exists : string -> Fo -> Fo.
+
+Inductive Derivation : list Fo -> Fo -> Type := 
+| Ax : forall A, Derivation [] A 
+| MP : forall A B, Derivation (A :: B :: []) (Imp A B) -> Derivation (A :: []) B 
+| AndI : forall A B, Derivation (A :: B :: []) (And A B) 
+| AndE1 : forall A B, Derivation (And A B :: []) A 
+| AndE2 : forall A B, Derivation (And A B :: []) B 
+| OrI1 : forall A B, Derivation (A :: []) (Or A B) 
+| OrI2 : forall A B, Derivation (B :: []) (Or A B) 
+| ImpI : forall A B, Derivation (A :: B :: []) (Imp A B) 
+| NotI : forall A, Derivation (A :: []) (Not A) -> Derivation [] (Imp A (Not A)) 
+| ForallI : forall x A, Derivation (A :: []) (Forall x A) 
+| ForallE : forall x A, Derivation (Forall x A :: []) A 
+| ExistsI : forall x A, Derivation (A :: []) (Exists x A) 
+| ExistsE : forall x A B, Derivation (Exists x A :: []) (Forall x (Imp A B)) -> Derivation (B :: []).
+
+
+
+Inductive Fo : Type := 
+| Var : string -> Fo 
+| Pred : string -> list Fo -> Fo 
+| And : Fo -> Fo -> Fo 
+| Or : Fo -> Fo -> Fo 
+| Imp : Fo -> Fo -> Fo 
+| Not : Fo -> Fo 
+| Forall : string -> Fo -> Fo 
+| Exists : string -> Fo -> Fo.
+
+
+
+ stoc_sec.
 
 (** BEGINning of the tiny experiments with ensembles **)
 Require Import ClassicalFacts.
@@ -5043,7 +5395,51 @@ Check Extensionality_Ensembles.
 Axiom Extensionality_Ensembles : forall A B:Ensemble, 
 Same_set A B -> A = B.
 *)
-End ExperimentsWithEnsembles.
+
+Section Part_III.
+
+(* First-order logic definitions and derivations *)
+
+Inductive Fo : Type := 
+| Var : string -> Fo 
+| Pred : string -> list Fo -> Fo 
+| And : Fo -> Fo -> Fo 
+| Or : Fo -> Fo -> Fo 
+| Imp : Fo -> Fo -> Fo 
+| Not : Fo -> Fo 
+| Forall : string -> Fo -> Fo 
+| Exists : string -> Fo -> Fo.
+
+Inductive Derivation : list Fo -> Fo -> Type := 
+| Ax : forall A, Derivation [] A 
+| MP : forall A B, Derivation (A :: B :: []) (Imp A B) -> Derivation (A :: []) B 
+| AndI : forall A B, Derivation (A :: B :: []) (And A B) 
+| AndE1 : forall A B, Derivation (And A B :: []) A 
+| AndE2 : forall A B, Derivation (And A B :: []) B 
+| OrI1 : forall A B, Derivation (A :: []) (Or A B) 
+| OrI2 : forall A B, Derivation (B :: []) (Or A B) 
+| ImpI : forall A B, Derivation (A :: B :: []) (Imp A B) 
+| NotI : forall A, Derivation (A :: []) (Not A) -> Derivation [] (Imp A (Not A)) 
+| ForallI : forall x A, Derivation (A :: []) (Forall x A) 
+| ForallE : forall x A, Derivation (Forall x A :: []) A 
+| ExistsI : forall x A, Derivation (A :: []) (Exists x A) 
+| ExistsE : forall x A B, Derivation (Exists x A :: []) (Forall x (Imp A B)) -> Derivation (B :: []).
+
+
+
+Inductive Fo : Type := 
+| Var : string -> Fo 
+| Pred : string -> list Fo -> Fo 
+| And : Fo -> Fo -> Fo 
+| Or : Fo -> Fo -> Fo 
+| Imp : Fo -> Fo -> Fo 
+| Not : Fo -> Fo 
+| Forall : string -> Fo -> Fo 
+| Exists : string -> Fo -> Fo.
+
+
+
+ ExperimentsWithEnsembles.
 
 (** END of the tiny experiments with ensembles **)
 
@@ -5240,7 +5636,51 @@ Proof.
 simpl. trivial.
 Qed. *)
 
-End Fo.
+
+Section Part_III.
+
+(* First-order logic definitions and derivations *)
+
+Inductive Fo : Type := 
+| Var : string -> Fo 
+| Pred : string -> list Fo -> Fo 
+| And : Fo -> Fo -> Fo 
+| Or : Fo -> Fo -> Fo 
+| Imp : Fo -> Fo -> Fo 
+| Not : Fo -> Fo 
+| Forall : string -> Fo -> Fo 
+| Exists : string -> Fo -> Fo.
+
+Inductive Derivation : list Fo -> Fo -> Type := 
+| Ax : forall A, Derivation [] A 
+| MP : forall A B, Derivation (A :: B :: []) (Imp A B) -> Derivation (A :: []) B 
+| AndI : forall A B, Derivation (A :: B :: []) (And A B) 
+| AndE1 : forall A B, Derivation (And A B :: []) A 
+| AndE2 : forall A B, Derivation (And A B :: []) B 
+| OrI1 : forall A B, Derivation (A :: []) (Or A B) 
+| OrI2 : forall A B, Derivation (B :: []) (Or A B) 
+| ImpI : forall A B, Derivation (A :: B :: []) (Imp A B) 
+| NotI : forall A, Derivation (A :: []) (Not A) -> Derivation [] (Imp A (Not A)) 
+| ForallI : forall x A, Derivation (A :: []) (Forall x A) 
+| ForallE : forall x A, Derivation (Forall x A :: []) A 
+| ExistsI : forall x A, Derivation (A :: []) (Exists x A) 
+| ExistsE : forall x A B, Derivation (Exists x A :: []) (Forall x (Imp A B)) -> Derivation (B :: []).
+
+
+
+Inductive Fo : Type := 
+| Var : string -> Fo 
+| Pred : string -> list Fo -> Fo 
+| And : Fo -> Fo -> Fo 
+| Or : Fo -> Fo -> Fo 
+| Imp : Fo -> Fo -> Fo 
+| Not : Fo -> Fo 
+| Forall : string -> Fo -> Fo 
+| Exists : string -> Fo -> Fo.
+
+
+
+ Fo.
 (** END: Formulas for automatization of soundness proofs. **)
 
 (** BEGIN  nclass generalization **)
@@ -5382,7 +5822,51 @@ Definition nIN {n:nat} (a b : nPrty n) : Prop := plift b a.
  simpl.
  reflexivity.
  Qed.
-(* End of motivation *)
+(* 
+Section Part_III.
+
+(* First-order logic definitions and derivations *)
+
+Inductive Fo : Type := 
+| Var : string -> Fo 
+| Pred : string -> list Fo -> Fo 
+| And : Fo -> Fo -> Fo 
+| Or : Fo -> Fo -> Fo 
+| Imp : Fo -> Fo -> Fo 
+| Not : Fo -> Fo 
+| Forall : string -> Fo -> Fo 
+| Exists : string -> Fo -> Fo.
+
+Inductive Derivation : list Fo -> Fo -> Type := 
+| Ax : forall A, Derivation [] A 
+| MP : forall A B, Derivation (A :: B :: []) (Imp A B) -> Derivation (A :: []) B 
+| AndI : forall A B, Derivation (A :: B :: []) (And A B) 
+| AndE1 : forall A B, Derivation (And A B :: []) A 
+| AndE2 : forall A B, Derivation (And A B :: []) B 
+| OrI1 : forall A B, Derivation (A :: []) (Or A B) 
+| OrI2 : forall A B, Derivation (B :: []) (Or A B) 
+| ImpI : forall A B, Derivation (A :: B :: []) (Imp A B) 
+| NotI : forall A, Derivation (A :: []) (Not A) -> Derivation [] (Imp A (Not A)) 
+| ForallI : forall x A, Derivation (A :: []) (Forall x A) 
+| ForallE : forall x A, Derivation (Forall x A :: []) A 
+| ExistsI : forall x A, Derivation (A :: []) (Exists x A) 
+| ExistsE : forall x A B, Derivation (Exists x A :: []) (Forall x (Imp A B)) -> Derivation (B :: []).
+
+
+
+Inductive Fo : Type := 
+| Var : string -> Fo 
+| Pred : string -> list Fo -> Fo 
+| And : Fo -> Fo -> Fo 
+| Or : Fo -> Fo -> Fo 
+| Imp : Fo -> Fo -> Fo 
+| Not : Fo -> Fo 
+| Forall : string -> Fo -> Fo 
+| Exists : string -> Fo -> Fo.
+
+
+
+ of motivation *)
 
 Definition pPair {n:nat} (a b : nPrty n) : nPrty n.
 Proof.
@@ -6144,6 +6628,50 @@ Add LoadPath "/home/user/0my/GITHUB/VerifiedMathFoundations/library".
 Require Export PredicateCalculus.
 Module PredicateCalculusClasses.
 
-End PredicateCalculusClasses.
+
+Section Part_III.
+
+(* First-order logic definitions and derivations *)
+
+Inductive Fo : Type := 
+| Var : string -> Fo 
+| Pred : string -> list Fo -> Fo 
+| And : Fo -> Fo -> Fo 
+| Or : Fo -> Fo -> Fo 
+| Imp : Fo -> Fo -> Fo 
+| Not : Fo -> Fo 
+| Forall : string -> Fo -> Fo 
+| Exists : string -> Fo -> Fo.
+
+Inductive Derivation : list Fo -> Fo -> Type := 
+| Ax : forall A, Derivation [] A 
+| MP : forall A B, Derivation (A :: B :: []) (Imp A B) -> Derivation (A :: []) B 
+| AndI : forall A B, Derivation (A :: B :: []) (And A B) 
+| AndE1 : forall A B, Derivation (And A B :: []) A 
+| AndE2 : forall A B, Derivation (And A B :: []) B 
+| OrI1 : forall A B, Derivation (A :: []) (Or A B) 
+| OrI2 : forall A B, Derivation (B :: []) (Or A B) 
+| ImpI : forall A B, Derivation (A :: B :: []) (Imp A B) 
+| NotI : forall A, Derivation (A :: []) (Not A) -> Derivation [] (Imp A (Not A)) 
+| ForallI : forall x A, Derivation (A :: []) (Forall x A) 
+| ForallE : forall x A, Derivation (Forall x A :: []) A 
+| ExistsI : forall x A, Derivation (A :: []) (Exists x A) 
+| ExistsE : forall x A B, Derivation (Exists x A :: []) (Forall x (Imp A B)) -> Derivation (B :: []).
+
+
+
+Inductive Fo : Type := 
+| Var : string -> Fo 
+| Pred : string -> list Fo -> Fo 
+| And : Fo -> Fo -> Fo 
+| Or : Fo -> Fo -> Fo 
+| Imp : Fo -> Fo -> Fo 
+| Not : Fo -> Fo 
+| Forall : string -> Fo -> Fo 
+| Exists : string -> Fo -> Fo.
+
+
+
+ PredicateCalculusClasses.
 *)
 (** END OF TRASH SECTION-**)
