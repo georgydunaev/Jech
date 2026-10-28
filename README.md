@@ -11,6 +11,35 @@ The library is divided into several parts:
 1. **Part I**: Large isolated part of the `/coq-contribs/zfc/` library and proofs of some axioms of ZFC.
 2. **Part II**: Development of the classic ZFC theory with exercises from Jech's "Set Theory" and "Introduction to Set Theory" books.
 3. **Part III**: Development of formulas and derivations for first-order logic.
+4. **Part IV**: Experiments with classes and many theorems about them.
+5. **Part V**: Translation of Metamath theorems.
+
+### Part III: First-Order Logic
+
+This part of the library focuses on developing the formal structure of first-order logic, including:
+
+1. **Syntax**: Definition of well-formed formulas (WFFs) and terms
+2. **Semantics**: Interpretation of formulas in models
+3. **Proof Theory**: Natural deduction and sequent calculus systems
+4. **Completeness Theorem**: Proof of the completeness of first-order logic
+
+Key definitions:
+- `Formula`: A syntactically valid expression in first-order logic
+- `Model`: A structure that interprets the non-logical symbols of a language
+- `Proof`: A sequence of formulas that follows the rules of inference
+
+Example derivation:
+```
+1. ∀x P(x) → P(a) (Universal instantiation)
+2. ∀x P(x) (Premise)
+3. P(a) (From 1 and 2, modus ponens)
+```
+
+The library is divided into several parts:
+
+1. **Part I**: Large isolated part of the `/coq-contribs/zfc/` library and proofs of some axioms of ZFC.
+2. **Part II**: Development of the classic ZFC theory with exercises from Jech's "Set Theory" and "Introduction to Set Theory" books.
+3. **Part III**: Development of formulas and derivations for first-order logic.
 
 This part of the library focuses on developing the formal structure of first-order logic, including:
 
