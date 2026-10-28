@@ -18,6 +18,20 @@
  *
  * Key steps in the proof:
  * 1. Construct omega as the supremum of the natural numbers.
+ * 2. Show that omega is inductive.
+ * 3. Show that omega is the smallest inductive set containing the empty set.
+ *
+ * This proof is based on the construction of natural numbers and the properties of inductive sets.
+ *)
+(*
+ * Detailed Explanation of the Proof of the Axiom of Infinity (axInfty):
+ *
+ * The Axiom of Infinity states that there exists a set (omega) that is inductive and contains the empty set.
+ * An inductive set is a set that contains the empty set and is closed under the successor operation.
+ * The proof constructs omega as the smallest inductive set containing the empty set.
+ *
+ * Key steps in the proof:
+ * 1. Construct omega as the supremum of the natural numbers.
  *    - The supremum of a set of natural numbers is the smallest natural number that is greater than or equal to all the numbers in the set.
  *    - In this case, the set of natural numbers is the set of all natural numbers less than a given natural number.
  * 2. Prove the empty set is in omega.

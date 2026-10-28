@@ -12,6 +12,18 @@ Definition E := Ens.
 
 (* Interpretation of sets as types.
 Types are consist of equivalence classes of terms of type . *)
+(*
+ * Detailed Explanation of the Interpretation of Sets as Types:
+ *
+ * Sets are interpreted as types, where types consist of equivalence classes of terms of type .
+ * This interpretation allows us to use the power of type theory to reason about sets.
+ *
+ * Key steps in the interpretation:
+ * 1. Define an inductive type `interp` that represents the interpretation of sets as types.
+ * 2. Use coercion to convert between sets and types.
+ *
+ * This interpretation is based on the Curry-Howard isomorphism, which establishes a correspondence between propositions and types.
+ *)
 Inductive interp (S : Ens) : Type :=
 | con1 : forall q:Ens, (IN q S) -> interp S.
 
