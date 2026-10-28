@@ -10,6 +10,40 @@
  *) 
 (* Internal Proof of Infinity (axInfty) *)
 (*
+ * Detailed Explanation of the Proof of the Axiom of Infinity (axInfty):
+ *
+ * The Axiom of Infinity states that there exists a set (omega) that is inductive and contains the empty set.
+ * An inductive set is a set that contains the empty set and is closed under the successor operation.
+ * The proof constructs omega as the smallest inductive set containing the empty set.
+ *
+ * Key steps in the proof:
+ * 1. Construct omega as the supremum of the natural numbers.
+ *    - The supremum of a set of natural numbers is the smallest natural number that is greater than or equal to all the numbers in the set.
+ *    - In this case, the set of natural numbers is the set of all natural numbers less than a given natural number.
+ * 2. Prove the empty set is in omega.
+ *    - This is done by applying the EmptySet_in_sup lemma, which states that the empty set is in the supremum of any set of natural numbers.
+ * 3. Prove omega is closed under the successor operation.
+ *    - This is done by applying the sup_closed_under_successor lemma, which states that the supremum of a set of natural numbers is closed under the successor operation.
+ *
+ * Example usage:
+ * To use this theorem, you can instantiate it with a variable name:
+ *   Lemma myInfinity : exists omega, EmptySet ∈ omega ∧ (forall x, x ∈ omega -> x ∪ {x} ∈ omega).
+ *   Proof. apply axInfty. Qed.
+ *
+ * Additional Example:
+ * You can also use this theorem to prove the existence of a specific infinite set:
+ *   Lemma myOmega : exists omega, EmptySet ∈ omega ∧ (forall x, x ∈ omega -> x ∪ {x} ∈ omega).
+ *   Proof. apply axInfty. Qed.
+ *
+ * Related concepts:
+ * - Axiom of Pairing (axPair): This axiom states that for any two sets, there exists a set that contains both of them.
+ * - Axiom of Union (axUnion): This axiom states that for any set of sets, there exists a set that contains all the elements of the sets in the original set.
+ * - Definition of inductive sets (see InductiveSet.v): An inductive set is a set that contains the empty set and is closed under the successor operation.
+ * - Additional related concepts:
+ *   - Axiom of Regularity (axRegularity): This axiom states that every non-empty set has an element that is disjoint from it.
+ *   - Definition of transitive sets (see TransitiveSet.v): A transitive set is a set that contains all the elements of its elements.
+ *)
+(*
  * This proof demonstrates the existence of an infinite set (omega) using the Axiom of Infinity.
  * The proof constructs omega as the smallest inductive set containing the empty set.
  *
