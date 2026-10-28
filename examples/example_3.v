@@ -3,27 +3,51 @@
 (* Import the Jech library. *)
 Require Import Jech.
 
-(* Define a set and demonstrate the use of ZFC axioms. *)
-Definition my_set := {1, 2, 3}.
+(* Define ZFC axioms and theorems. *)
 
-(* Axiom of Extensionality: Two sets are equal if they have the same elements. *)
-Definition another_set := {1, 2, 3}.
-Compute my_set = another_set.
+(* Axiom of Extensionality *)
+Axiom extensionality : forall A B, (forall x, x in A <-> x in B) -> A = B.
 
-(* Axiom of Pairing: For any two sets, there exists a set that contains both of them. *)
-Definition pair_set := {my_set, another_set}.
-Print pair_set.
+(* Axiom of Pairing *)
+Axiom pairing : forall x y, exists z, forall w, w in z <-> (w = x \/ w = y).
 
-(* Axiom of Union: For any collection of sets, there exists a set that contains all the elements of the sets in the collection. *)
-Definition union_set := union my_set another_set.
-Print union_set.
+(* Axiom of Union *)
+Axiom union : forall A, exists B, forall x, x in B <-> exists y, x in y /\ y in A.
 
-(* Theorem 1.1: The intersection of any two sets is a set. *)
-Definition intersection_set := my_set ∩ another_set.
-Print intersection_set.
+(* Theorem 1.1: Intersection of sets *)
+Theorem intersection : forall A B, exists C, forall x, x in C <-> x in A /\ x in B.
+Proof.
+  intros A B.
+  exists (fun x => x in A /\ x in B).
+  split.
+  intros H x Hx.
+  destruct Hx.
+  exact H.
+  exact H.
+  intros H x Hx.
+  split.
+  apply H.
+  exact Hx.
+  apply H.
+  exact Hx.
+Qed.
 
-(* Theorem 1.2: The difference of any two sets is a set. *)
-Definition difference_set := my_set - another_set.
-Print difference_set.
+(* Theorem 1.2: Difference of sets *)
+Theorem difference : forall A B, exists C, forall x, x in C <-> x in A /\ ~ x in B.
+Proof.
+  intros A B.
+  exists (fun x => x in A /\ ~ x in B).
+  split.
+  intros H x Hx.
+  destruct Hx.
+  exact H.
+  exact H.
+  intros H x Hx.
+  split.
+  apply H.
+  exact Hx.
+  apply H.
+  exact Hx.
+Qed.
 
 (* End of example. *)
