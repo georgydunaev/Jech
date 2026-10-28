@@ -15,6 +15,14 @@ build:
   image: coqorg/coq
   script:
     - make check
+
+  - build
+
+build:
+  stage: build
+  image: coqorg/coq
+  script:
+    - make check
   rules:
     - if: '$CI_PIPELINE_SOURCE == "push"'
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'

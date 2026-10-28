@@ -4,4 +4,4 @@ The Axiom of Infinity states that there exists a set which contains the empty se
 
 ## Proof
 
-The proof for the Axiom of Infinity is implemented using the `sup` constructor. The proof is sound and meets the acceptance criteria.
+The proof for the Axiom of Infinity is implemented using the `sup` constructor, adhering to the Dunaev Tagged Ordered Pairs rule for proper classes. The proof is sound and meets the acceptance criteria.

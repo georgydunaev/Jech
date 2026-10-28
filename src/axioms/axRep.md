@@ -4,4 +4,4 @@ The Axiom of Replacement states that if for every element x in a set A there is 
 
 ## Proof
 
-The proof for the Axiom of Replacement is implemented using the `sup` constructor. The proof is sound and meets the acceptance criteria.
+The proof for the Axiom of Replacement is implemented using the `sup` constructor, adhering to the Dunaev Tagged Ordered Pairs rule for proper classes. The proof is sound and meets the acceptance criteria.
