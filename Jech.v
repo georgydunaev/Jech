@@ -3,6 +3,7 @@
 (* The `Fo` inductive type represents formulas in a logical system. It includes constructors for predicates, equality, logical connectives, and quantifiers. See also: `Part_II` for the development of the logical system, `Part_IV` for the application of the theorems, and the `Examples` section for usage examples. Additionally, refer to `Theorem_1` in `Part_V` for an application of these formulas. For more details on the logical system, refer to `Part_II`. For examples of how to use the library, refer to the `Examples` section. For an application of these formulas, refer to `Theorem_1` in `Part_V`. Also, refer to `Definition_1` in `Part_I` for the basic definitions used in this section. *)
 
 (* Detailed Explanation: *)
+(* This section provides a detailed explanation of the `Fo` inductive type and its constructors. The `Fo` type is used to represent formulas in a logical system, and it includes constructors for predicates, equality, logical connectives, and quantifiers. Each constructor has specific usage and requirements, as detailed in the examples below. *)
 (* The `Fo` type is defined inductively with several constructors. Each constructor represents a different type of logical formula. *)
 (* Examples: *)
 (* - To create a predicate formula, use `Pred n args`. For example, `Pred 1 [2; 3]` creates a predicate formula with identifier 1 and arguments 2 and 3. *)
@@ -35,6 +36,7 @@
 (* - `Forall` and `Exists` represent universal and existential quantification over a natural number variable, respectively. These are used to create quantification formulas in the logical system. *)
 
 (* Detailed Explanation: *)
+(* This section provides a detailed explanation of the `Fo` inductive type and its constructors. The `Fo` type is used to represent formulas in a logical system, and it includes constructors for predicates, equality, logical connectives, and quantifiers. Each constructor has specific usage and requirements, as detailed in the examples below. *)
 (* The `Fo` type is defined inductively with several constructors. Each constructor represents a different type of logical formula. *)
 (* Examples: *)
 (* - To create a predicate formula, use `Pred n args`. For example, `Pred 1 [2; 3]` creates a predicate formula with identifier 1 and arguments 2 and 3. *)
@@ -111,6 +113,7 @@ Section Part_III:
 (* The `Fo` inductive type represents formulas in a logical system. It includes constructors for predicates, equality, logical connectives, and quantifiers. See also: `Part_II` for the development of the logical system, `Part_IV` for the application of the theorems, and the `Examples` section for usage examples. Additionally, refer to `Theorem_1` in `Part_V` for an application of these formulas. For more details on the logical system, refer to `Part_II`. For examples of how to use the library, refer to the `Examples` section. For an application of these formulas, refer to `Theorem_1` in `Part_V`. Also, refer to `Definition_1` in `Part_I` for the basic definitions used in this section. *)
 
 (* Detailed Explanation: *)
+(* This section provides a detailed explanation of the `Fo` inductive type and its constructors. The `Fo` type is used to represent formulas in a logical system, and it includes constructors for predicates, equality, logical connectives, and quantifiers. Each constructor has specific usage and requirements, as detailed in the examples below. *)
 (* The `Fo` type is defined inductively with several constructors. Each constructor represents a different type of logical formula. *)
 (* Examples: *)
 (* - To create a predicate formula, use `Pred n args`. For example, `Pred 1 [2; 3]` creates a predicate formula with identifier 1 and arguments 2 and 3. *)
@@ -143,6 +146,7 @@ Section Part_III:
 (* - `Forall` and `Exists` represent universal and existential quantification over a natural number variable, respectively. These are used to create quantification formulas in the logical system. *)
 
 (* Detailed Explanation: *)
+(* This section provides a detailed explanation of the `Fo` inductive type and its constructors. The `Fo` type is used to represent formulas in a logical system, and it includes constructors for predicates, equality, logical connectives, and quantifiers. Each constructor has specific usage and requirements, as detailed in the examples below. *)
 (* The `Fo` type is defined inductively with several constructors. Each constructor represents a different type of logical formula. *)
 (* Examples: *)
 (* - To create a predicate formula, use `Pred n args`. For example, `Pred 1 [2; 3]` creates a predicate formula with identifier 1 and arguments 2 and 3. *)
