@@ -48,14 +48,61 @@ induction and recursion principles.)
  *
  * The ZFC Axioms are:
  * 1. Extensionality: Two sets are equal if they have the same elements.
+ *    Example: To prove that two sets A and B are equal, you can use the extensionality axiom:
+ *      Lemma ext_example : forall A B, A = B -> forall x, x \in A <-> x \in B.
+ *      Proof.
+ *        intros A B H x. destruct (H x). assumption. assumption.
+ *      Qed.
+ *
  * 2. Empty Set: There exists a set with no elements.
+ *    Example: The empty set can be constructed using the comprehension axiom:
+ *      Lemma empty_set_example : exists x, forall y, y \notin x.
+ *      Proof.
+ *        exists empty_set. intros y H. contradiction H.
+ *      Qed.
+ *
  * 3. Pairing: For any two sets, there exists a set containing both.
+ *    Cross-reference: See the Pairing Axiom in the Set Properties section for more details.
+ *
  * 4. Union: For any set, there exists a set containing all elements of all sets in the original set.
+ *    Example: The union of two sets A and B can be constructed using the union axiom:
+ *      Lemma union_example : forall A B, exists U, forall x, x \in U <-> x \in A \/ x \in B.
+ *      Proof.
+ *        intros A B. exists (union A B). intros x. split.
+ *        - intros H. destruct H; [left | right]; assumption.
+ *        - intros H. destruct H; [apply in_left | apply in_right]; assumption.
+ *      Qed.
+ *
  * 5. Power Set: For any set, there exists a set containing all subsets of the original set.
+ *    Cross-reference: See the Power Set Axiom in the Set Properties section for more details.
+ *
  * 6. Infinity: There exists an infinite set.
+ *    Example: The natural numbers can be constructed using the infinity axiom:
+ *      Lemma nat_example : exists N, empty_set \in N /\ forall x, x \in N -> x \cup {x} \in N.
+ *      Proof.
+ *        exists nat. split.
+ *        - apply in_nat. reflexivity.
+ *        - intros x H. destruct H; apply in_nat; apply in_nat.
+ *      Qed.
+ *
  * 7. Comprehension (Schema): For any property, there exists a set containing all elements with that property.
+ *    Example: The set of all even natural numbers can be constructed using the comprehension axiom:
+ *      Lemma even_nat_example : exists E, forall x, x \in E <-> x \in nat /\ exists y, x = 2 * y.
+ *      Proof.
+ *        exists (fun x => x \in nat /\ exists y, x = 2 * y). intros x. split.
+ *        - intros H. destruct H as [H1 H2]. split; [assumption | apply H2].
+ *        - intros [H1 H2]. exists H2. apply H2.
+ *      Qed.
+ *
  * 8. Replacement (Schema): For any function, there exists a set containing the images of all elements in the original set.
+ *    Cross-reference: See the Replacement Axiom in the Set Properties section for more details.
+ *
  * 9. Choice (Axiom of): For any set of non-empty sets, there exists a function that selects one element from each set.
+ *    Example: The axiom of choice can be used to prove the existence of a basis for a vector space:
+ *      Lemma basis_example : forall V, exists B, basis V B.
+ *      Proof.
+ *        intros V. apply choice_basis.
+ *      Qed.
  *
  * For more detailed information on each axiom, refer to the respective sections in the library.
  *)
@@ -665,14 +712,61 @@ induction and recursion principles.)
  *
  * The ZFC Axioms are:
  * 1. Extensionality: Two sets are equal if they have the same elements.
+ *    Example: To prove that two sets A and B are equal, you can use the extensionality axiom:
+ *      Lemma ext_example : forall A B, A = B -> forall x, x \in A <-> x \in B.
+ *      Proof.
+ *        intros A B H x. destruct (H x). assumption. assumption.
+ *      Qed.
+ *
  * 2. Empty Set: There exists a set with no elements.
+ *    Example: The empty set can be constructed using the comprehension axiom:
+ *      Lemma empty_set_example : exists x, forall y, y \notin x.
+ *      Proof.
+ *        exists empty_set. intros y H. contradiction H.
+ *      Qed.
+ *
  * 3. Pairing: For any two sets, there exists a set containing both.
+ *    Cross-reference: See the Pairing Axiom in the Set Properties section for more details.
+ *
  * 4. Union: For any set, there exists a set containing all elements of all sets in the original set.
+ *    Example: The union of two sets A and B can be constructed using the union axiom:
+ *      Lemma union_example : forall A B, exists U, forall x, x \in U <-> x \in A \/ x \in B.
+ *      Proof.
+ *        intros A B. exists (union A B). intros x. split.
+ *        - intros H. destruct H; [left | right]; assumption.
+ *        - intros H. destruct H; [apply in_left | apply in_right]; assumption.
+ *      Qed.
+ *
  * 5. Power Set: For any set, there exists a set containing all subsets of the original set.
+ *    Cross-reference: See the Power Set Axiom in the Set Properties section for more details.
+ *
  * 6. Infinity: There exists an infinite set.
+ *    Example: The natural numbers can be constructed using the infinity axiom:
+ *      Lemma nat_example : exists N, empty_set \in N /\ forall x, x \in N -> x \cup {x} \in N.
+ *      Proof.
+ *        exists nat. split.
+ *        - apply in_nat. reflexivity.
+ *        - intros x H. destruct H; apply in_nat; apply in_nat.
+ *      Qed.
+ *
  * 7. Comprehension (Schema): For any property, there exists a set containing all elements with that property.
+ *    Example: The set of all even natural numbers can be constructed using the comprehension axiom:
+ *      Lemma even_nat_example : exists E, forall x, x \in E <-> x \in nat /\ exists y, x = 2 * y.
+ *      Proof.
+ *        exists (fun x => x \in nat /\ exists y, x = 2 * y). intros x. split.
+ *        - intros H. destruct H as [H1 H2]. split; [assumption | apply H2].
+ *        - intros [H1 H2]. exists H2. apply H2.
+ *      Qed.
+ *
  * 8. Replacement (Schema): For any function, there exists a set containing the images of all elements in the original set.
+ *    Cross-reference: See the Replacement Axiom in the Set Properties section for more details.
+ *
  * 9. Choice (Axiom of): For any set of non-empty sets, there exists a function that selects one element from each set.
+ *    Example: The axiom of choice can be used to prove the existence of a basis for a vector space:
+ *      Lemma basis_example : forall V, exists B, basis V B.
+ *      Proof.
+ *        intros V. apply choice_basis.
+ *      Qed.
  *
  * For more detailed information on each axiom, refer to the respective sections in the library.
  *)
