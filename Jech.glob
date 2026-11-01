@@ -1,0 +1,153 @@
+DIGEST 427123ca3158bd30b4cb2de62476476e
+FJech
+R4976:4979 Stdlib.Lists.List <> <> lib
+R5055:5062 Stdlib.Arith.PeanoNat <> <> lib
+R5126:5138 Stdlib.Lists.List ListNotations <> mod
+sec 5150:5157 <> Part_III
+ind 6853:6854 <> Fo
+constr 7107:7110 <> Pred
+constr 7302:7303 <> Eq
+constr 7404:7406 <> And
+constr 7506:7507 <> Or
+constr 7607:7609 <> Imp
+constr 7708:7710 <> Not
+constr 7806:7811 <> Forall
+constr 7917:7922 <> Exists
+R7117:7119 Corelib.Init.Datatypes <> nat ind
+binder 7113:7113 <> n:3
+R7130:7133 Corelib.Init.Datatypes <> list ind
+R7135:7137 Corelib.Init.Datatypes <> nat ind
+binder 7123:7126 <> args:4
+R7314:7316 Corelib.Init.Datatypes <> nat ind
+binder 7306:7307 <> t1:5
+binder 7309:7310 <> t2:6
+R7417:7418 Jech <> Fo:1 ind
+binder 7409:7410 <> f1:7
+binder 7412:7413 <> f2:8
+R7518:7519 Jech <> Fo:1 ind
+binder 7510:7511 <> f1:9
+binder 7513:7514 <> f2:10
+R7620:7621 Jech <> Fo:1 ind
+binder 7612:7613 <> f1:11
+binder 7615:7616 <> f2:12
+R7717:7718 Jech <> Fo:1 ind
+binder 7713:7713 <> f:13
+R7818:7820 Corelib.Init.Datatypes <> nat ind
+binder 7814:7814 <> x:14
+R7828:7829 Jech <> Fo:1 ind
+binder 7824:7824 <> f:15
+R7929:7931 Corelib.Init.Datatypes <> nat ind
+binder 7925:7925 <> x:16
+R7939:7940 Jech <> Fo:1 ind
+binder 7935:7935 <> f:17
+scheme 6853:6854 <> Fo_rect
+scheme 6853:6854 <> Fo_ind
+scheme 6853:6854 <> Fo_rec
+scheme 6853:6854 <> Fo_sind
+def 10238:10254 <> predicate_example
+R10258:10259 Jech <> Fo ind
+R10264:10267 Jech <> Pred constr
+R10271:10271 Stdlib.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R10273:10274 Stdlib.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R10276:10276 Stdlib.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+def 10322:10337 <> equality_example
+R10341:10342 Jech <> Fo ind
+R10347:10348 Jech <> Eq constr
+def 10486:10496 <> and_example
+R10500:10501 Jech <> Fo ind
+R10506:10508 Jech <> And constr
+R10511:10512 Jech <> Eq constr
+R10520:10523 Jech <> Pred constr
+R10527:10527 Stdlib.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R10529:10530 Stdlib.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R10532:10532 Stdlib.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+def 10586:10595 <> or_example
+R10599:10600 Jech <> Fo ind
+R10605:10606 Jech <> Or constr
+R10609:10610 Jech <> Eq constr
+R10618:10621 Jech <> Pred constr
+R10625:10625 Stdlib.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R10627:10628 Stdlib.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R10630:10630 Stdlib.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+def 10684:10694 <> imp_example
+R10698:10699 Jech <> Fo ind
+R10704:10706 Jech <> Imp constr
+R10709:10710 Jech <> Eq constr
+R10718:10721 Jech <> Pred constr
+R10725:10725 Stdlib.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R10727:10728 Stdlib.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R10730:10730 Stdlib.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+def 10771:10781 <> not_example
+R10785:10786 Jech <> Fo ind
+R10791:10793 Jech <> Not constr
+R10796:10797 Jech <> Eq constr
+def 10936:10949 <> forall_example
+R10953:10954 Jech <> Fo ind
+R10959:10964 Jech <> Forall constr
+R10969:10970 Jech <> Eq constr
+def 11032:11045 <> exists_example
+R11049:11050 Jech <> Fo ind
+R11055:11060 Jech <> Exists constr
+R11065:11066 Jech <> Eq constr
+def 11249:11262 <> nested_example
+R11266:11267 Jech <> Fo ind
+R11274:11279 Jech <> Forall constr
+R11284:11286 Jech <> Imp constr
+R11289:11290 Jech <> Eq constr
+R11298:11303 Jech <> Exists constr
+R11308:11311 Jech <> Pred constr
+R11315:11315 Stdlib.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R11317:11318 Stdlib.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R11320:11320 Stdlib.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+def 12539:12542 <> size
+R12549:12550 Jech <> Fo ind
+binder 12545:12545 <> f:18
+R12555:12557 Corelib.Init.Datatypes <> nat ind
+R12570:12570 Jech <> f:18 var
+R12581:12584 Jech <> Pred constr
+R12604:12605 Jech <> Eq constr
+R12627:12629 Jech <> And constr
+R12644:12644 Corelib.Init.Datatypes <> S constr
+R12654:12656 Corelib.Init.Peano <> ::nat_scope:x_'+'_x not
+R12647:12650 Jech <> size:19 def
+R12657:12660 Jech <> size:19 def
+R12670:12671 Jech <> Or constr
+R12687:12687 Corelib.Init.Datatypes <> S constr
+R12697:12699 Corelib.Init.Peano <> ::nat_scope:x_'+'_x not
+R12690:12693 Jech <> size:19 def
+R12700:12703 Jech <> size:19 def
+R12713:12715 Jech <> Imp constr
+R12730:12730 Corelib.Init.Datatypes <> S constr
+R12740:12742 Corelib.Init.Peano <> ::nat_scope:x_'+'_x not
+R12733:12736 Jech <> size:19 def
+R12743:12746 Jech <> size:19 def
+R12756:12758 Jech <> Not constr
+R12773:12773 Corelib.Init.Datatypes <> S constr
+R12776:12779 Jech <> size:19 def
+R12781:12781 Jech <> f:18 var
+R12788:12793 Jech <> Forall constr
+R12805:12805 Corelib.Init.Datatypes <> S constr
+R12808:12811 Jech <> size:19 def
+R12813:12813 Jech <> f:18 var
+R12820:12825 Jech <> Exists constr
+R12837:12837 Corelib.Init.Datatypes <> S constr
+R12840:12843 Jech <> size:19 def
+R12845:12845 Jech <> f:18 var
+prf 13257:13267 <> size_ge_one
+R13282:13283 Jech <> Fo ind
+binder 13278:13278 <> f:21
+R13287:13290 Corelib.Init.Peano <> ::nat_scope:x_'<='_x not
+R13291:13294 Jech <> size def
+R13296:13296 Jech <> f:21 var
+R13373:13378 Corelib.Init.Peano <> le_n_S thm
+R13387:13396 Stdlib.Arith.PeanoNat Nat le_0_l thm
+def 13652:13670 <> size_of_and_example
+R13690:13692 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R13674:13677 Jech <> size def
+R13679:13689 Jech <> and_example ex
+def 13787:13809 <> size_ge_one_and_example
+R13814:13817 Corelib.Init.Peano <> ::nat_scope:x_'<='_x not
+R13818:13821 Jech <> size def
+R13823:13833 Jech <> and_example ex
+R13838:13848 Jech <> size_ge_one thm
+R13858:13865 Jech Part_III <> sec
