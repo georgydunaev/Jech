@@ -3,7 +3,7 @@
 This index catalogs the definitions, theorems, and functions formalized in the Jech repository.
 It is intended to serve as a quick-reference guide for navigating the codebase.
 
-## ## Table of Contents
+## Table of Contents
 
 - [Axioms](#axioms)
 - [Definitions](#definitions)
@@ -44,6 +44,20 @@ The following axioms are formalized in the repository:
 
 ### Axiom of Replacement
 
+| Axiom | File | Description |
+|-------|------|-------------|
+| Axiom of Infinity (`axInfty`) | `src/axioms/axInfty.ML`, `coq-contribs/zfc/axioms.v` | States that there exists an inductive set containing the empty set, often used to construct the natural numbers `ω`. |
+| Axiom of Replacement (`axRep`) | `src/axioms/axRep.ML` | States that if for every element `x` in a set `A` there is a unique element `y` in a set `B` such that a relation `R(x, y)` holds, then there exists a set `C` such that for every `y` in `C`, there exists an `x` in `A` such that `R(x, y)`. |
+| Zone Delegation (`axZone`) | `src/axioms/axZone.ML` | Leverages the `sup` constructor for impredicative comprehension over Scott-setrees, enabling zone-level set construction without postulation. |
+
+
+| Axiom | File | Description |
+|-------|------|-------------|
+| Axiom of Infinity (`axInfty`) | `src/axioms/axInfty.ML`, `coq-contribs/zfc/axioms.v` | States that there exists an inductive set containing the empty set, often used to construct the natural numbers `ω`. |
+| Axiom of Replacement (`axRep`) | `src/axioms/axRep.ML` | States that if for every element `x` in a set `A` there is a unique element `y` in a set `B` such that a relation `R(x, y)` holds, then there exists a set `C` such that for every `y` in `C`, there exists an `x` in `A` such that `R(x, y)`. |
+| Zone Delegation (`axZone`) | `src/axioms/axZone.ML` | Leverages the `sup` constructor for impredicative comprehension over Scott-setrees, enabling zone-level set construction without postulation. |
+
+
 | Definition | File | Description |
 |------------|------|-------------|
 | `axRep` | `src/axioms/axRep.ML` | Theorem implementing replacement using the `sup` constructor and the Dunaev Tagged Ordered Pairs rule for proper classes. |
@@ -76,7 +90,21 @@ The following axioms are formalized in the repository:
 - **Proof**: Uses the `IN_sup` lemma and injectivity of `EQ` on numerals.
 - **Files**: `src/axioms/axInfty.ML`, `Jech.v` (axInfty walkthrough section).
 
-### Axiom of Replacement Soundness
+### Axiom of Replacement
+
+| Axiom | File | Description |
+|-------|------|-------------|
+| Axiom of Infinity (`axInfty`) | `src/axioms/axInfty.ML`, `coq-contribs/zfc/axioms.v` | States that there exists an inductive set containing the empty set, often used to construct the natural numbers `ω`. |
+| Axiom of Replacement (`axRep`) | `src/axioms/axRep.ML` | States that if for every element `x` in a set `A` there is a unique element `y` in a set `B` such that a relation `R(x, y)` holds, then there exists a set `C` such that for every `y` in `C`, there exists an `x` in `A` such that `R(x, y)`. |
+| Zone Delegation (`axZone`) | `src/axioms/axZone.ML` | Leverages the `sup` constructor for impredicative comprehension over Scott-setrees, enabling zone-level set construction without postulation. |
+
+
+| Axiom | File | Description |
+|-------|------|-------------|
+| Axiom of Infinity (`axInfty`) | `src/axioms/axInfty.ML`, `coq-contribs/zfc/axioms.v` | States that there exists an inductive set containing the empty set, often used to construct the natural numbers `ω`. |
+| Axiom of Replacement (`axRep`) | `src/axioms/axRep.ML` | States that if for every element `x` in a set `A` there is a unique element `y` in a set `B` such that a relation `R(x, y)` holds, then there exists a set `C` such that for every `y` in `C`, there exists an `x` in `A` such that `R(x, y)`. |
+| Zone Delegation (`axZone`) | `src/axioms/axZone.ML` | Leverages the `sup` constructor for impredicative comprehension over Scott-setrees, enabling zone-level set construction without postulation. |
+ Soundness
 
 - **Statement**: The set `C = sup (fun x => f x)` satisfies the axiom of replacement: for every `x` in `A`, `f x` is in `C`.
 - **Proof**: Uses the `sup` constructor and the Dunaev Tagged Ordered Pairs rule.
