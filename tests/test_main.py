@@ -8,9 +8,13 @@ These tests verify the core functionality of the Jech library including:
 - Models and proof construction
 """
 
-import pytest
 import sys
 import os
+import unittest
+try:
+    import pytest
+except ImportError:
+    pytest = None
 
 # Add the repository root to the path so we can import jech
 sys.path.insert(0, os.path.dirname(__file__))
@@ -35,7 +39,7 @@ except ImportError:
     Proof = None
 
 
-class TestAxiomOfInfinity:
+class TestAxiomOfInfinity(unittest.TestCase):
     """Tests for the Axiom of Infinity (axInfty)."""
 
     def test_omega_is_inductive(self):
@@ -57,7 +61,7 @@ class TestAxiomOfInfinity:
             assert omega.is_infinite(), "omega should be infinite"
 
 
-class TestVariablesAndTerms:
+class TestVariablesAndTerms(unittest.TestCase):
     """Tests for variables and terms."""
 
     def test_variable_creation(self):
@@ -81,7 +85,7 @@ class TestVariablesAndTerms:
             assert f.is_function_term(), "Should be a function term"
 
 
-class TestFormulas:
+class TestFormulas(unittest.TestCase):
     """Tests for first-order logic formulas."""
 
     def test_formula_creation(self):
@@ -115,7 +119,7 @@ class TestFormulas:
             assert formula.is_formula(), "Existential quantifier should be valid"
 
 
-class TestAxioms:
+class TestAxioms(unittest.TestCase):
     """Tests for logical axioms."""
 
     def test_equality_axiom(self):
@@ -131,7 +135,7 @@ class TestAxioms:
             assert axiom.is_axiom(), "Implication axiom should be valid"
 
 
-class TestInferenceRules:
+class TestInferenceRules(unittest.TestCase):
     """Tests for inference rules."""
 
     def test_modus_ponens(self):
@@ -147,7 +151,7 @@ class TestInferenceRules:
             assert rule.is_inference_rule(), "Generalization should be valid"
 
 
-class TestModel:
+class TestModel(unittest.TestCase):
     """Tests for models."""
 
     def test_model_creation(self):
@@ -165,7 +169,7 @@ class TestModel:
             assert result is True, "P(a) should be true in the model"
 
 
-class TestProof:
+class TestProof(unittest.TestCase):
     """Tests for proofs."""
 
     def test_proof_creation(self):
@@ -209,6 +213,4 @@ def test_imports():
 
 
 if __name__ == "__main__":
-    """Run all tests when executed directly."""
-    import pytest
-    pytest.main([__file__, "-v"])
+    unittest.main()
