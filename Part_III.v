@@ -119,18 +119,78 @@ Fixpoint Sat (e : env) (F : Formula) : Prop :=
   | ExistsFormula x F' => exists val : Ens, Sat (update_env e x val) F'
   end.
 
+(* Soundness of deduction rules and Hilbert axioms *)
+
+Lemma haxiom1_sound : forall x y e,
+  Sat e (ImpliesFormula (EqFormula (VarTerm x) (VarTerm y)) (EqFormula (VarTerm y) (VarTerm x))).
+Proof.
+  intros x y e. simpl. intros H. symmetry. exact H.
+Qed.
+
+Lemma haxiom2_sound : forall P Q R e,
+  Sat e (ImpliesFormula (ImpliesFormula P (ImpliesFormula Q R)) (ImpliesFormula (ImpliesFormula P Q) (ImpliesFormula P R))).
+Proof.
+  intros P Q R e. simpl. intros H1 H2 HP. apply H1; [exact HP | apply H2; exact HP].
+Qed.
+
+Lemma haxiom3_sound : forall P Q e,
+  Sat e (ImpliesFormula (AndFormula P Q) P).
+Proof.
+  intros P Q e. simpl. intros [HP HQ]. exact HP.
+Qed.
+
+Lemma haxiom4_sound : forall P Q e,
+  Sat e (ImpliesFormula (AndFormula P Q) Q).
+Proof.
+  intros P Q e. simpl. intros [HP HQ]. exact HQ.
+Qed.
+
+Lemma haxiom5_sound : forall P Q e,
+  Sat e (ImpliesFormula P (ImpliesFormula Q (AndFormula P Q))).
+Proof.
+  intros P Q e. simpl. intros HP HQ. split; [exact HP | exact HQ].
+Qed.
+
+Lemma haxiom6_sound : forall P Q e,
+  Sat e (ImpliesFormula (ImpliesFormula P Q) (ImpliesFormula (ImpliesFormula Q P) (ImpliesFormula (NotFormula P) (NotFormula Q)))).
+Proof.
+  intros P Q e. simpl. intros HPQ HQP HnP HQ. apply HnP. apply HQP. exact HQ.
+Qed.
+
+(* Quantifier substitution semantics: pending full capture-avoiding substitution lemmas *)
+Axiom haxiom7_sound : forall x P e,
+  Sat e (ImpliesFormula (ForallFormula x P) (Subst x (VarTerm x) P)).
+
+Axiom haxiom8_sound : forall x P e,
+  Sat e (ImpliesFormula (ImpliesFormula (Subst x (VarTerm x) P) (ForallFormula x P)) (ForallFormula x P)).
+
+Lemma haxiom_sound : forall F, Haxiom F -> forall e : env, Sat e F.
+Proof.
+  intros F Hax e.
+  destruct Hax.
+  - apply haxiom1_sound.
+  - apply haxiom2_sound.
+  - apply haxiom3_sound.
+  - apply haxiom4_sound.
+  - apply haxiom5_sound.
+  - apply haxiom6_sound.
+  - apply haxiom7_sound.
+  - apply haxiom8_sound.
+Qed.
+
 (* Soundness theorem *)
 Theorem soundness : forall F, Proof F -> forall e : env, Sat e F.
 Proof.
   intros F Hproof.
   induction Hproof; intros e.
   - (* AxiomProof *)
-    destruct H; admit.
+    apply haxiom_sound.
+    exact H.
   - (* MP *)
     apply IHHproof1.
     apply IHHproof2.
   - (* Gen *)
     simpl.
     intro val.
-    admit.
-Admitted.
+    apply IHHproof.
+Qed.

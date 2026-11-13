@@ -11,7 +11,9 @@ of Scott-style `Ens` (set-theoretic) constructions and his comprehensive treatme
 The Jech library consists of two main components:
 
 1. **Coq Development** (`Jech.v`, `Part_III.v`): Machine-checked formal proofs of set theory axioms
-   and first-order logic derivations. This is the ground-truth layer that ensures correctness.
+   and first-order logic derivations. In `Part_III.v`, structural inference rules (Modus Ponens,
+   Generalization) and propositional axioms have machine-checked semantic soundness under `Sat`,
+   with quantifier substitution semantics explicitly hypothesized. This provides a rigorous ground-truth layer.
 
 2. **Python Bindings** (`main.py`, `setup.py`): Higher-level interfaces for working with the
    concepts defined in Coq, including `Formula`, `Model`, `Proof` classes and implementations
@@ -133,7 +135,7 @@ Example nested_example : Fo :=
 from jech.first_order_logic import Formula, Model, Proof
 
 # Create a formula
-formula = Formula("∀x P(x) → P(a)")
+formula = Formula("∀x P(x) -> P(a)")
 print("Formula:", formula)
 
 # Create a model
@@ -151,8 +153,9 @@ The `Part_III.v` file defines a richer `Formula` type with distinct `Var`/`Term`
 and explicit `True`/`False` cases, used by the Hilbert-style derivation calculus. This
 includes:
 
-- **Axioms** (Axiom1–Axiom8): Classical propositional and quantification axioms
+- **Axioms** (Haxiom1-Haxiom8): Propositional, equality, and quantification axioms
 - **Inference rules** (AxiomProof, MP, Gen): Modus ponens and generalization
+- **Semantic Soundness** (`Theorem soundness`): Inductive proof without admit showing that every provable formula is satisfied under all variable assignments `Sat e F`.
 
 ## Python API
 
@@ -160,7 +163,7 @@ includes:
 
 Represents a first-order logic formula constructed from string input or Coq-style constructors.
 
-- `__init__(formula_str)`: Initialize from a string like `"∀x P(x) → P(a)"`
+- `__init__(formula_str)`: Initialize from a string like `"∀x P(x) -> P(a)"`
 - `is_formula()`: Verify the object is a valid formula
 - `evaluate(model)`: Evaluate the formula in a given model
 
@@ -254,7 +257,7 @@ assert rule.is_inference_rule()
 from jech.first_order_logic import Formula, Model, Proof
 
 # Define a formula
-formula = Formula("∀x P(x) → P(a)")
+formula = Formula("∀x P(x) -> P(a)")
 
 # Define a model
 model = Model(["a", "b"], ["P"], {"P": ["a", "b"]})

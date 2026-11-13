@@ -46,7 +46,7 @@
 (*                           the classical Zermelo `Axiom infinity` in       *)
 (*                           `coq-contribs/zfc/axioms.v`; used in this       *)
 (*                           file's axInfty section for comparison.          *)
-(*   - `section_ex_1_6.ML` : worked notes for Jech Ch.1, Ex. 1.6            *)
+(*   - `section_ex_1_6.v`  : worked notes for Jech Ch.1, Ex. 1.6            *)
 (*                           (informal, outside the CI build).               *)
 (*   - `examples/*.v`      : standalone usage sketches (informal; they are   *)
 (*                           not part of the CI build, which runs on         *)

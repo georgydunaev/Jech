@@ -1,21 +1,21 @@
-(* This is an advanced example demonstrating the use of the Jech library with more advanced concepts. *)
+(* Advanced example: Formulating set-theoretic axioms as first-order formulas *)
 
-(* Import the Jech library. *)
 Require Import Jech.
+Require Import List.
+Import ListNotations.
 
-(* Define a set and demonstrate the use of advanced concepts. *)
-Definition my_set := {1, 2, 3}.
+(* Axiom of Infinity represented as a first-order formula in Fo *)
+Definition infinity_formula : Fo :=
+  Jech.Exists 0 (Jech.Forall 1 (Imp (Pred 0 [1]) (Jech.Exists 2 (And (Pred 0 [2]) (Pred 1 [1; 2]))))).
 
-(* Axiom of Infinity: There exists a set that contains all the natural numbers. *)
-Definition natural_numbers := {0, 1, 2, 3, ...}.
-Print natural_numbers.
+(* Axiom of Power Set represented in Fo *)
+Definition power_set_formula : Fo :=
+  Jech.Forall 0 (Jech.Exists 1 (Jech.Forall 2 (Imp (Pred 0 [2; 1]) (Jech.Forall 3 (Imp (Pred 0 [3; 2]) (Pred 0 [3; 0])))))).
 
-(* Axiom of Power Set: For any set, there exists a set that contains all the subsets of the original set. *)
-Definition power_set := {x | x ⊆ my_set}.
-Print power_set.
-
-(* Axiom of Replacement: For any set and any function, there exists a set that contains the results of applying the function to each element of the original set. *)
-Definition replacement_set := {f(x) | x ∈ my_set}.
-Print replacement_set.
+Example formulas_well_formed :
+  size infinity_formula >= 1 /\ size power_set_formula >= 1.
+Proof.
+  split; apply size_ge_one.
+Qed.
 
 (* End of example. *)

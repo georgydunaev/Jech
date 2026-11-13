@@ -1,11 +1,9 @@
 (* 
  * Jech's Set Theory, Chapter 1, Exercise 1.6
  *
- * Proven by: opencode/mimo-v2.6-flash-free (Capability Tier 1, Verified Win Rate: 85.7%)
- *
- * Theorem ex_1_6 : ex.1.6
- *
- * Proof: (see supporting lemmas and section lemma_1_6 below)
+ * Status: Partial formalization / lemmas under development
+ * Note: Core lemmas (ex_1_6_lem1 through lem5, ex_1_6_zero) are formalized,
+ * while the final induction theorem ex_1_6 is pending complete formalization.
  *)
 
 (* 
@@ -202,7 +200,8 @@ Qed.
 
 (* 
  * Theorem ex_1_6: Induction principle for prop_1_6.
- * This completes Exercise 1.6, showing that Ind (Comp X prop_1_6) holds.
+ * INCOMPLETE: This final induction theorem is currently admitted pending
+ * full formalization of induction over X with lemma_1_6.
  *)
 Theorem ex_1_6 : Ind (Comp X prop_1_6).
 Proof.

@@ -153,6 +153,37 @@ class TestInferenceRules(unittest.TestCase):
             assert rule.is_inference_rule(), "Generalization should be valid"
 
 
+class TestHilbertAxioms(unittest.TestCase):
+    """Tests for Hilbert-style axioms and deduction rules."""
+
+    def test_haxiom_names(self):
+        """All Haxiom1 through Haxiom8 should be recognized as valid axioms."""
+        if Axiom is not None:
+            for i in range(1, 9):
+                ax_name = f"Haxiom{i}"
+                ax = Axiom(ax_name)
+                assert ax.is_axiom(), f"{ax_name} should be valid"
+
+    def test_inference_rules(self):
+        """MP and Gen inference rules should be recognized."""
+        if InferenceRule is not None:
+            for rule_name in ['MP', 'Gen', 'modus_ponens', 'generalization']:
+                rule = InferenceRule(rule_name)
+                assert rule.is_inference_rule(), f"{rule_name} should be valid"
+
+
+class TestReplacementSchema(unittest.TestCase):
+    """Tests for the replacement schema concept."""
+
+    def test_finite_set_image(self):
+        """Image of a finite domain under a function is finite and well-defined."""
+        domain = {0, 1, 2, 3}
+        f = lambda x: x + 10
+        image = {f(x) for x in domain}
+        assert len(image) == len(domain)
+        assert image == {10, 11, 12, 13}
+
+
 class TestModel(unittest.TestCase):
     """Tests for models."""
 

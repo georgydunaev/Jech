@@ -1,26 +1,27 @@
-(* This is an advanced example demonstrating more complex set operations using the Jech library. *)
+(* Example demonstrating set operations via list representations *)
 
-(* Import the Jech library. *)
 Require Import Jech.
+Require Import List.
+Require Import PeanoNat.
+Import ListNotations.
 
-(* Define two sets for demonstration purposes. *)
-Definition set_a := {1, 2, 3, 4, 5}.
-Definition set_b := {4, 5, 6, 7, 8}.
+Definition set_a : list nat := [1; 2; 3; 4; 5].
+Definition set_b : list nat := [4; 5; 6; 7; 8].
 
-(* Demonstrate set union. *)
-Compute union set_a set_b.
+(* List-based union *)
+Definition list_union (l1 l2 : list nat) : list nat :=
+  l1 ++ filter (fun x => if existsb (Nat.eqb x) l1 then false else true) l2.
 
-(* Demonstrate set intersection. *)
-Compute intersection set_a set_b.
+(* List-based intersection *)
+Definition list_intersection (l1 l2 : list nat) : list nat :=
+  filter (fun x => existsb (Nat.eqb x) l2) l1.
 
-(* Demonstrate set difference. *)
-Compute difference set_a set_b.
+(* List-based difference *)
+Definition list_difference (l1 l2 : list nat) : list nat :=
+  filter (fun x => if existsb (Nat.eqb x) l2 then false else true) l1.
 
-(* Define a more complex set using a predicate. *)
-Definition even_numbers := {x | x in {1, 2, 3, 4, 5, 6, 7, 8, 9, 10} & even x}.
-
-(* Check if an element is in the complex set. *)
-Compute in 2 even_numbers.
-Compute in 3 even_numbers.
+Compute list_union set_a set_b.
+Compute list_intersection set_a set_b.
+Compute list_difference set_a set_b.
 
 (* End of example. *)

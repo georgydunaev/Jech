@@ -6,11 +6,17 @@ __pycache__/
 .pytest_cache/
 
 # Coq build artifacts (untracked new outputs)
+*.vo
+*.glob
 *.vok
 *.vos
 .*.aux
+*.aux
 src/**/*.vo
 src/**/*.glob
 src/**/.*.aux
+examples/**/*.vo
+examples/**/*.glob
+examples/**/.*.aux
 
 
