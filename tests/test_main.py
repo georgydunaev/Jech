@@ -17,8 +17,10 @@ except ImportError:
     pytest = None
 
 # Add the repository root to the path so we can import jech
+repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, repo_root)
 sys.path.insert(0, os.path.dirname(__file__))
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+sys.path.insert(0, os.path.dirname(repo_root))
 
 # Import from the installed/root module
 try:

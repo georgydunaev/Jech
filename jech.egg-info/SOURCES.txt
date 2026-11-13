@@ -1,5 +1,7 @@
 README.md
 setup.py
+jech/__init__.py
+jech/first_order_logic.py
 jech.egg-info/PKG-INFO
 jech.egg-info/SOURCES.txt
 jech.egg-info/dependency_links.txt

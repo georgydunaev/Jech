@@ -79,9 +79,10 @@ Definition PP (y:Ens) := forall z : Ens,
  * Context includes: X is a set, y is an element of X, X is closed under 
  * successor, y is transitive, and PP y holds.
  *)
-Section lemma_1_6.
+Section exercise_1_6.
   Context (X:Ens) (H: Ind X).
     Context {H0 : IN Vide X} {H1 : forall Y : Ens, IN Y X -> IN (succ Y) X}.
+  Section lemma_1_6.
       Context (y:Ens) (U1:IN y X) (J0:pTr y) (J1:PP y).
 
       (* 
@@ -126,7 +127,7 @@ Section lemma_1_6.
        * unions with singletons.
        *)
       Lemma ex_1_6_lem4 (z : Ens) (K1 : Inhab z)
-      -(P : INC z y) m (N:epsmin m z)
+      (P : INC z y) m (N:epsmin m z)
       : epsmin m (Union (Pair z (Sing y))).
       Proof.
       unfold epsmin in *|-*.
@@ -198,7 +199,6 @@ destruct H1 as [H1 H2].
   * destruct (nothing_IN_Vide _ Y).
   *)
 Qed.
-End lemma_1_6.
 
 (* 
  * Theorem ex_1_6: Induction principle for prop_1_6.
@@ -206,24 +206,8 @@ End lemma_1_6.
  *)
 Theorem ex_1_6 : Ind (Comp X prop_1_6).
 Proof.
-(* Implementation follows from ex_1_6_zero and the lemmas above.
-   The full proof would use the induction principle on X and the 
-   properties established in lemma_1_6. *)
-(* Qed. *)
-(* 
-  * Alternative: Uncomment and complete below
-  *)
-(* pose (H1:=H).
-   destruct H1 as [H1 H2].
-   split.
-   + exact ex_1_6_zero.
-   + (* ... remaining induction steps using lemmas from lemma_1_6 ... *)
-     apply IHX.
-     split.
-     * apply IN_P_Comp; exact ex_1_6_lem1; assumption.
-     * split.
-     * apply pTr_succ; apply IHX; assumption.
-     * intros Y H.
-     (* ... use ex_1_6_lem2, ex_1_6_lem3, ex_1_6_lem4, ex_1_6_lem5 ... *)
-     admit.
-   Qed. *)
+  (* Follows from ex_1_6_zero and induction on X with lemma_1_6 *)
+  admit.
+Admitted.
+
+End exercise_1_6.

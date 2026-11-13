@@ -33,6 +33,23 @@ def verify_files(directory):
                     print(f"Error in {file_path}: {e}", file=sys.stderr)
                     sys.exit(1)
 
+def run_unit_tests(directory):
+    """Run test suite to verify module behavior and exports."""
+    import unittest
+    test_dir = os.path.join(directory, 'tests')
+    if os.path.isdir(test_dir):
+        print(f"Running unit tests in {test_dir}...")
+        loader = unittest.defaultTestLoader
+        suite = loader.discover(test_dir, pattern='test_*.py')
+        runner = unittest.TextTestRunner(verbosity=1)
+        result = runner.run(suite)
+        if not result.wasSuccessful():
+            print("Unit tests failed!", file=sys.stderr)
+            sys.exit(1)
+        print(f"Unit tests passed ({result.testsRun} tests executed).")
+
 if __name__ == "__main__":
-    verify_files('/botworkspace/Jech')
+    jech_dir = os.path.dirname(os.path.abspath(__file__))
+    verify_files(jech_dir)
+    run_unit_tests(jech_dir)
     print("All files verified successfully.")

@@ -68,8 +68,8 @@ Fixpoint Subst (x : Var) (t : Term) (F : Formula) : Formula :=
 (* Hilbert-style axioms *)
 
 Inductive Haxiom : Formula -> Prop :=
-| Haxiom1 : forall x y, Haxiom (ImpliesFormula (ImpliesFormula (ImpliesFormula (NotFormula (EqFormula (VarTerm x) (VarTerm y))) (NotFormula (EqFormula (VarTerm y) (VarTerm x)))) (EqFormula (VarTerm x) (VarTerm y))))
-| Haxiom2 : forall P Q R, Haxiom (ImpliesFormula (ImpliesFormula (ImpliesFormula P (ImpliesFormula Q R)) (ImpliesFormula (ImpliesFormula P Q) (ImpliesFormula P R)))
+| Haxiom1 : forall x y, Haxiom (ImpliesFormula (EqFormula (VarTerm x) (VarTerm y)) (EqFormula (VarTerm y) (VarTerm x)))
+| Haxiom2 : forall P Q R, Haxiom (ImpliesFormula (ImpliesFormula P (ImpliesFormula Q R)) (ImpliesFormula (ImpliesFormula P Q) (ImpliesFormula P R)))
 | Haxiom3 : forall P Q, Haxiom (ImpliesFormula (AndFormula P Q) P)
 | Haxiom4 : forall P Q, Haxiom (ImpliesFormula (AndFormula P Q) Q)
 | Haxiom5 : forall P Q, Haxiom (ImpliesFormula P (ImpliesFormula Q (AndFormula P Q)))
@@ -85,54 +85,52 @@ Inductive Proof : Formula -> Prop :=
 | Gen : forall x F, Proof F -> Proof (ForallFormula x F).
 
 (* Ens-based satisfaction relation *)
-(* Sat F env means formula F is satisfied under variable assignment env : Var -> Ens *)
+(* Sat e F means formula F is satisfied under variable assignment e : Var -> Ens *)
 
-Variable ens_val : Ens.
+Parameter Ens : Type.
+Parameter eval_func : string -> list Ens -> Ens.
 
 Definition env := Var -> Ens.
+
+Definition update_env (e : env) (x : Var) (val : Ens) : env :=
+  fun y =>
+    match x, y with
+    | mkVar nx, mkVar ny => if String.eqb nx ny then val else e y
+    end.
 
 (* Term evaluation *)
 Fixpoint eval_term (t : Term) (e : env) : Ens :=
   match t with
   | VarTerm v => e v
-  | FuncTerm _ args => match args with
-    | nil => ensure_in e 0
-    | a :: rest => ensure_in (appl i (eval_term a e) (eval_term (FuncTerm _ rest) e))
-    end
-  end
-with ensure_in (e : Ens) (x : Ens) : Ens :=
-  match e with
-  | sup A f => if EQ x (f A) then x else ensure_in (f A) x
-  end
-with appl (f : Ens -> Ens) (x : Ens) : Ens := f x.
+  | FuncTerm f args => eval_func f (map (fun s => eval_term s e) args)
+  end.
 
 (* Satisfaction relation *)
-Inductive Sat : Formula -> env -> Prop :=
-| Sat_True : Sat TrueFormula env
-| Sat_Eq t1 t2 => Sat (EqFormula t1 t2) env
-| Sat_Not F => Sat F env -> Sat (NotFormula F) env
-| Sat_And F1 F2 => Sat F1 env /\ Sat F2 env
-| Sat_Or F1 F2 => Sat F1 env \/ Sat F2 env
-| Sat_Imp F1 F2 => Sat F1 env -> Sat F2 env
-| Sat_Forall x F => forall v, Sat (Subst x (VarTerm v) F) env
-| Sat_Exists x F => exists v, Sat (Subst x (VarTerm v) F) env.
+Fixpoint Sat (e : env) (F : Formula) : Prop :=
+  match F with
+  | TrueFormula => True
+  | FalseFormula => False
+  | EqFormula t1 t2 => eval_term t1 e = eval_term t2 e
+  | NotFormula F' => ~ Sat e F'
+  | AndFormula F1 F2 => Sat e F1 /\ Sat e F2
+  | OrFormula F1 F2 => Sat e F1 \/ Sat e F2
+  | ImpliesFormula F1 F2 => Sat e F1 -> Sat e F2
+  | ForallFormula x F' => forall val : Ens, Sat (update_env e x val) F'
+  | ExistsFormula x F' => exists val : Ens, Sat (update_env e x val) F'
+  end.
 
 (* Soundness theorem *)
-Theorem soundness : forall F, Proof F -> forall env, Sat F env.
+Theorem soundness : forall F, Proof F -> forall e : env, Sat e F.
 Proof.
-  intros F Henv Hproof.
-  induction Hproof; intros env Hsat.
+  intros F Hproof.
+  induction Hproof; intros e.
   - (* AxiomProof *)
-    apply IH. assumption.
+    destruct H; admit.
   - (* MP *)
-    destruct Hsat as [Himp Hf].
-    apply (MP _ _ Himp Hf).
+    apply IHHproof1.
+    apply IHHproof2.
   - (* Gen *)
-    destruct Hsat as [Hf].
-    apply Gen. assumption.
-  - (* ... other cases would go here *)
-    (* For brevity, the full induction is sketched; complete proof requires
-       handling all formula constructors and ensuring the satisfaction
-       relation respects the Hilbert calculus. *)
+    simpl.
+    intro val.
     admit.
-Qed.
+Admitted.

@@ -4,3 +4,13 @@ __pycache__/
 *.py[cod]
 *.class
 .pytest_cache/
+
+# Coq build artifacts (untracked new outputs)
+*.vok
+*.vos
+.*.aux
+src/**/*.vo
+src/**/*.glob
+src/**/.*.aux
+
+
