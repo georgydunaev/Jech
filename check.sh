@@ -6,5 +6,6 @@ COQC_BIN="$(command -v coqc 2>/dev/null || echo "/usr/bin/coqc")"
 "$COQC_BIN" -Q . '' Part_III.v
 "$COQC_BIN" -Q . '' section_mostowski.v
 "$COQC_BIN" -Q . '' section_cumulative_hierarchy.v
+"$COQC_BIN" -Q . '' section_choice.v
 "$COQC_BIN" src/axioms/axInfty.v
 "$COQC_BIN" src/axioms/axRep.v
