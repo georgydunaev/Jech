@@ -5,6 +5,21 @@ axiomatic set theory, and first-order logic derivation calculi.
 """
 
 from .first_order_logic import Formula, Model, Proof
+from .mostowski import (
+    WellFoundedStructure,
+    find_minimal_element,
+    is_extensional,
+    is_minimal,
+    is_transitive_set,
+    is_well_founded,
+    mostowski_collapse,
+    predecessors,
+    rank,
+    transitive_closure,
+    transitive_closure_relation,
+    verify_mostowski_isomorphism,
+    von_neumann_ordinal,
+)
 
 
 class OmegaSet:
@@ -153,4 +168,17 @@ __all__ = [
     "parse_formula",
     "evaluate_formula",
     "prove_theorem",
+    "predecessors",
+    "is_minimal",
+    "find_minimal_element",
+    "is_well_founded",
+    "is_extensional",
+    "transitive_closure_relation",
+    "transitive_closure",
+    "rank",
+    "mostowski_collapse",
+    "is_transitive_set",
+    "von_neumann_ordinal",
+    "verify_mostowski_isomorphism",
+    "WellFoundedStructure",
 ]
